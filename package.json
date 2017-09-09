@@ -3,8 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^4.0.0-beta",
     "react": "^15.6.1",
+    "react-addons-css-transition-group": "^15.6.0",
+    "react-addons-transition-group": "^15.6.0",
     "react-dom": "^15.6.1",
+    "reactstrap": "^4.8.0",
     "reason-scripts": "0.6.8"
   },
   "scripts": {
