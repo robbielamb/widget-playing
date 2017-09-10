@@ -352,31 +352,46 @@ module Modal = {
 };
 
 module ModalHeader = {
-  external modalHeader : ReasonReact.reactClass = "ModalHeader" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "ModalHeader";
   let make
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
-      wrapTag::(wrapTag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="h4"
+      wrapTag::(wrapTag: string)="div"
       toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
       className::(className: option string)=?
       cssModule::(cssModule: option (Js.t {..}))=?
-      closeAriaLabel::(closeAriaLabel: option string)=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::modalHeader
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "wrapTag": Js.Null_undefined.from_opt (optionMap unwrapValue wrapTag),
-        "toggle": Js.Null_undefined.from_opt toggle,
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule,
-        "closeAriaLabel": Js.Null_undefined.from_opt closeAriaLabel
-      }
-      children;
+      closeAriaLabel::(closeAriaLabel: string)="Close"
+      children => {
+    ...component,
+    render: fun _self => {
+      let classes = classNameReduce className [cn "modal-header"];
+      let closeButton =
+        switch toggle {
+        | None => ReasonReact.nullElement
+        | Some cb =>
+          ReasonReact.createDomElement
+            "button"
+            props::{
+              "type": "button",
+              "onClick": cb,
+              "className": "close",
+              "aria-label": closeAriaLabel
+            }
+            [|
+              ReasonReact.createDomElement
+                "span"
+                props::{"aria-hidden": "true"}
+                [|ReasonReact.stringToElement (Js.String.fromCharCode 215)|]
+            |]
+        };
+      let inner = ReasonReact.createDomElement tag props::{"className": "modal-title"} children;
+      ReasonReact.createDomElement wrapTag props::{"className": classes} [|inner, closeButton|]
+    }
+  };
 };
 
 module ModalBody = {
   external modalBody : ReasonReact.reactClass = "ModalBody" [@@bs.module "reactstrap"];
-  let make
+  let make2
       tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
       className::(className: option string)=?
       cssModule::(cssModule: option (Js.t {..}))=?
@@ -389,6 +404,17 @@ module ModalBody = {
         "cssModule": Js.Null_undefined.from_opt cssModule
       }
       children;
+  let component = ReasonReact.statelessComponent "ModalBody";
+  let make
+      tag::(tag: string)="div"
+      className::(className: option string)=?
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
+      children => {
+    ...component,
+    render: fun _self =>
+      ReasonReact.createDomElement
+        tag props::{"className": classNameReduce className [cn "modal-body"]} children
+  };
 };
 
 module ModalFooter = {
