@@ -80,36 +80,55 @@ module Alert = {
 module Badge = {
   module Color = {
     type t =
-      | Default
       | Primary
+      | Secondary
       | Success
       | Info
       | Warning
-      | Danger;
+      | Danger
+      | Dark
+      | Light;
     let toString color =>
       switch color {
-      | Default => "default"
       | Primary => "primary"
+      | Secondary => "secondary"
       | Success => "success"
       | Info => "info"
       | Warning => "warning"
       | Danger => "danger"
+      | Dark => "dark"
+      | Light => "light"
       };
   };
   let component = ReasonReact.statelessComponent "Badge";
   let make
-      color::(color: Color.t)=Color.Default
+      color::(color: Color.t)=Color.Secondary
       pill::(pill: bool)=false
+      secondary::(secondary: bool)=false
       tag::(tag: string)="div"
       className::(className: option string)=?
+      href::(href: option string)=?
       /*  cssModule::(cssModule: option (Js.t {..}))=? */
       children => {
     ...component,
     render: fun _self => {
+      let tag =
+        switch href {
+        | None => tag
+        | Some _ => tag == "div" ? "a" : tag
+        };
       let badgeColor = "badge-" ^ Color.toString color;
       let classes =
-        classNameReduce className [cn "badge", cn badgeColor, ocn ("badge-pill", pill)];
-      ReasonReact.createDomElement tag props::{"className": classes} children
+        classNameReduce
+          className
+          [
+            cn "badge",
+            cn badgeColor,
+            ocn ("badge-pill", pill),
+            ocn ("badge-secondary", secondary)
+          ];
+      ReasonReact.createDomElement
+        tag props::{"className": classes, "href": Js.Null_undefined.from_opt href} children
     }
   };
 };
@@ -146,7 +165,7 @@ module BreadCrumbItem = {
 };
 
 module Button = {
-  external button : ReasonReact.reactClass = "Button" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "Button";
   module Color = {
     type t =
       | Primary
@@ -178,6 +197,7 @@ module Button = {
       };
   };
   let make
+      tag::(tag: string)="button"
       active::(active: bool)=false
       block::(block: bool)=false
       color::(color: Color.t)=Color.Secondary
@@ -185,27 +205,42 @@ module Button = {
       getRef::(getRef: option [ | `String string | `Element ReasonReact.reactElement])=?
       outline::(outline: bool)=false
       size::(size: option Size.t)=?
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
       onClick::(onClick: option (ReactEventRe.Mouse.t => unit))=?
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::button
-      props::{
-        "active": Js.Boolean.to_js_boolean active,
-        "block": Js.Boolean.to_js_boolean block,
-        "color": Color.toString color,
-        "disabled": Js.Boolean.to_js_boolean disabled,
-        "getRef": Js.Null_undefined.from_opt (optionMap unwrapValue getRef),
-        "outline": Js.Boolean.to_js_boolean outline,
-        "onClick": Js.Null_undefined.from_opt onClick,
-        "size": Js.Null_undefined.from_opt (optionMap Size.toString size),
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
+      children => {
+    ...component,
+    render: fun self => {
+      let click event _self =>
+        disabled ?
+          ReactEventRe.Mouse.preventDefault event :
+          (
+            switch onClick {
+            | None => ()
+            | Some cb => cb event
+            }
+          );
+      let btnColor = cn ("btn" ^ (outline ? "-outline" : "") ^ "-" ^ Color.toString color);
+      let btnSize =
+        switch size {
+        | None => ocn ("n", false)
+        | Some size => cn ("btn-" ^ Size.toString size)
+        };
+      let classes =
+        classNameReduce
+          className
+          [
+            cn "btn",
+            btnColor,
+            btnSize,
+            ocn ("btn-block", block),
+            ocn ("active", active),
+            ocn ("disabled", disabled)
+          ];
+      ReasonReact.createDomElement
+        tag props::{"className": classes, "onClick": self.handle click} children
+    }
+  };
 };
 
 module ButtonDropDown = {};
