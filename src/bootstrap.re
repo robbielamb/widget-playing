@@ -417,30 +417,33 @@ module ModalFooter = {
 };
 
 module Nav = {
-  external nav : ReasonReact.reactClass = "Nav" [@@bs.module "reactstrap"];
+  /* This could have more option and classes applied! */
+  let component = ReasonReact.statelessComponent "ModalFooter";
   let make
       tabs::(tabs: bool)=false
       pills::(pills: bool)=false
       vertical::(vertical: bool)=false
       justified::(justified: bool)=false
       navbar::(navbar: bool)=false
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="ul"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::nav
-      props::{
-        "tabs": Js.Boolean.to_js_boolean tabs,
-        "pills": Js.Boolean.to_js_boolean pills,
-        "vertical": Js.Boolean.to_js_boolean vertical,
-        "justified": Js.Boolean.to_js_boolean justified,
-        "navbar": Js.Boolean.to_js_boolean navbar,
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */ children => {
+    ...component,
+    render: fun _self => {
+      let classes =
+        classNameReduce
+          className
+          [
+            ocn ("navbar-nav", navbar),
+            ocn ("nav", not navbar),
+            ocn ("nav-tabs", tabs),
+            ocn ("nav-pills", pills),
+            ocn ("nav-justified", justified),
+            ocn ("flex-column", vertical)
+          ];
+      ReasonReact.createDomElement tag props::{"className": classes} children
+    }
+  };
 };
 
 module NavDropdown = {
@@ -461,47 +464,55 @@ module NavDropdown = {
 };
 
 module NavItem = {
-  external navItem : ReasonReact.reactClass = "NavItem" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "NavItem";
   let make
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="li"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::navItem
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */ children => {
+    ...component,
+    render: fun _self => {
+      let classes = classNameReduce className [cn "nav-item"];
+      ReasonReact.createDomElement tag props::{"className": classes} children
+    }
+  };
 };
 
 module NavLink = {
-  external navLink : ReasonReact.reactClass = "NavLink" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "NavLink";
   let make
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="a"
       getRef::(getRef: option [ | `String string | `Element ReasonReact.reactElement])=?
       disabled::(disabled: bool)=false
       active::(active: bool)=false
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
       onClick::(onClick: option (ReactEventRe.Mouse.t => unit))=?
       href::(href: option string)=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::navLink
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "getRef": Js.Null_undefined.from_opt (optionMap unwrapValue getRef),
-        "disabled": Js.Boolean.to_js_boolean disabled,
-        "active": Js.Boolean.to_js_boolean active,
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule,
-        "onClick": Js.Null_undefined.from_opt onClick,
-        "href": Js.Null_undefined.from_opt href
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
+      children => {
+    ...component,
+    render: fun self => {
+      let click event _self =>
+        disabled ?
+          ReactEventRe.Mouse.preventDefault event :
+          (
+            switch onClick {
+            | None => ()
+            | Some cb => cb event
+            }
+          );
+      let classes =
+        classNameReduce
+          className [cn "nav-link", ocn ("disabled", disabled), ocn ("active", active)];
+      ReasonReact.createDomElement
+        tag
+        props::{
+          "className": classes,
+          "onClick": self.handle click,
+          "href": Js.Null_undefined.from_opt href
+        }
+        children
+    }
+  };
 };
 
 module Navbar = {
@@ -682,20 +693,17 @@ module Col = {
 };
 
 module Jumbotron = {
-  external jumbotron : ReasonReact.reactClass = "Jumbotron" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "Jumbotron";
   let make
       fluid::(fluid: bool)=false
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="div"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::jumbotron
-      props::{
-        "fluid": Js.Boolean.to_js_boolean fluid,
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
+      children => {
+    ...component,
+    render: fun _self => {
+      let classes = classNameReduce className [cn "jumbotron", ocn ("jumbotron-fluid", fluid)];
+      ReasonReact.createDomElement tag props::{"className": classes} children
+    }
+  };
 };
