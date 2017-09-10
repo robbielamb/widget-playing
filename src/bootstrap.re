@@ -390,20 +390,6 @@ module ModalHeader = {
 };
 
 module ModalBody = {
-  external modalBody : ReasonReact.reactClass = "ModalBody" [@@bs.module "reactstrap"];
-  let make2
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
-      className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::modalBody
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
   let component = ReasonReact.statelessComponent "ModalBody";
   let make
       tag::(tag: string)="div"
@@ -418,20 +404,16 @@ module ModalBody = {
 };
 
 module ModalFooter = {
-  external modalFooter : ReasonReact.reactClass = "ModalFooter" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "ModalFooter";
   let make
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="div"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::modalFooter
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */ children => {
+    ...component,
+    render: fun _self =>
+      ReasonReact.createDomElement
+        tag props::{"className": classNameReduce className [cn "modal-footer"]} children
+  };
 };
 
 module Nav = {
