@@ -50,7 +50,7 @@ module Alert = {
       | Danger => "danger"
       };
   };
-  let make
+  let make1
       className::(className: option string)=?
       color::(color: Color.t)=Color.Success
       isOpen::(isOpen: bool)=true
@@ -75,6 +75,46 @@ module Alert = {
         "cssModule": Js.Null_undefined.from_opt cssModule
       }
       children;
+  let component = ReasonReact.statelessComponent "Alert";
+  let make
+      className::(className: option string)=?
+      closeClassName::(closeClassName: option string)=?
+      color::(color: Color.t)=Color.Success
+      isOpen::(isOpen: bool)=true
+      toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
+      tag::(tag: string)="div"
+      closeAriaLabel::(closeAriaLabel: string)="Close"
+      ::transitionAppearTimeout=150
+      ::transitionEnterTimeout=150
+      ::transitionLeaveTimeout=150
+      cssModule::(cssModule: option (Js.t {..}))=?
+      children => {
+    ...component,
+    render: fun _self => {
+      let closeClasses = classNameReduce closeClassName [cn "close"];
+      let (toggleElement, toggleEnabled) =
+        switch toggle {
+        | None => (ReasonReact.nullElement, false)
+        | Some cb => (
+            ReasonReact.createDomElement
+              "button"
+              props::{"type": "button", "className": closeClasses, "onClick": cb, "aria-label": closeAriaLabel}
+              [|
+                ReasonReact.createDomElement
+                  "span"
+                  props::{"aria-hidden": "true"}
+                  [|ReasonReact.stringToElement (Js.String.fromCharCode 215)|]
+              |],
+            true
+          )
+        };
+      let _ = Js.Array.unshift toggleElement children;
+      let classes = classNameReduce className [cn "alert", cn ("alert-" ^ Color.toString color)];
+      let alert = ReasonReact.createDomElement tag props::{"className": classes} children;
+      
+      <Transition.CSSTransition> alert </Transition.CSSTransition>
+    }
+  };
 };
 
 module Badge = {
@@ -283,74 +323,73 @@ module DropdownMenu = {};
 
 module DropdownItem = {};
 
-module Modal = {
-  external modal : ReasonReact.reactClass = "Modal" [@@bs.module "reactstrap"];
-  let make
-      isOpen::(isOpen: bool)=false
-      autoFocus::(autoFocus: bool)=true
-      size::(size: option string)=?
-      toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
-      keyboard::(keyboard: bool)=true
-      role::(role: option string)=?
-      labelledBy::(labelledBy: option string)=?
-      backdrop::(backdrop: bool)=true
-      onEnter::(onEnter: option (unit => unit))=?
-      onExit::(onExit: option (unit => unit))=?
-      onOpened::(onOpened: option (unit => unit))=?
-      onClosed::(onClosed: option (unit => unit))=?
-      className::(className: option string)=?
-      wrapClassName::(wrapClassName: option string)=?
-      modalClassName::(modalClassName: option string)=?
-      backdropClassName::(backdropClassName: option string)=?
-      contentClassName::(contentClassName: option string)=?
-      fade::(fade: bool)=true
-      cssModule::(cssModule: option (Js.t {..}))=?
-      zIndex::(zIndex: option int)=?
-      backdropTransitionTimeout::(backdropTransitionTimeout: option int)=?
-      backdropTransitionAppearTimeout::(backdropTransitionAppearTimeout: option int)=?
-      backdropTransitionEnterTimeout::(backdropTransitionEnterTimeout: option int)=?
-      backdropTransitionLeaveTimeout::(backdropTransitionLeaveTimeout: option int)=?
-      modalTransitionTimeout::(modalTransitionTimeout: option int)=?
-      modalTransitionAppearTimeout::(modalTransitionAppearTimeout: option int)=?
-      modalTransitionEnterTimeout::(modalTransitionEnterTimeout: option int)=?
-      modalTransitionLeaveTimeout::(modalTransitionLeaveTimeout: option int)=?
-      children =>
-    ReasonReact.wrapJsForReason
-      props::{
-        "isOpen": Js.Boolean.to_js_boolean isOpen,
-        "autoFocus": Js.Boolean.to_js_boolean autoFocus,
-        "size": Js.Null_undefined.from_opt size,
-        "toggle": Js.Null_undefined.from_opt toggle,
-        "keyboard": Js.Boolean.to_js_boolean keyboard,
-        "role": Js.Null_undefined.from_opt role,
-        "labelledBy": Js.Null_undefined.from_opt labelledBy,
-        "backdrop": Js.Boolean.to_js_boolean backdrop,
-        "onEnter": Js.Null_undefined.from_opt onEnter,
-        "onExit": Js.Null_undefined.from_opt onExit,
-        "onOpened": Js.Null_undefined.from_opt onOpened,
-        "onClosed": Js.Null_undefined.from_opt onClosed,
-        "className": Js.Null_undefined.from_opt className,
-        "wrapClassName": Js.Null_undefined.from_opt wrapClassName,
-        "modalClassName": Js.Null_undefined.from_opt modalClassName,
-        "backdropClassName": Js.Null_undefined.from_opt backdropClassName,
-        "contentClassName": Js.Null_undefined.from_opt contentClassName,
-        "fade": Js.Boolean.to_js_boolean fade,
-        "cssModule": Js.Null_undefined.from_opt cssModule,
-        "zIndex": Js.Null_undefined.from_opt zIndex,
-        "backdropTransitionTimeout": Js.Null_undefined.from_opt backdropTransitionTimeout,
-        "backdropTransitionAppearTimeout":
-          Js.Null_undefined.from_opt backdropTransitionAppearTimeout,
-        "backdropTransitionEnterTimeout": Js.Null_undefined.from_opt backdropTransitionEnterTimeout,
-        "backdropTransitionLeaveTimeout": Js.Null_undefined.from_opt backdropTransitionLeaveTimeout,
-        "modalTransitionTimeout": Js.Null_undefined.from_opt modalTransitionTimeout,
-        "modalTransitionAppearTimeout": Js.Null_undefined.from_opt modalTransitionAppearTimeout,
-        "modalTransitionEnterTimeout": Js.Null_undefined.from_opt modalTransitionEnterTimeout,
-        "modalTransitionLeaveTimeout": Js.Null_undefined.from_opt modalTransitionLeaveTimeout
-      }
-      reactClass::modal
-      children;
-};
-
+/* module Modal = {
+     external modal : ReasonReact.reactClass = "Modal" [@@bs.module "reactstrap"];
+     let make
+         isOpen::(isOpen: bool)=false
+         autoFocus::(autoFocus: bool)=true
+         size::(size: option string)=?
+         toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
+         keyboard::(keyboard: bool)=true
+         role::(role: option string)=?
+         labelledBy::(labelledBy: option string)=?
+         backdrop::(backdrop: bool)=true
+         onEnter::(onEnter: option (unit => unit))=?
+         onExit::(onExit: option (unit => unit))=?
+         onOpened::(onOpened: option (unit => unit))=?
+         onClosed::(onClosed: option (unit => unit))=?
+         className::(className: option string)=?
+         wrapClassName::(wrapClassName: option string)=?
+         modalClassName::(modalClassName: option string)=?
+         backdropClassName::(backdropClassName: option string)=?
+         contentClassName::(contentClassName: option string)=?
+         fade::(fade: bool)=true
+         cssModule::(cssModule: option (Js.t {..}))=?
+         zIndex::(zIndex: option int)=?
+         backdropTransitionTimeout::(backdropTransitionTimeout: option int)=?
+         backdropTransitionAppearTimeout::(backdropTransitionAppearTimeout: option int)=?
+         backdropTransitionEnterTimeout::(backdropTransitionEnterTimeout: option int)=?
+         backdropTransitionLeaveTimeout::(backdropTransitionLeaveTimeout: option int)=?
+         modalTransitionTimeout::(modalTransitionTimeout: option int)=?
+         modalTransitionAppearTimeout::(modalTransitionAppearTimeout: option int)=?
+         modalTransitionEnterTimeout::(modalTransitionEnterTimeout: option int)=?
+         modalTransitionLeaveTimeout::(modalTransitionLeaveTimeout: option int)=?
+         children =>
+       ReasonReact.wrapJsForReason
+         props::{
+           "isOpen": Js.Boolean.to_js_boolean isOpen,
+           "autoFocus": Js.Boolean.to_js_boolean autoFocus,
+           "size": Js.Null_undefined.from_opt size,
+           "toggle": Js.Null_undefined.from_opt toggle,
+           "keyboard": Js.Boolean.to_js_boolean keyboard,
+           "role": Js.Null_undefined.from_opt role,
+           "labelledBy": Js.Null_undefined.from_opt labelledBy,
+           "backdrop": Js.Boolean.to_js_boolean backdrop,
+           "onEnter": Js.Null_undefined.from_opt onEnter,
+           "onExit": Js.Null_undefined.from_opt onExit,
+           "onOpened": Js.Null_undefined.from_opt onOpened,
+           "onClosed": Js.Null_undefined.from_opt onClosed,
+           "className": Js.Null_undefined.from_opt className,
+           "wrapClassName": Js.Null_undefined.from_opt wrapClassName,
+           "modalClassName": Js.Null_undefined.from_opt modalClassName,
+           "backdropClassName": Js.Null_undefined.from_opt backdropClassName,
+           "contentClassName": Js.Null_undefined.from_opt contentClassName,
+           "fade": Js.Boolean.to_js_boolean fade,
+           "cssModule": Js.Null_undefined.from_opt cssModule,
+           "zIndex": Js.Null_undefined.from_opt zIndex,
+           "backdropTransitionTimeout": Js.Null_undefined.from_opt backdropTransitionTimeout,
+           "backdropTransitionAppearTimeout":
+             Js.Null_undefined.from_opt backdropTransitionAppearTimeout,
+           "backdropTransitionEnterTimeout": Js.Null_undefined.from_opt backdropTransitionEnterTimeout,
+           "backdropTransitionLeaveTimeout": Js.Null_undefined.from_opt backdropTransitionLeaveTimeout,
+           "modalTransitionTimeout": Js.Null_undefined.from_opt modalTransitionTimeout,
+           "modalTransitionAppearTimeout": Js.Null_undefined.from_opt modalTransitionAppearTimeout,
+           "modalTransitionEnterTimeout": Js.Null_undefined.from_opt modalTransitionEnterTimeout,
+           "modalTransitionLeaveTimeout": Js.Null_undefined.from_opt modalTransitionLeaveTimeout
+         }
+         reactClass::modal
+         children;
+   }; */
 module ModalHeader = {
   let component = ReasonReact.statelessComponent "ModalHeader";
   let make
@@ -446,23 +485,22 @@ module Nav = {
   };
 };
 
-module NavDropdown = {
-  external navDropdown : ReasonReact.reactClass = "NavDropdown" [@@bs.module "reactstrap"];
-  let make
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
-      className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::navDropdown
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
-};
-
+/* module NavDropdown = {
+     external navDropdown : ReasonReact.reactClass = "NavDropdown" [@@bs.module "reactstrap"];
+     let make
+         tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+         className::(className: option string)=?
+         cssModule::(cssModule: option (Js.t {..}))=?
+         children =>
+       ReasonReact.wrapJsForReason
+         reactClass::navDropdown
+         props::{
+           "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
+           "className": Js.Null_undefined.from_opt className,
+           "cssModule": Js.Null_undefined.from_opt cssModule
+         }
+         children;
+   }; */
 module NavItem = {
   let component = ReasonReact.statelessComponent "NavItem";
   let make
@@ -516,7 +554,6 @@ module NavLink = {
 };
 
 module Navbar = {
-  external navbar : ReasonReact.reactClass = "Navbar" [@@bs.module "reactstrap"];
   module Color = {
     type t =
       | Primary
@@ -553,6 +590,7 @@ module Navbar = {
       | Bottom => "bottom"
       };
   };
+  let component = ReasonReact.statelessComponent "NavBar";
   let make
       light::(light: bool)=false
       inverse::(inverse: bool)=false
@@ -561,67 +599,84 @@ module Navbar = {
       sticky::(sticky: option string)=?
       color::(color: option Color.t)=?
       role::(role: option string)=?
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="nav"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      toggleable::(toggleable: [ | `String string | `Bool bool])=(`Bool false)
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::navbar
-      props::{
-        "light": Js.Boolean.to_js_boolean light,
-        "inverse": Js.Boolean.to_js_boolean inverse,
-        "full": Js.Boolean.to_js_boolean full,
-        "fixed": Js.Null_undefined.from_opt (optionMap Fixed.toString fixed),
-        "sticky": Js.Null_undefined.from_opt sticky,
-        "color": Js.Null_undefined.from_opt (optionMap Color.toString color),
-        "role": Js.Null_undefined.from_opt role,
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule,
-        "toggleable": unwrapValue toggleable
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
+      toggleable::(toggleable: bool)=false
+      children => {
+    ...component,
+    render: fun _self => {
+      let bgColor (cls: option 'a) =>
+        switch cls {
+        | None => ocn ("", false)
+        | Some x => ocn ("bg-" ^ Color.toString x, true)
+        };
+      let fixedClass (cls: option 'b) =>
+        switch cls {
+        | None => ocn ("", false)
+        | Some x => ocn ("fixed-" ^ Fixed.toString x, true)
+        };
+      let stickyClass (cls: option 'c) =>
+        switch cls {
+        | None => ocn ("", false)
+        | Some x => ocn ("sticky-" ^ x, true)
+        };
+      let classes =
+        classNameReduce
+          className
+          [
+            cn "navbar",
+            ocn ("navbar-toggleable", toggleable),
+            ocn ("navbar-light", light),
+            ocn ("navbar-inverse", inverse),
+            ocn ("navbar-full", full),
+            bgColor color,
+            fixedClass fixed,
+            stickyClass sticky
+          ];
+      ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+    }
+  };
 };
 
 module NavbarBrand = {
-  external navbarBrand : ReasonReact.reactClass = "NavbarBrand" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "NavbarBrand";
   let make
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="a"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::navbarBrand
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
+      href::(href: string)="#"
+      children => {
+    ...component,
+    render: fun _self => {
+      let classes = classNameReduce className [cn "navbar-brand"];
+      ReasonReact.createDomElement tag props::{"className": classes, "href": href} children
+    }
+  };
 };
 
 module NavbarToggler = {
-  external navbarToggler : ReasonReact.reactClass = "NavbarToggler" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "NavbarToggler";
   let make
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
-      _type::(_type: option string)=?
+      tag::(tag: string)="button"
+      _type::(_type: string)="button"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
       right::(right: bool)=false
       left::(left: bool)=false
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::navbarToggler
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "type": Js.Null_undefined.from_opt _type,
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule,
-        "right": Js.Boolean.to_js_boolean right,
-        "left": Js.Boolean.to_js_boolean left
-      }
-      children;
+      children => {
+    ...component,
+    render: fun _self => {
+      let classes =
+        classNameReduce
+          className
+          [
+            cn "navbar-toggler",
+            ocn ("navbar-toggler-right", right),
+            ocn ("navbar-toggler-left", left)
+          ];
+      ReasonReact.createDomElement tag props::{"type": _type, "className": classes} children
+    }
+  };
 };
 
 /* Layout items */

@@ -32,7 +32,7 @@ module Foo = {
   };
 };
 
-module ModalExample = {
+/* module ModalExample = {
   type action =
     | Toggle;
   type state = bool;
@@ -40,7 +40,7 @@ module ModalExample = {
     Js.log2 "Toggling modal" event;
     Toggle
   };
-  let component = ReasonReact.reducerComponent "ModalExample";
+  let component = ReasonReact.reducerComponent "ButtonExample";
   let make _children => {
     ...component,
     initialState: fun () => false,
@@ -63,7 +63,7 @@ module ModalExample = {
         </Modal>
       </div>
   };
-};
+}; */
 
 let component = ReasonReact.statelessComponent "App";
 
@@ -82,7 +82,7 @@ let make ::message _children => {
       </p>
       <Foo message="Here is message" />
       <div>
-        <Bootstrap.Badge color=Bootstrap.Badge.Color.Primary > (se "Default") </Bootstrap.Badge>
+        <Bootstrap.Badge color=Bootstrap.Badge.Color.Primary> (se "Default") </Bootstrap.Badge>
       </div>
       <div>
         <Bootstrap.BreadCrumb>
@@ -94,7 +94,7 @@ let make ::message _children => {
         </Bootstrap.BreadCrumb>
       </div>
       <div>
-        <Button color=Button.Color.Primary > (se "Primary") </Button>
+        <Button color=Button.Color.Primary size=Button.Size.LG> (se "Primary") </Button>
         (se " ")
         <Button color=Button.Color.Secondary> (se "Secondary") </Button>
         (se " ")
@@ -108,6 +108,6 @@ let make ::message _children => {
         (se " ")
         <Button color=Button.Color.Link> (se "Link") </Button>
       </div>
-      <ModalExample />
+      /* <ModalExample /> */
     </div>
 };
