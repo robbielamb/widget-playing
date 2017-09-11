@@ -626,70 +626,122 @@ module NavbarToggler = {
 
 /* Layout items */
 module Container = {
-  external container : ReasonReact.reactClass = "Container" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "Container";
   let make
       fluid::(fluid: bool)=false
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="div"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::container
-      props::{
-        "fluid": Js.Boolean.to_js_boolean fluid,
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */ children => {
+    ...component,
+    render: fun _self => {
+      let classes =
+        classNameReduce className [ocn ("container-fluid", fluid), ocn ("container", not fluid)];
+      ReasonReact.createDomElement tag props::{"className": classes} children
+    }
+  };
 };
 
 module Row = {
+  /* Todo: Add more options here */
   external row : ReasonReact.reactClass = "Row" [@@bs.module "reactstrap"];
+  let component = ReasonReact.statelessComponent "Row";
   let make
       noGutters::(noGutters: bool)=false
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+      tag::(tag: string)="div"
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::row
-      props::{
-        "noGutters": Js.Boolean.to_js_boolean noGutters,
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      /* cssModule::(cssModule: option (Js.t {..}))=? */ children => {
+    ...component,
+    render: fun _self => {
+      let classes = classNameReduce className [cn "row", ocn ("no-gutters", noGutters)];
+      ReasonReact.createDomElement tag props::{"className": classes} children
+    }
+  };
 };
 
 module Col = {
-  external col : ReasonReact.reactClass = "Col" [@@bs.module "reactstrap"];
-  type shape = Js.t {. size : int, push : int, pull : int, offset : int};
-  type columnProps = option [ | `String string | `Object shape];
+  let component = ReasonReact.statelessComponent "Col";
+  type size =
+    | Auto
+    | Size int;
+  type shape = {
+    size: option size,
+    push: option int,
+    pull: option int,
+    offset: option int
+  };
+  let shape
+      size::(size: option size)=?
+      push::(push: option int)=?
+      pull::(pull: option int)=?
+      offset::(offset: option int)=?
+      () => {
+    size,
+    push,
+    pull,
+    offset
+  };
+  let genClasses (colWidth: string) (shape: shape) => {
+    let isXs = "xs" == colWidth;
+    let interfix = isXs ? "-" : {j|-$(colWidth)-|j};
+    let colClass =
+      cn (
+        switch shape.size {
+        | Some Auto => {j|col$(interfix)auto|j}
+        | Some (Size size) => {j|col$(interfix)$(size)|j}
+        | None => isXs ? "col" : {j|col-$(colWidth)|j}
+        }
+      );
+    let formatClass name intensity => {
+      let colSize = string_of_int intensity;
+      {j|$(name)$(interfix)$(colSize)|j}
+    };
+    let colPush =
+      ocn (
+        switch shape.push {
+        | Some push => (formatClass "push" push, true)
+        | None => ("", false)
+        }
+      );
+    let colPull =
+      ocn (
+        switch shape.pull {
+        | Some pull => (formatClass "pull" pull, true)
+        | None => ("", false)
+        }
+      );
+    let colOffset =
+      ocn (
+        switch shape.offset {
+        | Some offset => (formatClass "offset" offset, true)
+        | None => ("", false)
+        }
+      );
+    [colClass, colPush, colPull, colOffset]
+  };
   let make
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
-      xs::(xs: columnProps)=?
-      sm::(sm: columnProps)=?
-      md::(md: columnProps)=?
-      lg::(lg: columnProps)=?
-      xl::(xl: columnProps)=?
+      tag::(tag: string)="div"
+      xs::(xs: option shape)=(Some (shape ()))
+      sm::(sm: option shape)=?
+      md::(md: option shape)=?
+      lg::(lg: option shape)=?
+      xl::(xl: option shape)=?
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::col
-      props::{
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "xs": Js.Null_undefined.from_opt (optionMap unwrapValue xs),
-        "sm": Js.Null_undefined.from_opt (optionMap unwrapValue sm),
-        "md": Js.Null_undefined.from_opt (optionMap unwrapValue md),
-        "lg": Js.Null_undefined.from_opt (optionMap unwrapValue lg),
-        "xl": Js.Null_undefined.from_opt (optionMap unwrapValue xl),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+      children => {
+    ...component,
+    render: fun _self => {
+      let classShapeList =
+        [("xs", xs), ("sm", sm), ("md", md), ("lg", lg), ("xl", xl)] |>
+        List.map (
+          fun (col, maybeShape) =>
+            switch maybeShape {
+            | None => []
+            | Some shape => genClasses col shape
+            }
+        ) |> List.flatten;
+      let classes = classNameReduce className classShapeList;
+      ReasonReact.createDomElement tag props::{"className": classes} children
+    }
+  };
 };
 
 module Jumbotron = {
