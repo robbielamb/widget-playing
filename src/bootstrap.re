@@ -33,7 +33,6 @@ let classNameReduce (baseClass: option string) (classList: list Classnames.t) =>
 };
 
 module Alert = {
-  external alert : ReasonReact.reactClass = "Alert" [@@bs.module "reactstrap"];
   module Color = {
     type t =
       | Primary
@@ -50,31 +49,7 @@ module Alert = {
       | Danger => "danger"
       };
   };
-  let make1
-      className::(className: option string)=?
-      color::(color: Color.t)=Color.Success
-      isOpen::(isOpen: bool)=true
-      toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
-      ::transitionAppearTimeout=150
-      ::transitionEnterTimeout=150
-      ::transitionLeaveTimeout=150
-      cssModule::(cssModule: option (Js.t {..}))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      reactClass::alert
-      props::{
-        "className": Js.Null_undefined.from_opt className,
-        "color": Color.toString color,
-        "isOpen": Js.Boolean.to_js_boolean isOpen,
-        "toggle": Js.Null_undefined.from_opt toggle,
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "transitionAppearTimeout": transitionAppearTimeout,
-        "transitionEnterTimeout": transitionEnterTimeout,
-        "transitionLeaveTimeout": transitionLeaveTimeout,
-        "cssModule": Js.Null_undefined.from_opt cssModule
-      }
-      children;
+  let onEnter _el _isAppearing => Js.log "onEnter";
   let component = ReasonReact.statelessComponent "Alert";
   let make
       className::(className: option string)=?
@@ -98,7 +73,12 @@ module Alert = {
         | Some cb => (
             ReasonReact.createDomElement
               "button"
-              props::{"type": "button", "className": closeClasses, "onClick": cb, "aria-label": closeAriaLabel}
+              props::{
+                "type": "button",
+                "className": closeClasses,
+                "onClick": cb,
+                "aria-label": closeAriaLabel
+              }
               [|
                 ReasonReact.createDomElement
                   "span"
@@ -111,8 +91,16 @@ module Alert = {
       let _ = Js.Array.unshift toggleElement children;
       let classes = classNameReduce className [cn "alert", cn ("alert-" ^ Color.toString color)];
       let alert = ReasonReact.createDomElement tag props::{"className": classes} children;
+      let visible = isOpen ? alert : <span />;
+      /* visible */
+      let fade = "fade";
+      let show = "show";
       
-      <Transition.CSSTransition> alert </Transition.CSSTransition>
+     <Transition.Transition
+         onEnter=(onEnter)
+         timeout=500 _in=isOpen>
+        visible
+      </Transition.Transition>
     }
   };
 };
@@ -289,39 +277,46 @@ module ButtonGroup = {};
 
 module ButtonToolbar = {};
 
-module Collapse = {
-  external collapse : ReasonReact.reactClass = "Collapse" [@@bs.module "reactstrap"];
-  type delayShape = Js.t {. show : int, hide : int};
-  type delayProps = option [ | `Float float | `Object delayShape];
-  let make
-      isOpen::(isOpen: bool)=false
-      tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
-      className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
-      navbar::(navbar: bool)=false
-      delay::(delay: delayProps)=?
-      onOpen::(onOpen: option (unit => unit))=?
-      onClosed::(onClosed: option (unit => unit))=?
-      children =>
-    ReasonReact.wrapJsForReason
-      props::{
-        "isOpen": Js.Boolean.to_js_boolean isOpen,
-        "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
-        "className": Js.Null_undefined.from_opt className,
-        "cssModule": Js.Null_undefined.from_opt cssModule,
-        "navbar": Js.Boolean.to_js_boolean navbar,
-        "delay": Js.Null_undefined.from_opt (optionMap unwrapValue delay),
-        "onOpen": Js.Null_undefined.from_opt onOpen,
-        "onClosed": Js.Null_undefined.from_opt onClosed
-      }
-      children;
-};
-
+/* module Collapse = {
+     external collapse : ReasonReact.reactClass = "Collapse" [@@bs.module "reactstrap"];
+     type delayShape = Js.t {. show : int, hide : int};
+     type delayProps = option [ | `Float float | `Object delayShape];
+     let make
+         isOpen::(isOpen: bool)=false
+         tag::(tag: option [ | `String string | `Element ReasonReact.reactElement])=?
+         className::(className: option string)=?
+         cssModule::(cssModule: option (Js.t {..}))=?
+         navbar::(navbar: bool)=false
+         delay::(delay: delayProps)=?
+         onOpen::(onOpen: option (unit => unit))=?
+         onClosed::(onClosed: option (unit => unit))=?
+         children =>
+       ReasonReact.wrapJsForReason
+         props::{
+           "isOpen": Js.Boolean.to_js_boolean isOpen,
+           "tag": Js.Null_undefined.from_opt (optionMap unwrapValue tag),
+           "className": Js.Null_undefined.from_opt className,
+           "cssModule": Js.Null_undefined.from_opt cssModule,
+           "navbar": Js.Boolean.to_js_boolean navbar,
+           "delay": Js.Null_undefined.from_opt (optionMap unwrapValue delay),
+           "onOpen": Js.Null_undefined.from_opt onOpen,
+           "onClosed": Js.Null_undefined.from_opt onClosed
+         }
+         children;
+   }; */
 module DropDownToggle = {};
 
 module DropdownMenu = {};
 
 module DropdownItem = {};
+
+module Fade = {
+/*   let component = ReasonReact.statelessComponent "Fade";
+
+let make _in::(_in: bool)=false timeout::(timeout: int)=300 mountOnEnter::(mountOnEnter: bool)=false mountOnExit::(mountOnExit: bool)=false children => {
+  Transition.Transition.make enteredClassName="in" children;
+}; */
+};
 
 /* module Modal = {
      external modal : ReasonReact.reactClass = "Modal" [@@bs.module "reactstrap"];
@@ -698,7 +693,6 @@ module Container = {
 
 module Row = {
   /* Todo: Add more options here */
-  external row : ReasonReact.reactClass = "Row" [@@bs.module "reactstrap"];
   let component = ReasonReact.statelessComponent "Row";
   let make
       noGutters::(noGutters: bool)=false
