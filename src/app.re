@@ -39,11 +39,11 @@ module AlertExample = {
       },
     render: fun {state, reduce} =>
       <Example title="Alerts">
-      <Bootstrap.Alert color=Bootstrap.Alert.Color.Primary isOpen=state toggle=(reduce toggle)>
-        <strong> (ReasonReact.stringToElement "Success") </strong>
-        <p> (ReasonReact.stringToElement message) </p>
-      </Bootstrap.Alert>
-    </Example>
+        <Bootstrap.Alert color=Bootstrap.Alert.Color.Primary isOpen=state toggle=(reduce toggle)>
+          <strong> (ReasonReact.stringToElement "Success") </strong>
+          <p> (ReasonReact.stringToElement message) </p>
+        </Bootstrap.Alert>
+      </Example>
   };
 };
 
@@ -116,5 +116,27 @@ let make ::message _children => {
         <Button color=Button.Color.Link> (se "Link") </Button>
       </Example>
       <ModalExample />
+      <Example title="Progress Bars">
+        <div className="text-center"> (se "0%") </div>
+        <Progress />
+        <div className="text-center"> (se "25%") </div>
+        <Progress value=25.0/>
+        <div className="text-center"> (se "50%") </div>
+        <Progress value=50.0/>
+        <div className="text-center"> (se "100%") </div>
+        <Progress value=100.0/>
+        <div className="text-center"> (se "Multiple bars") </div>
+        <Progress multi=true> 
+          <Progress bar=true value=15.0 > (se "15%")</Progress>
+          <Progress bar=true value=15.0 color=Progress.BackgroundColor.Success />
+          <Progress bar=true value=15.0 color=Progress.BackgroundColor.Info />
+          <Progress bar=true value=15.0 color=Progress.BackgroundColor.Warning />
+          <Progress bar=true value=15.0 color=Progress.BackgroundColor.Danger />
+        </Progress>
+        <div className="text-center"> (se "Striped") </div>
+        <Progress value=50.0 color=Progress.BackgroundColor.Info striped=true > (se "Striped") </Progress>
+        <div className="text-center"> (se "Animated") </div>
+        <Progress value=50.0 color=Progress.BackgroundColor.Danger animated=true > (se "Animated") </Progress>
+      </Example>
     </Layout.Container>
 };

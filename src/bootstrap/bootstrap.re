@@ -80,3 +80,4 @@ module Nav = NavRe;
 module Navbar = NavbarRe;
 
 module Modal = ModalRe;
+module Progress = ProgressRe;
