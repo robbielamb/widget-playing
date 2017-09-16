@@ -1,6 +1,6 @@
 include Utils;
 
-include Colors;
+module BackgroundColor = Colors.BackgroundColor;
 
 let component = ReasonReact.statelessComponent "Progress";
 
@@ -44,7 +44,7 @@ let make
       ReasonReact.createDomElement
         tag props::{"className": progressClasses, "role": "progressbar"};
     switch (multi, bar) {
-    | (true, true) => ReasonReact.arrayToElement children
+    | (true, true) => ReasonReact.arrayToElement children /** This option doesn't actually make sense. */
     | (true, false) => wrapper children
     | (false, true) => progressBar
     | (false, false) => wrapper [|progressBar|]

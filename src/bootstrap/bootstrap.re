@@ -19,7 +19,6 @@ let optionMap fn option =>
   | None => None
   };
 
-
 module Badge = BadgeRe;
 
 module BreadCrumb = BreadcrumbRe;
@@ -80,4 +79,5 @@ module Nav = NavRe;
 module Navbar = NavbarRe;
 
 module Modal = ModalRe;
+module Pagination = PaginationRe;
 module Progress = ProgressRe;
