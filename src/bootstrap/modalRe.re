@@ -155,7 +155,7 @@ fun
       ...component,
       render: fun _self =>
         ReasonReact.createDomElement
-          tag props::{"className": classNameReduce className [cn "modal-body"]} children
+          tag props::{"className": String.concat " " ["modal-body", unwrapStr i className]} children
     };
   };
   
@@ -168,6 +168,6 @@ fun
       ...component,
       render: fun _self =>
         ReasonReact.createDomElement
-          tag props::{"className": classNameReduce className [cn "modal-footer"]} children
+          tag props::{"className": String.concat " " ["modal-footer", unwrapStr i className]} children
     };
   };

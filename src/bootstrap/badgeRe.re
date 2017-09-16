@@ -41,14 +41,13 @@ module Color = {
         };
       let badgeColor = "badge-" ^ Color.toString color;
       let classes =
-        classNameReduce
-          className
           [
-            cn "badge",
-            cn badgeColor,
-            ocn ("badge-pill", pill),
-            ocn ("badge-secondary", secondary)
-          ];
+            "badge",
+            badgeColor,
+            pill ? "badge-pill" : "",
+            secondary ? "badge-secondary" : "", 
+            unwrapStr i className
+          ] |> String.concat " ";
       ReasonReact.createDomElement
         tag props::{"className": classes, "href": Js.Null_undefined.from_opt href} children
     }

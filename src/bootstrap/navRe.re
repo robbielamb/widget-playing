@@ -29,6 +29,7 @@ let make
   }
 };
 
+/* TODO: Make a general 'dropdown' component first */
 /* module NavDropdown = {
      external navDropdown : ReasonReact.reactClass = "NavDropdown" [@@bs.module "reactstrap"];
      let make
