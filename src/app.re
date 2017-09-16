@@ -6,7 +6,20 @@ external logo : string = "./logo.svg" [@@bs.module];
 
 let se = ReasonReact.stringToElement;
 
-module Foo = {
+module Example = {
+  let component = ReasonReact.statelessComponent "Example";
+  let make ::title (children: array ReasonReact.reactElement) => {
+    ...component,
+    render: fun _self => {
+      let title = <h3> (se title) </h3>;
+      let _ = Js.Array.unshift title children;
+      let col = ReasonReact.element (Layout.Col.make children);
+      <Layout.Row className="mb-4 border p-2"> col </Layout.Row>
+    }
+  };
+};
+
+module AlertExample = {
   type action =
     | Toggle;
   type state = bool;
@@ -14,7 +27,7 @@ module Foo = {
     Js.log event;
     Toggle
   };
-  let component = ReasonReact.reducerComponent "Foo";
+  let component = ReasonReact.reducerComponent "AlertExample";
   let make ::message _children => {
     ...component,
     initialState: fun () => true,
@@ -25,10 +38,12 @@ module Foo = {
       | _ => ReasonReact.SideEffects (fun _self => Js.log "Called again!")
       },
     render: fun {state, reduce} =>
+      <Example title="Alerts">
       <Bootstrap.Alert color=Bootstrap.Alert.Color.Primary isOpen=state toggle=(reduce toggle)>
         <strong> (ReasonReact.stringToElement "Success") </strong>
         <p> (ReasonReact.stringToElement message) </p>
       </Bootstrap.Alert>
+    </Example>
   };
 };
 
@@ -49,7 +64,7 @@ module ModalExample = {
       | Toggle => ReasonReact.Update (not state)
       },
     render: fun {state, reduce} =>
-      <div>
+      <Example title="Modal">
         <Button color=Button.Color.Danger onClick=(reduce toggle)> (se "Launch Modal") </Button>
         <Modal isOpen=state toggle=(reduce toggle)>
           <ModalHeader toggle=(reduce toggle)> (se "Modal Header") </ModalHeader>
@@ -61,30 +76,22 @@ module ModalExample = {
             <Button color=Button.Color.Secondary onClick=(reduce toggle)> (se "Cancel") </Button>
           </ModalFooter>
         </Modal>
-      </div>
+      </Example>
   };
-}; 
+};
 
 let component = ReasonReact.statelessComponent "App";
 
 let make ::message _children => {
   ...component,
   render: fun _self =>
-    <div className="App">
-      <div className="App-header">
-        <img src=logo className="App-logo" alt="logo" />
-        <h2> (ReasonReact.stringToElement message) </h2>
-      </div>
-      <p className="App-intro">
-        (ReasonReact.stringToElement "To get started, edit")
-        <code> (ReasonReact.stringToElement " src/App.re ") </code>
-        (ReasonReact.stringToElement "and save to reload.")
-      </p>
-      <Foo message="Here is message" />
-      <div>
+    <Layout.Container>
+      <Example title="Example example"> (se "An Example") </Example>
+      <AlertExample message="Here is message" />
+      <Example title="Badges">
         <Bootstrap.Badge color=Bootstrap.Badge.Color.Primary> (se "Default") </Bootstrap.Badge>
-      </div>
-      <div>
+      </Example>
+      <Example title="Breadcrumbs">
         <Bootstrap.BreadCrumb>
           <Bootstrap.BreadCrumbItem> (se "home") </Bootstrap.BreadCrumbItem>
         </Bootstrap.BreadCrumb>
@@ -92,8 +99,8 @@ let make ::message _children => {
           <Bootstrap.BreadCrumbItem> (se "home") </Bootstrap.BreadCrumbItem>
           <Bootstrap.BreadCrumbItem active=true> (se "more") </Bootstrap.BreadCrumbItem>
         </Bootstrap.BreadCrumb>
-      </div>
-      <div>
+      </Example>
+      <Example title="Buttons">
         <Button color=Button.Color.Primary size=Button.Size.LG> (se "Primary") </Button>
         (se " ")
         <Button color=Button.Color.Secondary> (se "Secondary") </Button>
@@ -107,7 +114,7 @@ let make ::message _children => {
         <Button color=Button.Color.Danger> (se "Danger") </Button>
         (se " ")
         <Button color=Button.Color.Link> (se "Link") </Button>
-      </div>
+      </Example>
       <ModalExample />
-    </div>
+    </Layout.Container>
 };
