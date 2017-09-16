@@ -34,6 +34,9 @@ let optionMap fn option =>
   | None => None
   };
 
+/* Identity function */
+let i x => x;
+
 let cn c => Classnames.Classname c;
 
 let ocn c => Classnames.Option c;
@@ -46,6 +49,12 @@ let classNameReduce (baseClass: option string) (classList: list Classnames.t) =>
     };
   List.rev_append baseClass classList |> Classnames.classNames
 };
+
+let unwrapStr f maybeStr =>
+  switch maybeStr {
+  | Some v => f v
+  | None => ""
+  };
 
 module TextColor = {
   type t =
@@ -72,6 +81,7 @@ module TextColor = {
     | Warning => "warning"
     | Danger => "danger"
     };
+  let unWrap = unwrapStr toString;
 };
 
 module BackgroundColor = {
@@ -87,18 +97,51 @@ module BackgroundColor = {
     | White
     | Transparent;
   let toString color =>
-    switch color {
-    | Primary => "primary"
-    | Secondary => "secondary"
-    | Success => "success"
-    | Info => "info"
-    | Warning => "warning"
-    | Danger => "danger"
-    | Dark => "dark"
-    | Light => "light"
-    | White => "white"
-    | Transparent => "transparent"
-    };
+    "bg-" ^ (
+      switch color {
+      | Primary => "primary"
+      | Secondary => "secondary"
+      | Success => "success"
+      | Info => "info"
+      | Warning => "warning"
+      | Danger => "danger"
+      | Dark => "dark"
+      | Light => "light"
+      | White => "white"
+      | Transparent => "transparent"
+      }
+    );
+  let unWrap = unwrapStr toString;
+};
+
+module BorderColor = {
+  type t =
+    | Primary
+    | Secondary
+    | Success
+    | Info
+    | Warning
+    | Danger
+    | Light
+    | Dark
+    | White
+    | Transparent;
+  let toString color =>
+    "border-" ^ (
+      switch color {
+      | Primary => "primary"
+      | Secondary => "secondary"
+      | Success => "success"
+      | Info => "info"
+      | Warning => "warning"
+      | Danger => "danger"
+      | Dark => "dark"
+      | Light => "light"
+      | White => "white"
+      | Transparent => "transparent"
+      }
+    );
+  let unWrap = unwrapStr toString;
 };
 
 module Alert = {
@@ -391,30 +434,112 @@ module Card = {
       tag::(tag: string)="div"
       className::(className: option string)=?
       color::(color: option TextColor.t)=?
-      backgroundColor::(backgroundColer: option BackgroundColor.t)=?
+      backgroundColor::(backgroundColor: option BackgroundColor.t)=?
+      borderColor::(borderColor: option BorderColor.t)=?
       children => {
-    let classes = classNameReduce className [cn "card"];
+    let classes =
+      [
+        "card",
+        unwrapStr i className,
+        TextColor.unWrap color,
+        BackgroundColor.unWrap backgroundColor,
+        BorderColor.unWrap borderColor
+      ] |>
+      String.concat " ";
     ReasonReact.createDomElement tag props::{"className": classes} children
   };
 };
 
-module CartBlock = {};
+module CardBody = {
+  let component = ReasonReact.statelessComponent "CardBody";
+  let make tag::(tag: string)="div" className::(className: option string)=? children => {
+    let classes = ["card-body", unwrapStr i className] |> String.concat " ";
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
-module CardColumns = {};
+module CardColumns = {
+  let component = ReasonReact.statelessComponent "CardColumns";
+  let make tag::(tag: string)="div" className::(className: option string)=? children => {
+    let classes = [unwrapStr i className, "card-columns"] |> String.concat " ";
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
-module CardDeck = {};
+module CardDeck = {
+  let component = ReasonReact.statelessComponent "CardDeck";
+  let make tag::(tag: string)="div" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-deck"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
-module CardFooter = {};
+module CardFooter = {
+  let component = ReasonReact.statelessComponent "CardFooter";
+  let make tag::(tag: string)="div" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-footer"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
-module CardGroup = {};
+module CardGroup = {
+  let component = ReasonReact.statelessComponent "CardGroup";
+  let make tag::(tag: string)="div" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-group"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
-module CardHeader = {};
+module CardHeader = {
+  let component = ReasonReact.statelessComponent "CardHeader";
+  let make tag::(tag: string)="div" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-header"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
-module CardImg = {};
+module CardImg = {
+  module Fixed = {
+    type t =
+      | None
+      | Top
+      | Bottom;
+    let toString fixed =>
+      switch fixed {
+      | None => ""
+      | Top => "-top"
+      | Bottom => "-bottom"
+      };
+  };
+  let component = ReasonReact.statelessComponent "CardImg";
+  let make
+      tag::(tag: string)="img"
+      src::(src: string)=""
+      alt::(alt: string)=""
+      fixed::(fixed: Fixed.t)=None
+      className::(className: option string)=?
+      children => {
+    let classes = classNameReduce className [cn ("card-img" ^ Fixed.toString fixed)];
+    ReasonReact.createDomElement tag props::{"className": classes, "src": src, "alt": alt} children
+  };
+};
 
-module CardImgOverlay = {};
+module CardImgOverlay = {
+  let component = ReasonReact.statelessComponent "CardImgOverlay";
+  let make tag::(tag: string)="div" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-img-overlay"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
-module CardLink = {};
+module CardLink = {
+  /* TODO: Handle href and proper callbacks */
+  let component = ReasonReact.statelessComponent "CardLink";
+  let make tag::(tag: string)="a" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-link"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
 module CardTitle = {
   let component = ReasonReact.statelessComponent "CardTitle";
