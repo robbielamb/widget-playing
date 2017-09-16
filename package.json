@@ -8,7 +8,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-transition-group": "^2.2.0",
-    "reason-scripts": "0.6.8"
+    "reason-scripts": "0.6.10"
   },
   "scripts": {
     "start": "FORCE_COLOR=true react-scripts start | cat -",
@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "bs-jest": "^0.1.0",
+    "bs-platform": "^1.9.2",
     "reason-react": "^0.2.4"
   }
 }
