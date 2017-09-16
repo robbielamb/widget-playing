@@ -67,14 +67,14 @@ module ModalExample = {
       <Example title="Modal">
         <Button color=Button.Color.Danger onClick=(reduce toggle)> (se "Launch Modal") </Button>
         <Modal isOpen=state toggle=(reduce toggle)>
-          <ModalHeader toggle=(reduce toggle)> (se "Modal Header") </ModalHeader>
-          <ModalBody> (se "This is the modal body where I can put stuff") </ModalBody>
-          <ModalFooter>
+          <Modal.Header toggle=(reduce toggle)> (se "Modal Header") </Modal.Header>
+          <Modal.Body> (se "This is the modal body where I can put stuff") </Modal.Body>
+          <Modal.Footer>
             <Button color=Button.Color.Primary onClick=(reduce toggle)>
               (se "Do Something")
             </Button>
             <Button color=Button.Color.Secondary onClick=(reduce toggle)> (se "Cancel") </Button>
-          </ModalFooter>
+          </Modal.Footer>
         </Modal>
       </Example>
   };
@@ -93,11 +93,11 @@ let make ::message _children => {
       </Example>
       <Example title="Breadcrumbs">
         <Bootstrap.BreadCrumb>
-          <Bootstrap.BreadCrumbItem> (se "home") </Bootstrap.BreadCrumbItem>
+          <Bootstrap.BreadCrumb.Item> (se "home") </Bootstrap.BreadCrumb.Item>
         </Bootstrap.BreadCrumb>
         <Bootstrap.BreadCrumb>
-          <Bootstrap.BreadCrumbItem> (se "home") </Bootstrap.BreadCrumbItem>
-          <Bootstrap.BreadCrumbItem active=true> (se "more") </Bootstrap.BreadCrumbItem>
+          <Bootstrap.BreadCrumb.Item> (se "home") </Bootstrap.BreadCrumb.Item>
+          <Bootstrap.BreadCrumb.Item active=true> (se "more") </Bootstrap.BreadCrumb.Item>
         </Bootstrap.BreadCrumb>
       </Example>
       <Example title="Buttons">
