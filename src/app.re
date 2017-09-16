@@ -32,7 +32,7 @@ module Foo = {
   };
 };
 
-/* module ModalExample = {
+module ModalExample = {
   type action =
     | Toggle;
   type state = bool;
@@ -63,7 +63,7 @@ module Foo = {
         </Modal>
       </div>
   };
-}; */
+}; 
 
 let component = ReasonReact.statelessComponent "App";
 
@@ -108,6 +108,6 @@ let make ::message _children => {
         (se " ")
         <Button color=Button.Color.Link> (se "Link") </Button>
       </div>
-      /* <ModalExample /> */
+      <ModalExample />
     </div>
 };

@@ -1200,6 +1200,10 @@ bs-loader@^1.6.0:
   dependencies:
     loader-utils "^1.1.0"
 
+bs-webapi@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/bs-webapi/-/bs-webapi-0.6.1.tgz#68576ab05e9a2f777bbd15a35a606a815d00e831"
+
 bser@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bser/-/bser-1.0.2.tgz#381116970b2a6deea5646dd15dd7278444b56169"

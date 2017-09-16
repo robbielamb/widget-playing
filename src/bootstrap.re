@@ -2,6 +2,21 @@ type jsUnsafe;
 
 external toJsUnsafe : 'a => jsUnsafe = "%identity";
 
+let map f =>
+  fun
+  | Some v => Some (f v)
+  | None => None;
+
+let andThen (f: 'a => option 'b) =>
+  fun
+  | Some v => f v
+  | None => None;
+
+let unwrapUnsafely =
+  fun
+  | Some v => v
+  | None => raise (Invalid_argument "Passed `None` to unwrapUnsafely");
+
 let unwrapValue =
   fun
   | `String s => toJsUnsafe s
@@ -30,6 +45,60 @@ let classNameReduce (baseClass: option string) (classList: list Classnames.t) =>
     | None => []
     };
   List.rev_append baseClass classList |> Classnames.classNames
+};
+
+module TextColor = {
+  type t =
+    | White
+    | Dark
+    | Muted
+    | Hide
+    | Primary
+    | Secondary
+    | Success
+    | Info
+    | Warning
+    | Danger;
+  let toString color =>
+    switch color {
+    | White => "white"
+    | Dark => "dark"
+    | Muted => "muted"
+    | Hide => "hide"
+    | Primary => "primary"
+    | Secondary => "secondary"
+    | Success => "success"
+    | Info => "info"
+    | Warning => "warning"
+    | Danger => "danger"
+    };
+};
+
+module BackgroundColor = {
+  type t =
+    | Primary
+    | Secondary
+    | Success
+    | Info
+    | Warning
+    | Danger
+    | Light
+    | Dark
+    | White
+    | Transparent;
+  let toString color =>
+    switch color {
+    | Primary => "primary"
+    | Secondary => "secondary"
+    | Success => "success"
+    | Info => "info"
+    | Warning => "warning"
+    | Danger => "danger"
+    | Dark => "dark"
+    | Light => "light"
+    | White => "white"
+    | Transparent => "transparent"
+    };
 };
 
 module Alert = {
@@ -95,12 +164,13 @@ module Alert = {
       /* visible */
       let fade = "fade";
       let show = "show";
-      
-     <Transition.Transition
-         onEnter=(onEnter)
-         timeout=500 _in=isOpen>
-        visible
-      </Transition.Transition>
+      visible
+      /* TODO: Make this work with an animation */
+      /* <Transition.Transition
+            onEnter=(onEnter)
+            timeout=500 _in=isOpen>
+           visible
+         </Transition.Transition> */
     }
   };
 };
@@ -273,9 +343,102 @@ module Button = {
 
 module ButtonDropDown = {};
 
-module ButtonGroup = {};
+module ButtonGroup = {
+  module Size = {
+    type t =
+      | SM
+      | LG;
+    let toString size =>
+      switch size {
+      | SM => "sm"
+      | LG => "lg"
+      };
+  };
+  let component = ReasonReact.statelessComponent "ButtonGroup";
+  let make
+      tag::(tag: string)="div"
+      className::(className: option string)=?
+      role::(role: string)="group"
+      size::(size: option Size.t)=?
+      vertical::(vertical: bool)=false
+      children => {
+    let btnSize =
+      switch size {
+      | None => ocn ("n", false)
+      | Some size => cn ("btn-group" ^ Size.toString size)
+      };
+    let classes =
+      classNameReduce className [btnSize, cn (vertical ? "btn-group-vertical" : "btn-group")];
+    ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+  };
+};
 
-module ButtonToolbar = {};
+module ButtonToolbar = {
+  let component = ReasonReact.statelessComponent "ButtonToolbar";
+  let make
+      tag::(tag: string)="div"
+      className::(className: option string)=?
+      role::(role: string)="toolbar"
+      children => {
+    let classes = classNameReduce className [cn "btn-toolbar"];
+    ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+  };
+};
+
+module Card = {
+  let component = ReasonReact.statelessComponent "Card";
+  let make
+      tag::(tag: string)="div"
+      className::(className: option string)=?
+      color::(color: option TextColor.t)=?
+      backgroundColor::(backgroundColer: option BackgroundColor.t)=?
+      children => {
+    let classes = classNameReduce className [cn "card"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
+
+module CartBlock = {};
+
+module CardColumns = {};
+
+module CardDeck = {};
+
+module CardFooter = {};
+
+module CardGroup = {};
+
+module CardHeader = {};
+
+module CardImg = {};
+
+module CardImgOverlay = {};
+
+module CardLink = {};
+
+module CardTitle = {
+  let component = ReasonReact.statelessComponent "CardTitle";
+  let make tag::(tag: string)="h4" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-title"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
+
+module CartSubtitle = {
+  let component = ReasonReact.statelessComponent "CardSubTitle";
+  let make tag::(tag: string)="h6" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-subtitle"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
+
+module CartText = {
+  let component = ReasonReact.statelessComponent "CardText";
+  let make tag::(tag: string)="p" className::(className: option string)=? children => {
+    let classes = classNameReduce className [cn "card-text"];
+    ReasonReact.createDomElement tag props::{"className": classes} children
+  };
+};
 
 /* module Collapse = {
      external collapse : ReasonReact.reactClass = "Collapse" [@@bs.module "reactstrap"];
@@ -311,80 +474,105 @@ module DropdownMenu = {};
 module DropdownItem = {};
 
 module Fade = {
-/*   let component = ReasonReact.statelessComponent "Fade";
+  /*   let component = ReasonReact.statelessComponent "Fade";
 
-let make _in::(_in: bool)=false timeout::(timeout: int)=300 mountOnEnter::(mountOnEnter: bool)=false mountOnExit::(mountOnExit: bool)=false children => {
-  Transition.Transition.make enteredClassName="in" children;
-}; */
+       let make _in::(_in: bool)=false timeout::(timeout: int)=300 mountOnEnter::(mountOnEnter: bool)=false mountOnExit::(mountOnExit: bool)=false children => {
+         Transition.Transition.make enteredClassName="in" children;
+       }; */
 };
 
-/* module Modal = {
-     external modal : ReasonReact.reactClass = "Modal" [@@bs.module "reactstrap"];
-     let make
-         isOpen::(isOpen: bool)=false
-         autoFocus::(autoFocus: bool)=true
-         size::(size: option string)=?
-         toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
-         keyboard::(keyboard: bool)=true
-         role::(role: option string)=?
-         labelledBy::(labelledBy: option string)=?
-         backdrop::(backdrop: bool)=true
-         onEnter::(onEnter: option (unit => unit))=?
-         onExit::(onExit: option (unit => unit))=?
-         onOpened::(onOpened: option (unit => unit))=?
-         onClosed::(onClosed: option (unit => unit))=?
-         className::(className: option string)=?
-         wrapClassName::(wrapClassName: option string)=?
-         modalClassName::(modalClassName: option string)=?
-         backdropClassName::(backdropClassName: option string)=?
-         contentClassName::(contentClassName: option string)=?
-         fade::(fade: bool)=true
-         cssModule::(cssModule: option (Js.t {..}))=?
-         zIndex::(zIndex: option int)=?
-         backdropTransitionTimeout::(backdropTransitionTimeout: option int)=?
+module Modal = {
+  type actions =
+    | BackgroundClick;
+  type state = {
+    el: ref (option Dom.htmlElement),
+    isBodyOverflowing: bool
+  };
+  type retainedProps = {isOpen: bool};
+  let component = ReasonReact.reducerComponentWithRetainedProps "Modal";
+  let make
+      isOpen::(isOpen: bool)=false
+      autoFocus::(autoFocus: bool)=true
+      size::(size: option string)=?
+      toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
+      keyboard::(keyboard: bool)=true
+      role::(role: string)="dialog"
+      labelledBy::(labelledBy: option string)=?
+      backdrop::(backdrop: bool)=true
+      onEnter::(onEnter: option (unit => unit))=?
+      onExit::(onExit: option (unit => unit))=?
+      onOpened::(onOpened: option (unit => unit))=?
+      onClosed::(onClosed: option (unit => unit))=?
+      className::(className: option string)=?
+      wrapClassName::(wrapClassName: option string)=?
+      modalClassName::(modalClassName: option string)=?
+      backdropClassName::(backdropClassName: option string)=?
+      contentClassName::(contentClassName: option string)=?
+      fade::(fade: bool)=true
+      zIndex::(zIndex: int)=1050
+      /* backdropTransitionTimeout::(backdropTransitionTimeout: option int)=?
          backdropTransitionAppearTimeout::(backdropTransitionAppearTimeout: option int)=?
          backdropTransitionEnterTimeout::(backdropTransitionEnterTimeout: option int)=?
          backdropTransitionLeaveTimeout::(backdropTransitionLeaveTimeout: option int)=?
          modalTransitionTimeout::(modalTransitionTimeout: option int)=?
          modalTransitionAppearTimeout::(modalTransitionAppearTimeout: option int)=?
          modalTransitionEnterTimeout::(modalTransitionEnterTimeout: option int)=?
-         modalTransitionLeaveTimeout::(modalTransitionLeaveTimeout: option int)=?
-         children =>
-       ReasonReact.wrapJsForReason
-         props::{
-           "isOpen": Js.Boolean.to_js_boolean isOpen,
-           "autoFocus": Js.Boolean.to_js_boolean autoFocus,
-           "size": Js.Null_undefined.from_opt size,
-           "toggle": Js.Null_undefined.from_opt toggle,
-           "keyboard": Js.Boolean.to_js_boolean keyboard,
-           "role": Js.Null_undefined.from_opt role,
-           "labelledBy": Js.Null_undefined.from_opt labelledBy,
-           "backdrop": Js.Boolean.to_js_boolean backdrop,
-           "onEnter": Js.Null_undefined.from_opt onEnter,
-           "onExit": Js.Null_undefined.from_opt onExit,
-           "onOpened": Js.Null_undefined.from_opt onOpened,
-           "onClosed": Js.Null_undefined.from_opt onClosed,
-           "className": Js.Null_undefined.from_opt className,
-           "wrapClassName": Js.Null_undefined.from_opt wrapClassName,
-           "modalClassName": Js.Null_undefined.from_opt modalClassName,
-           "backdropClassName": Js.Null_undefined.from_opt backdropClassName,
-           "contentClassName": Js.Null_undefined.from_opt contentClassName,
-           "fade": Js.Boolean.to_js_boolean fade,
-           "cssModule": Js.Null_undefined.from_opt cssModule,
-           "zIndex": Js.Null_undefined.from_opt zIndex,
-           "backdropTransitionTimeout": Js.Null_undefined.from_opt backdropTransitionTimeout,
-           "backdropTransitionAppearTimeout":
-             Js.Null_undefined.from_opt backdropTransitionAppearTimeout,
-           "backdropTransitionEnterTimeout": Js.Null_undefined.from_opt backdropTransitionEnterTimeout,
-           "backdropTransitionLeaveTimeout": Js.Null_undefined.from_opt backdropTransitionLeaveTimeout,
-           "modalTransitionTimeout": Js.Null_undefined.from_opt modalTransitionTimeout,
-           "modalTransitionAppearTimeout": Js.Null_undefined.from_opt modalTransitionAppearTimeout,
-           "modalTransitionEnterTimeout": Js.Null_undefined.from_opt modalTransitionEnterTimeout,
-           "modalTransitionLeaveTimeout": Js.Null_undefined.from_opt modalTransitionLeaveTimeout
-         }
-         reactClass::modal
-         children;
-   }; */
+         modalTransitionLeaveTimeout::(modalTransitionLeaveTimeout: option int)=? */
+      _children => {
+    ...component,
+    retainedProps: {isOpen: isOpen},
+    initialState: fun () => {el: ref None, isBodyOverflowing: false},
+    didMount: fun self =>
+      ReasonReact.SideEffects (
+        fun _self => {
+          isOpen ? () : /** toggle portal */ ();
+          switch onEnter {
+          | Some cb => cb ()
+          | None => ()
+          };
+          let document = Bs_webapi.Dom.document;
+          let foo = document |> Bs_webapi.Dom.Document.createElement "div";
+          Bs_webapi.Dom.Element.setAttribute "tabIndex" "-1" foo;
+          /* Bs_webapi.Dom.CssStyleDeclaration.t; */
+          /* Bs_webapi; */
+          let foo = foo |> Bs_webapi.Dom.Element.asHtmlElement |> unwrapUnsafely;
+          let style = Bs_webapi.Dom.HtmlElement.style foo;
+          Bs_webapi.Dom.CssStyleDeclaration.setProperty "position" "relative" "" style;
+          Bs_webapi.Dom.CssStyleDeclaration.setProperty "zIndex" (string_of_int zIndex) "" style;
+          self.state.el := Some foo;
+          let _ =
+            document |> Bs_webapi.Dom.Document.asHtmlDocument |>
+            andThen Bs_webapi.Dom.HtmlDocument.body |>
+            map (Bs_webapi.Dom.Element.appendChild foo);
+          ()
+        }
+      ),
+    /* willReceiveProps: fun self => self.state, */
+    /* shouldUpdate: fun {oldSelf, newSelf} => (oldSelf.retainedProps.isOpen === newSelf.retainedProps.isOpen) ? true : false, */
+    /* willUpdate: fun _oldAndNewSelf => (), */
+    didUpdate: fun {oldSelf, newSelf} =>
+      if (oldSelf.retainedProps.isOpen === newSelf.retainedProps.isOpen) {
+        Js.log "NoChange"
+      },
+    willUnmount: fun self => {
+      let document = Bs_webapi.Dom.document;
+      switch !self.state.el {
+      | Some node =>
+        let _ =
+          document |> Bs_webapi.Dom.Document.asHtmlDocument |>
+          andThen Bs_webapi.Dom.HtmlDocument.body |>
+          map (Bs_webapi.Dom.Element.removeChild node);
+        ()
+      | None => ()
+      }
+    },
+    reducer: fun _action state =>
+      ReasonReact.Update {...state, isBodyOverflowing: not state.isBodyOverflowing},
+    render: fun self => <span onClick=(self.reduce (fun _self => BackgroundClick)) />
+  };
+  ReactDOMRe.render;
+};
+
 module ModalHeader = {
   let component = ReasonReact.statelessComponent "ModalHeader";
   let make
@@ -392,7 +580,7 @@ module ModalHeader = {
       wrapTag::(wrapTag: string)="div"
       toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
       className::(className: option string)=?
-      cssModule::(cssModule: option (Js.t {..}))=?
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
       closeAriaLabel::(closeAriaLabel: string)="Close"
       children => {
     ...component,
