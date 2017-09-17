@@ -1,3 +1,5 @@
+/* This is an awful way to do classnames. Don't use it.  */
+
 type t =
   | Classname string
   | Option (string, bool);
