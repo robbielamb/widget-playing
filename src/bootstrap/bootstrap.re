@@ -71,7 +71,7 @@ module Alert = AlertRe;
 module Card = CardRe;
 
 module Form = FormRe;
-
+module Input = InputRe;
 module Layout = LayoutRe;
 
 module Nav = NavRe;
@@ -79,5 +79,7 @@ module Nav = NavRe;
 module Navbar = NavbarRe;
 
 module Modal = ModalRe;
+
 module Pagination = PaginationRe;
+
 module Progress = ProgressRe;

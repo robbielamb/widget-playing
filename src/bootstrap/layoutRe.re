@@ -34,8 +34,7 @@ module Row = {
   };
 };
 
-module Col = {
-  let component = ReasonReact.statelessComponent "Col";
+module ColSizes = {
   type size =
     | Auto
     | Size int;
@@ -60,40 +59,46 @@ module Col = {
     let isXs = "xs" == colWidth;
     let interfix = isXs ? "-" : {j|-$(colWidth)-|j};
     let colClass =
-      cn (
-        switch shape.size {
-        | Some Auto => {j|col$(interfix)auto|j}
-        | Some (Size size) => {j|col$(interfix)$(size)|j}
-        | None => isXs ? "col" : {j|col-$(colWidth)|j}
-        }
-      );
+      switch shape.size {
+      | Some Auto => {j|col$(interfix)auto|j}
+      | Some (Size size) => {j|col$(interfix)$(size)|j}
+      | None => isXs ? "col" : {j|col-$(colWidth)|j}
+      };
     let formatClass name intensity => {
       let colSize = string_of_int intensity;
       {j|$(name)$(interfix)$(colSize)|j}
     };
     let colPush =
-      ocn (
-        switch shape.push {
-        | Some push => (formatClass "push" push, true)
-        | None => ("", false)
-        }
-      );
+      switch shape.push {
+      | Some push => formatClass "push" push
+      | None => ""
+      };
     let colPull =
-      ocn (
-        switch shape.pull {
-        | Some pull => (formatClass "pull" pull, true)
-        | None => ("", false)
-        }
-      );
+      switch shape.pull {
+      | Some pull => formatClass "pull" pull
+      | None => ""
+      };
     let colOffset =
-      ocn (
-        switch shape.offset {
-        | Some offset => (formatClass "offset" offset, true)
-        | None => ("", false)
-        }
-      );
+      switch shape.offset {
+      | Some offset => formatClass "offset" offset
+      | None => ""
+      };
     [colClass, colPush, colPull, colOffset]
   };
+  let processShapeList xs sm md lg xl =>
+    [("xs", xs), ("sm", sm), ("md", md), ("lg", lg), ("xl", xl)] |>
+    List.map (
+      fun (col, maybeShape) =>
+        switch maybeShape {
+        | None => []
+        | Some shape => genClasses col shape
+        }
+    ) |> List.flatten;
+};
+
+module Col = {
+  include ColSizes;
+  let component = ReasonReact.statelessComponent "Col";
   let make
       tag::(tag: string)="div"
       xs::(xs: option shape)=(Some (shape ()))
@@ -105,16 +110,8 @@ module Col = {
       children => {
     ...component,
     render: fun _self => {
-      let classShapeList =
-        [("xs", xs), ("sm", sm), ("md", md), ("lg", lg), ("xl", xl)] |>
-        List.map (
-          fun (col, maybeShape) =>
-            switch maybeShape {
-            | None => []
-            | Some shape => genClasses col shape
-            }
-        ) |> List.flatten;
-      let classes = classNameReduce className classShapeList;
+      let classShapeList = processShapeList xs sm md lg xl;
+      let classes = List.append [unwrapStr i className] classShapeList |> String.concat " ";
       ReasonReact.createDomElement tag props::{"className": classes} children
     }
   };

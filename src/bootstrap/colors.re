@@ -13,7 +13,7 @@ module TextColor = {
       | Warning
       | Danger;
     let toString color =>
-      switch color {
+      "text-"^switch color {
       | White => "white"
       | Dark => "dark"
       | Muted => "muted"
