@@ -71,7 +71,11 @@ module Alert = AlertRe;
 module Card = CardRe;
 
 module Form = FormRe;
+
 module Input = InputRe;
+
+module Jumbotron = JumbotronRe;
+
 module Layout = LayoutRe;
 
 module Nav = NavRe;
