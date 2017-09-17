@@ -41,4 +41,4 @@ There is still quite a bit left to do, but someone could find some value in what
 * Get away from reason-scripts. While it works for now, I don't think it is the correct solution for a library.
 * Package for distrabution through NPM.
 * More examples to flex the functionality and demostrate how the items work.
-* Add a license.
+
