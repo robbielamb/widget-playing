@@ -1,73 +1,164 @@
 include Utils;
 
 module Color = {
-    type t =
-      | Primary
-      | Success
-      | Info
-      | Warning
-      | Danger;
-    let toString color =>
+  type t =
+    | Primary
+    | Secondary
+    | Success
+    | Info
+    | Warning
+    | Danger
+    | Light
+    | Dark;
+  let toString color =>
+    "alert-"
+    ^ (
       switch color {
       | Primary => "primary"
+      | Secondary => "secondary"
       | Success => "success"
       | Info => "info"
       | Warning => "warning"
       | Danger => "danger"
+      | Light => "light"
+      | Dark => "dark"
+      }
+    );
+};
+
+let onEnter _el _isAppearing => Js.log "onEnter";
+
+type action =
+  | Open
+  | Closing
+  | Closed;
+
+type state = {
+  currentAction: action,
+  timer: ref (option Js.Global.timeoutId)
+};
+
+type retianedProps = {isOpen: bool};
+
+let component = ReasonReact.reducerComponentWithRetainedProps "Alert";
+
+let make
+    className::(className: option string)=?
+    closeClassName::(closeClassName: option string)=?
+    color::(color: Color.t)=Color.Success
+    isOpen::(isOpen: bool)=true
+    toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
+    tag::(tag: string)="div"
+    closeAriaLabel::(closeAriaLabel: string)="Close"
+    cssModule::(cssModule: option (Js.t {..}))=?
+    children => {
+  ...component,
+  initialState: fun () => {currentAction: isOpen ? Open : Closed, timer: ref None},
+  retainedProps: ({isOpen: isOpen}: retianedProps),
+  didMount: fun _self => ReasonReact.NoUpdate,
+  willReceiveProps: fun self =>
+    if (self.state.currentAction === Open && isOpen === false) {
+      let timer = Js.Global.setTimeout (self.reduce (fun _ => Closed)) 250;
+      {currentAction: Closing, timer: ref (Some timer)}
+    } else {
+      self.state
+    },
+  willUnmount: fun self => {
+    self.state.timer := None;
+    ()
+  },
+  reducer: fun action state =>
+    switch action {
+    | Open => ReasonReact.Update {...state, currentAction: Open}
+    | Closing => ReasonReact.Update {...state, currentAction: Closing}
+    | Closed => ReasonReact.Update {...state, currentAction: Closed}
+    },
+  render: fun (self: ReasonReact.self state retianedProps action) => {
+    let closeClasses = ["close", unwrapStr i closeClassName] |> String.concat " ";
+    let toggleElement =
+      switch toggle {
+      | None => ReasonReact.nullElement
+      | Some cb =>
+        ReasonReact.createDomElement
+          "button"
+          props::{
+            "type": "button",
+            "className": closeClasses,
+            "onClick": cb,
+            "aria-label": closeAriaLabel
+          }
+          [|
+            ReasonReact.createDomElement
+              "span"
+              props::{"aria-hidden": "true"}
+              [|ReasonReact.stringToElement (Js.String.fromCharCode 215)|]
+          |]
       };
-  };
-  let onEnter _el _isAppearing => Js.log "onEnter";
-  let component = ReasonReact.statelessComponent "Alert";
+    let children = ArrayLabels.append [|toggleElement|] children;
+    let transitionClasses =
+      switch self.state.currentAction {
+      | Open => "fade show"
+      | Closing => "fade"
+      | Closed => ""
+      };
+    let classes =
+      ["alert", Color.toString color, transitionClasses, unwrapStr i className]
+      |> String.concat " ";
+    let alertElement = ReasonReact.createDomElement tag props::{"className": classes} children;
+    self.state.currentAction === Closed ? ReasonReact.nullElement : alertElement
+  }
+};
+
+module Auto = {
+  type state = bool;
+  type action =
+    | DoClose;
+  let component = ReasonReact.reducerComponent "Alert.Auto";
   let make
       className::(className: option string)=?
-      closeClassName::(closeClassName: option string)=?
       color::(color: Color.t)=Color.Success
-      isOpen::(isOpen: bool)=true
-      toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
       tag::(tag: string)="div"
       closeAriaLabel::(closeAriaLabel: string)="Close"
-      ::transitionAppearTimeout=150
-      ::transitionEnterTimeout=150
-      ::transitionLeaveTimeout=150
       cssModule::(cssModule: option (Js.t {..}))=?
       children => {
     ...component,
+    initialState: fun () => true,
+    reducer: fun action _state =>
+      switch action {
+      | DoClose => ReasonReact.Update false
+      },
+    render: fun self =>
+      ReasonReact.element (
+        make
+          ::?className
+          ::color
+          ::tag
+          ::closeAriaLabel
+          ::?cssModule
+          isOpen::self.state
+          toggle::(self.reduce (fun _ => DoClose))
+          children
+      )
+  };
+};
+
+module Link = {
+  /* TODO: Add more link */
+  let component = ReasonReact.statelessComponent "Alert.Link";
+  let make children => {
+    ...component,
+    render: fun _self =>
+      ReasonReact.createDomElement "a" props::{"className": "alert-link"} children
+  };
+};
+
+module Heading = {
+  let component = ReasonReact.statelessComponent "Alert.Header";
+  let make tag::(tag: string)="h4" className::(className: option string)=? children => {
+    ...component,
     render: fun _self => {
-      let closeClasses = classNameReduce closeClassName [cn "close"];
-      let (toggleElement, toggleEnabled) =
-        switch toggle {
-        | None => (ReasonReact.nullElement, false)
-        | Some cb => (
-            ReasonReact.createDomElement
-              "button"
-              props::{
-                "type": "button",
-                "className": closeClasses,
-                "onClick": cb,
-                "aria-label": closeAriaLabel
-              }
-              [|
-                ReasonReact.createDomElement
-                  "span"
-                  props::{"aria-hidden": "true"}
-                  [|ReasonReact.stringToElement (Js.String.fromCharCode 215)|]
-              |],
-            true
-          )
-        };
-      let _ = Js.Array.unshift toggleElement children;
-      let classes = classNameReduce className [cn "alert", cn ("alert-" ^ Color.toString color)];
-      let alert = ReasonReact.createDomElement tag props::{"className": classes} children;
-      let visible = isOpen ? alert : <span />;
-      /* visible */
-      let fade = "fade";
-      let show = "show";
-      visible
-      /* TODO: Make this work with an animation */
-      /* <Transition.Transition
-            onEnter=(onEnter)
-            timeout=500 _in=isOpen>
-           visible
-         </Transition.Transition> */
+      let classes = ["alert-heading", unwrapStr i className] |> String.concat " ";
+      ReasonReact.createDomElement tag props::{"className": classes} children
     }
   };
+};

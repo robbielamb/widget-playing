@@ -27,22 +27,15 @@ module AlertExample = {
     Js.log event;
     Toggle
   };
-  let component = ReasonReact.reducerComponent "AlertExample";
+  let component = ReasonReact.statelessComponent "AlertExample";
   let make ::message _children => {
     ...component,
-    initialState: fun () => true,
-    reducer: fun action state =>
-      switch action {
-      | Toggle =>
-        ReasonReact.UpdateWithSideEffects (not state) (fun _self => Js.log "Reducer called")
-      | _ => ReasonReact.SideEffects (fun _self => Js.log "Called again!")
-      },
     render: fun {state, reduce} =>
       <Example title="Alerts">
-        <Bootstrap.Alert color=Bootstrap.Alert.Color.Primary isOpen=state toggle=(reduce toggle)>
-          <strong> (ReasonReact.stringToElement "Success") </strong>
+        <Bootstrap.Alert.Auto color=Bootstrap.Alert.Color.Primary >
+          <Alert.Heading> (ReasonReact.stringToElement "Success") </Alert.Heading>
           <p> (ReasonReact.stringToElement message) </p>
-        </Bootstrap.Alert>
+        </Bootstrap.Alert.Auto>
       </Example>
   };
 };
