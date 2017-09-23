@@ -88,10 +88,14 @@ module Group = {
       | SM
       | LG;
     let toString size =>
-      switch size {
-      | SM => "sm"
-      | LG => "lg"
-      };
+      "btn-group"
+      ^ (
+        switch size {
+        | SM => "sm"
+        | LG => "lg"
+        }
+      );
+    let unwrap = Utils.unwrapStr toString;
   };
   let component = ReasonReact.statelessComponent "Button.Group";
   let make
@@ -101,14 +105,13 @@ module Group = {
       size::(size: option Size.t)=?
       vertical::(vertical: bool)=false
       children => {
-    let btnSize =
-      switch size {
-      | None => ocn ("n", false)
-      | Some size => cn ("btn-group" ^ Size.toString size)
-      };
-    let classes =
-      classNameReduce className [btnSize, cn (vertical ? "btn-group-vertical" : "btn-group")];
-    ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+    ...component,
+    render: fun _self => {
+      let classes =
+        [Size.unwrap size, vertical ? "btn-group-vertical" : "btn-group", unwrapStr i className]
+        |> String.concat " ";
+      ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+    }
   };
 };
 
@@ -119,7 +122,10 @@ module Toolbar = {
       className::(className: option string)=?
       role::(role: string)="toolbar"
       children => {
-    let classes = classNameReduce className [cn "btn-toolbar"];
-    ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+    ...component,
+    render: fun _self => {
+      let classes = ["btn-toolbar", unwrapStr i className] |> String.concat " ";
+      ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+    }
   };
 };
