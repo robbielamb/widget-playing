@@ -34,6 +34,12 @@ module Size = {
     };
 };
 
+let mapBool b =>
+  switch b {
+  | None => Js.Undefined.empty
+  | Some t => Js.Undefined.return (Js.Boolean.to_js_boolean t)
+  };
+
 let make
     tag::(tag: string)="button"
     active::(active: bool)=false
@@ -44,6 +50,8 @@ let make
     outline::(outline: bool)=false
     size::(size: option Size.t)=?
     onClick::(onClick: option (ReactEventRe.Mouse.t => unit))=?
+    ariaHaspopup::(ariaHaspopup: option bool)=?
+    ariaExpanded::(ariaExpanded: option bool)=?
     className::(className: option string)=?
     /* cssModule::(cssModule: option (Js.t {..}))=? */
     children => {
@@ -58,25 +66,32 @@ let make
           | Some cb => cb event
           }
         );
-    let btnColor = cn ("btn" ^ (outline ? "-outline" : "") ^ "-" ^ Color.toString color);
+    let btnColor = "btn" ^ (outline ? "-outline" : "") ^ "-" ^ Color.toString color;
     let btnSize =
       switch size {
-      | None => ocn ("n", false)
-      | Some size => cn ("btn-" ^ Size.toString size)
+      | None => ""
+      | Some size => "btn-" ^ Size.toString size
       };
     let classes =
-      classNameReduce
-        className
-        [
-          cn "btn",
-          btnColor,
-          btnSize,
-          ocn ("btn-block", block),
-          ocn ("active", active),
-          ocn ("disabled", disabled)
-        ];
+      [
+        "btn",
+        btnColor,
+        btnSize,
+        block ? "btn-block" : "",
+        active ? "active" : "",
+        disabled ? "disabled" : "",
+        unwrapStr i className
+      ]
+      |> String.concat " ";
     ReasonReact.createDomElement
-      tag props::{"className": classes, "onClick": self.handle click} children
+      tag
+      props::{
+        "className": classes,
+        "onClick": self.handle click,
+        "aria-haspopup": mapBool ariaHaspopup,
+        "aria-expanded": (mapBool ariaExpanded)
+      }
+      children
   }
 };
 

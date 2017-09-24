@@ -27,7 +27,7 @@ module BreadCrumb = BreadcrumbRe;
 
 module Button = ButtonRe;
 
-module DropDown = DropdownRe;
+module Dropdown = DropdownRe;
 
 module Fade = {
   /*   let component = ReasonReact.statelessComponent "Fade";

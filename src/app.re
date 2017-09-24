@@ -45,14 +45,22 @@ module CollapseExample = {
     | Toggle
     | Opened
     | Closed;
-  type state = {isOpen: bool, status: string};
+  type state = {
+    isOpen: bool,
+    status: string
+  };
   let component = ReasonReact.reducerComponent "CollapseExample";
   let make _children => {
     ...component,
     initialState: fun () => {isOpen: true, status: "Open"},
     reducer: fun action state =>
       switch action {
-      | Toggle => ReasonReact.Update {...state, isOpen: not state.isOpen, status: (not state.isOpen) ?  "Opening..." : "Collapsing..." }
+      | Toggle =>
+        ReasonReact.Update {
+          ...state,
+          isOpen: not state.isOpen,
+          status: not state.isOpen ? "Opening..." : "Collapsing..."
+        }
       | Opened => ReasonReact.Update {...state, status: "Open"}
       | Closed => ReasonReact.Update {...state, status: "Closed"}
       },
@@ -60,13 +68,53 @@ module CollapseExample = {
       <Example title="Collapse">
         <Button onClick=(reduce (fun _ => Toggle)) color=Button.Color.Primary>
           (se "Collapse")
-        </Button> <p> (se state.status) </p>
-        <Collapse isOpen=state.isOpen onOpened=(reduce (fun _ => Opened)) onClosed=(reduce (fun _ => Closed))>
+        </Button>
+        <p> (se state.status) </p>
+        <Collapse
+          isOpen=state.isOpen
+          onOpened=(reduce (fun _ => Opened))
+          onClosed=(reduce (fun _ => Closed))>
           <Card>
-          <Card.Header> (se "This is the card header") </Card.Header>
+            <Card.Header> (se "This is the card header") </Card.Header>
             <Card.Body> (se "THis is card and some more and some more and some more!") </Card.Body>
           </Card>
         </Collapse>
+      </Example>
+  };
+};
+
+let add x y => x + y;
+
+let add5 = add 5;
+
+module DropdownExample = {
+  type state = {isOpen: bool};
+  type actions =
+    | Toggle;
+  let component = ReasonReact.reducerComponent "DropdownExample";
+  let toggle (self: ReasonReact.self state ReasonReact.noRetainedProps actions) () => {
+    Js.log "toggling";
+    self.reduce (fun _ => Toggle) ()
+  };
+  let make _children => {
+    ...component,
+    initialState: fun () => {isOpen: false},
+    reducer: fun action state =>
+      switch action {
+      | Toggle => ReasonReact.Update {isOpen: not state.isOpen}
+      },
+    render: fun self =>
+      <Example title="Dropdowns">
+        <Dropdown isOpen=self.state.isOpen toggle=(toggle self)>
+          <Dropdown.Toggle isOpen=self.state.isOpen caret=true toggle=(toggle self)> (se "Dropdown! ") </Dropdown.Toggle>
+          <Dropdown.Menu isOpen=self.state.isOpen>
+            <Dropdown.Header> (se "Header") </Dropdown.Header>
+            <Dropdown.Item> (se "Another Action") </Dropdown.Item>
+            <Dropdown.Item> (se "Another Item") </Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item> (se "Last Item") </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
       </Example>
   };
 };
@@ -243,6 +291,7 @@ let make ::message _children => {
         <Button color=Button.Color.Link> (se "Link") </Button>
       </Example>
       <ModalExample />
+      <DropdownExample />
       <Example title="Progress Bars">
         <div className="text-center"> (se "0%") </div>
         <Progress />

@@ -6,44 +6,70 @@ module Size = ButtonRe.Size;
 
 type retainedProps = {isOpen: bool};
 
-let component = ReasonReact.statelessComponentWithRetainedProps "Dropdown";
+let component = ReasonReact.statelessComponent "Dropdown";
 
 let make
     tag::(tag: string)="div"
     disabled::(disabled: bool)=false
     group::(group: bool)=false
-    right::(right: bool)=false
     isOpen::(isOpen: bool)=false
+    toggle::(toggle: option (unit => unit))=?
     classname::(classname: option string)=?
     children => {
   ...component,
-  retainedProps: isOpen,
-  render:
-    fun (_self: ReasonReact.self ReasonReact.stateless retainedProps ReasonReact.actionless) => {
+  render: fun _self => {
     let classNames =
-      ["dropdown", isOpen ? "show" : "", unwrapStr i classname] |> String.concat " ";
+      [group ? "btn-group" : "dropdown", isOpen ? "show" : "", unwrapStr i classname]
+      |> String.concat " ";
     ReasonReact.createDomElement tag props::{"className": classNames} children
   }
 };
 
 module Toggle = {
-  let component = ReasonReact.statelessComponent "Dropdown.Toggle";
+  type retainedProps = {
+    nav: bool,
+    onClick: option (ReactEventRe.Mouse.t => unit),
+    toggle: unit => unit,
+    disabled: bool,
+    tag: option string
+  };
+  let handleOnClick
+      event
+      (self: ReasonReact.self ReasonReact.stateless retainedProps ReasonReact.actionless) => {
+    let props = self.retainedProps;
+    Js.log "onClicking";
+    props.disabled ?
+      ReactEventRe.Mouse.preventDefault event :
+      {
+        if (props.nav && props.tag === None) {
+          ReactEventRe.Mouse.preventDefault event
+        };
+        switch props.onClick {
+        | None => ()
+        | Some cb => cb event
+        };
+        let _ = props.toggle ();
+        ()
+      }
+  };
+  let component = ReasonReact.statelessComponentWithRetainedProps "Dropdown.Toggle";
   let make
       tag::(tag: option string)=?
       caret::(caret: bool)=false
       disabled::(disabled: bool)=false
       right::(right: bool)=false
-      isOpen::(isOpen: bool)=false
+      isOpen::(isOpen: bool)
       split::(split: bool)=false
       color::(color: Color.t)=Color.Secondary
       nav::(nav: bool)=false
       onClick::(onClick: option (ReactEventRe.Mouse.t => unit))=?
-      togggle::(toggle: option (unit => unit))=?
+      toggle::(toggle: unit => unit)
       classname::(classname: option string)=?
       children => {
     ...component,
-    retainedProps: isOpen,
-    render: fun _self => {
+    retainedProps: {onClick, disabled, tag, nav, toggle},
+    render:
+      fun (self: ReasonReact.self ReasonReact.stateless retainedProps ReasonReact.actionless) => {
       let classNames =
         [
           caret || split ? "dropdown-toggle" : "",
@@ -60,9 +86,16 @@ module Toggle = {
         };
       switch tag {
       | "button" =>
-        ReasonReact.element (ButtonRe.make ::color className::classNames ::?onClick ::disabled children)
+        ReasonReact.element (
+          ButtonRe.make
+            ::color className::classNames onClick::(self.handle handleOnClick) ::disabled 
+            ariaHaspopup::true ariaExpanded::(isOpen) children
+        )
       | _ =>
-        ReasonReact.createDomElement tag props::{"className": classNames, "href": "#"} children
+        ReasonReact.createDomElement
+          tag
+          props::{"className": classNames, "href": "#", "onClick": self.handle handleOnClick}
+          children
       }
     }
   };
@@ -80,7 +113,8 @@ module Menu = {
     ...component,
     render: fun _self => {
       let classNames =
-        ["dropdown-menu", right ? "dropdown-menu-right" : "", unwrapStr i classname]
+        ["dropdown-menu", right ? "dropdown-menu-right" : "", isOpen ? "show" : 
+        "", unwrapStr i classname]
         |> String.concat " ";
       ReasonReact.createDomElement
         tag
@@ -118,7 +152,7 @@ module Item = {
   let make
       disabled::(disabled: bool)=false
       toggle::(toggle: bool)=true
-      active::(active: bool)=true
+      active::(active: bool)=false
       onClick::(onClick: option (ReactEventRe.Mouse.t => unit))=?
       href::(href: option string)=?
       classname::(classname: option string)=?
