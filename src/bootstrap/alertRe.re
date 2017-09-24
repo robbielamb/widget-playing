@@ -26,7 +26,6 @@ module Color = {
     );
 };
 
-let onEnter _el _isAppearing => Js.log "onEnter";
 
 type action =
   | Open
@@ -38,7 +37,7 @@ type state = {
   timer: ref (option Js.Global.timeoutId)
 };
 
-type retianedProps = {isOpen: bool};
+type retainedProps = {isOpen: bool};
 
 let component = ReasonReact.reducerComponentWithRetainedProps "Alert";
 
@@ -54,7 +53,7 @@ let make
     children => {
   ...component,
   initialState: fun () => {currentAction: isOpen ? Open : Closed, timer: ref None},
-  retainedProps: ({isOpen: isOpen}: retianedProps),
+  retainedProps: ({isOpen: isOpen}: retainedProps),
   didMount: fun _self => ReasonReact.NoUpdate,
   willReceiveProps: fun self =>
     if (self.state.currentAction === Open && isOpen === false) {
@@ -73,7 +72,7 @@ let make
     | Closing => ReasonReact.Update {...state, currentAction: Closing}
     | Closed => ReasonReact.Update {...state, currentAction: Closed}
     },
-  render: fun (self: ReasonReact.self state retianedProps action) => {
+  render: fun (self: ReasonReact.self state retainedProps action) => {
     let closeClasses = ["close", unwrapStr i closeClassName] |> String.concat " ";
     let toggleElement =
       switch toggle {

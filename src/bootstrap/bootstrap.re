@@ -70,6 +70,8 @@ module Alert = AlertRe;
 
 module Card = CardRe;
 
+module Collapse = CollapseRe;
+
 module Form = FormRe;
 
 module Input = InputRe;

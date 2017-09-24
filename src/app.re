@@ -32,10 +32,41 @@ module AlertExample = {
     ...component,
     render: fun {state, reduce} =>
       <Example title="Alerts">
-        <Bootstrap.Alert.Auto color=Bootstrap.Alert.Color.Primary >
+        <Bootstrap.Alert.Auto color=Bootstrap.Alert.Color.Primary>
           <Alert.Heading> (ReasonReact.stringToElement "Success") </Alert.Heading>
           <p> (ReasonReact.stringToElement message) </p>
         </Bootstrap.Alert.Auto>
+      </Example>
+  };
+};
+
+module CollapseExample = {
+  type action =
+    | Toggle
+    | Opened
+    | Closed;
+  type state = {isOpen: bool, status: string};
+  let component = ReasonReact.reducerComponent "CollapseExample";
+  let make _children => {
+    ...component,
+    initialState: fun () => {isOpen: true, status: "Open"},
+    reducer: fun action state =>
+      switch action {
+      | Toggle => ReasonReact.Update {...state, isOpen: not state.isOpen, status: (not state.isOpen) ?  "Opening..." : "Collapsing..." }
+      | Opened => ReasonReact.Update {...state, status: "Open"}
+      | Closed => ReasonReact.Update {...state, status: "Closed"}
+      },
+    render: fun {state, reduce} =>
+      <Example title="Collapse">
+        <Button onClick=(reduce (fun _ => Toggle)) color=Button.Color.Primary>
+          (se "Collapse")
+        </Button> <p> (se state.status) </p>
+        <Collapse isOpen=state.isOpen onOpened=(reduce (fun _ => Opened)) onClosed=(reduce (fun _ => Closed))>
+          <Card>
+          <Card.Header> (se "This is the card header") </Card.Header>
+            <Card.Body> (se "THis is card and some more and some more and some more!") </Card.Body>
+          </Card>
+        </Collapse>
       </Example>
   };
 };
@@ -240,6 +271,7 @@ let make ::message _children => {
           (se "Animated")
         </Progress>
       </Example>
+      <CollapseExample />
       <Example title="Pagination">
         <Pagination size=Pagination.Size.Small>
           <Pagination.Item> <Pagination.Link previous=true href="#" /> </Pagination.Item>
