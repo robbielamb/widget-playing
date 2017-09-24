@@ -19,7 +19,7 @@ type actions =
   | BackgroundClick;
 
 type state = {
-  el: ref (option Dom.htmlElement),
+  el: ref (option Dom.element),
   isBodyOverflowing: bool
 };
 
@@ -55,7 +55,7 @@ let make
        modalTransitionAppearTimeout::(modalTransitionAppearTimeout: option int)=?
        modalTransitionEnterTimeout::(modalTransitionEnterTimeout: option int)=?
        modalTransitionLeaveTimeout::(modalTransitionLeaveTimeout: option int)=? */
-    _children => {
+    children => {
   ...component,
   retainedProps: {isOpen: isOpen},
   initialState: fun () => {el: ref None, isBodyOverflowing: false},
@@ -67,20 +67,20 @@ let make
         | Some cb => cb ()
         | None => ()
         };
-        let document = Bs_webapi.Dom.document;
-        let foo = document |> Bs_webapi.Dom.Document.createElement "div";
-        Bs_webapi.Dom.Element.setAttribute "tabIndex" "-1" foo;
-        /* Bs_webapi.Dom.CssStyleDeclaration.t; */
-        /* Bs_webapi; */
-        let foo = foo |> Bs_webapi.Dom.Element.asHtmlElement |> unwrapUnsafely;
-        let style = Bs_webapi.Dom.HtmlElement.style foo;
-        Bs_webapi.Dom.CssStyleDeclaration.setProperty "position" "relative" "" style;
-        Bs_webapi.Dom.CssStyleDeclaration.setProperty "zIndex" (string_of_int zIndex) "" style;
-        self.state.el := Some foo;
+        let document = Webapi.Dom.document;
+        let el = document |> Webapi.Dom.Document.createElement "div";
+        Webapi.Dom.Element.setAttribute "tabIndex" "-1" el;
+        /* Webapi.Dom.CssStyleDeclaration.t; */
+        /* Webapi; */
+        let style = el |> Webapi.Dom.Element.asHtmlElement |> unwrapUnsafely |> Webapi.Dom.HtmlElement.style;       
+        Webapi.Dom.CssStyleDeclaration.setProperty "position" "relative" "" style;
+        Webapi.Dom.CssStyleDeclaration.setProperty "zIndex" (string_of_int zIndex) "" style;
+     
+        self.state.el := Some el;
         let _ =
-          document |> Bs_webapi.Dom.Document.asHtmlDocument |>
-          andThen Bs_webapi.Dom.HtmlDocument.body |>
-          map (Bs_webapi.Dom.Element.appendChild foo);
+          document |> Webapi.Dom.Document.asHtmlDocument |>
+          andThen Webapi.Dom.HtmlDocument.body |>
+          map (Webapi.Dom.Element.appendChild el);
         ()
       }
     ),
@@ -92,20 +92,29 @@ let make
       Js.log "NoChange"
     },
   willUnmount: fun self => {
-    let document = Bs_webapi.Dom.document;
+    let document = Webapi.Dom.document;
     switch !self.state.el {
     | Some node =>
       let _ =
-        document |> Bs_webapi.Dom.Document.asHtmlDocument |>
-        andThen Bs_webapi.Dom.HtmlDocument.body |>
-        map (Bs_webapi.Dom.Element.removeChild node);
+        document |> Webapi.Dom.Document.asHtmlDocument |>
+        andThen Webapi.Dom.HtmlDocument.body |>
+        map (Webapi.Dom.Element.removeChild node);
       ()
     | None => ()
     }
   },
   reducer: fun _action state =>
     ReasonReact.Update {...state, isBodyOverflowing: not state.isBodyOverflowing},
-  render: fun self => <span onClick=(self.reduce (fun _self => BackgroundClick)) />
+  render: fun (_self: ReasonReact.self state retainedProps actions) => {
+    not isOpen ? ReasonReact.nullElement : {
+    let content = ReasonReact.createDomElement "div" props::{"className": "modal-content"} children;
+    let dialog = ReasonReact.createDomElement "div" props::{"className": "modal-dialog", "role": "document"} [|content|];
+
+    let classNames = ["modal fade", isOpen ? "show" : ""] |> String.concat " ";
+    let style = ReactDOMRe.Style.make display::(isOpen ? "block" : "none") ();
+    ReasonReact.createDomElement "div" props::{"className": classNames, "role": "dialog", "style":style, "tabIndex":"-1"} [|dialog|];
+    }
+  }
 };
 
 module Header = {
