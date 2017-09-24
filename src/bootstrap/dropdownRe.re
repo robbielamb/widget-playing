@@ -1,3 +1,5 @@
+/* TODO: Dropdown Size. Make the dropdown toggle when off the menu is clicked. */
+
 include Utils;
 
 module Color = ButtonRe.Color;
@@ -106,14 +108,14 @@ module Menu = {
   let component = ReasonReact.statelessComponent "Dropdown.Menu";
   let make
       tag::(tag: string)="div"
-      right::(right: bool)=false
+      alignRight::(alignRight: bool)=false
       isOpen::(isOpen: bool)
       classname::(classname: option string)=?
       children => {
     ...component,
     render: fun _self => {
       let classNames =
-        ["dropdown-menu", right ? "dropdown-menu-right" : "", isOpen ? "show" : 
+        ["dropdown-menu", alignRight ? "dropdown-menu-right" : "", isOpen ? "show" : 
         "", unwrapStr i classname]
         |> String.concat " ";
       ReasonReact.createDomElement

@@ -58,3 +58,5 @@ module Modal = ModalRe;
 module Pagination = PaginationRe;
 
 module Progress = ProgressRe;
+
+module Table = TableRe;

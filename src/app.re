@@ -105,11 +105,23 @@ module DropdownExample = {
       },
     render: fun self =>
       <Example title="Dropdowns">
-        <Dropdown isOpen=self.state.isOpen toggle=(toggle self)>
+    /*     <Dropdown isOpen=self.state.isOpen toggle=(toggle self)>
           <Dropdown.Toggle isOpen=self.state.isOpen caret=true toggle=(toggle self)> (se "Dropdown! ") </Dropdown.Toggle>
           <Dropdown.Menu isOpen=self.state.isOpen>
             <Dropdown.Header> (se "Header") </Dropdown.Header>
             <Dropdown.Item> (se "Another Action") </Dropdown.Item>
+            <Dropdown.Item> (se "Another Item") </Dropdown.Item>
+            <Dropdown.Divider />
+            <Dropdown.Item> (se "Last Item") </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown> */
+
+         <Dropdown isOpen=self.state.isOpen toggle=(toggle self)>
+          <Dropdown.Toggle isOpen=self.state.isOpen caret=true toggle=(toggle self)> (se "align right! ") </Dropdown.Toggle>
+          <Dropdown.Menu isOpen=self.state.isOpen alignRight=true>
+            <Dropdown.Header> (se "Header") </Dropdown.Header>
+            <Dropdown.Item> (se "Another Action") </Dropdown.Item>
+            <Dropdown.Item disabled=true> (se "Disabled Action") </Dropdown.Item> 
             <Dropdown.Item> (se "Another Item") </Dropdown.Item>
             <Dropdown.Divider />
             <Dropdown.Item> (se "Last Item") </Dropdown.Item>
@@ -255,6 +267,55 @@ module FormExample = {
   };
 };
 
+module TableExample = {
+  let component = ReasonReact.statelessComponent "TableExample";
+
+  let make _children => {
+    ...component,
+    render: fun _self => {
+      <Example title="Table example"> 
+        <Table bordered=true striped=true hover=true>
+          <thead>
+            <tr>
+              <th> (se "Col 1") </th>
+              <th> (se "Col 2") </th>
+              <th> (se "Col 3") </th>
+              <th> (se "Col 4") </th>
+            </tr>
+          </thead>
+
+          <tbody>
+          <tr>
+            <td> (se "Row 1, col 1") </td>
+            <td> (se "Row 1, col 2") </td>
+            <td> (se "Row 1, col 3") </td>
+            <td> (se "Row 1, col 4") </td>
+          </tr>
+          <tr>
+            <td> (se "Row 2, col 1") </td>
+            <td> (se "Row 2, col 2") </td>
+            <td> (se "Row 2, col 3") </td>
+            <td> (se "Row 2, col 4") </td>
+          </tr>
+          <tr>
+            <td> (se "Row 3, col 1") </td>
+            <td> (se "Row 3, col 2") </td>
+            <td> (se "Row 3, col 3") </td>
+            <td> (se "Row 3, col 4") </td>
+          </tr>
+          <tr>
+            <td> (se "Row 4, col 1") </td>
+            <td> (se "Row 4, col 2") </td>
+            <td> (se "Row 4, col 3") </td>
+            <td> (se "Row 4, col 4") </td>
+          </tr>
+          </tbody>
+        </Table>
+      </Example>
+    }
+  }; 
+}; 
+
 let component = ReasonReact.statelessComponent "App";
 
 let make ::message _children => {
@@ -365,5 +426,6 @@ let make ::message _children => {
         </Pagination>
       </Example>
       <FormExample />
+      <TableExample />
     </Layout.Container>
 };
