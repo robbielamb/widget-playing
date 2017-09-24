@@ -22,13 +22,11 @@ There is still quite a bit left to do, but someone could find some value in what
 * Make the Modal work properly
 * Add Animations where applicable
     * Modal
-    * Alerts
     * Fade
 * Add missing components
     * Dropdowns
     * Fade
     * Collapse
-    * Button Groups
     * Tabs
     * Tooltips
     * Tables
