@@ -24,12 +24,10 @@ There is still quite a bit left to do, but someone could find some value in what
     * Modal
     * Fade
 * Add missing components
-    * Dropdowns
+    * Dropdowns - Basics done. Still needs more work.
     * Fade
-    * Collapse
     * Tabs
     * Tooltips
-    * Tables
     * Popovers
     * Media
     * Input Groups

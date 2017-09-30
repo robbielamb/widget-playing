@@ -49,7 +49,7 @@ let make
     toggle::(toggle: option (ReactEventRe.Mouse.t => unit))=?
     tag::(tag: string)="div"
     closeAriaLabel::(closeAriaLabel: string)="Close"
-    cssModule::(cssModule: option (Js.t {..}))=?
+    /* cssModule::(cssModule: option (Js.t {..}))=? */
     children => {
   ...component,
   initialState: fun () => {currentAction: isOpen ? Open : Closed, timer: ref None},
@@ -118,7 +118,7 @@ module Auto = {
       color::(color: Color.t)=Color.Success
       tag::(tag: string)="div"
       closeAriaLabel::(closeAriaLabel: string)="Close"
-      cssModule::(cssModule: option (Js.t {..}))=?
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
       children => {
     ...component,
     initialState: fun () => true,
@@ -133,7 +133,7 @@ module Auto = {
           ::color
           ::tag
           ::closeAriaLabel
-          ::?cssModule
+         /*  ::?cssModule */
           isOpen::self.state
           toggle::(self.reduce (fun _ => DoClose))
           children
