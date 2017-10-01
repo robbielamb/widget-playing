@@ -1,7 +1,7 @@
 include Utils;
 
 /* This could have more option and classes applied! */
-let component = ReasonReact.statelessComponent "ModalFooter";
+let component = ReasonReact.statelessComponent "Nav";
 
 let make
     tabs::(tabs: bool)=false
@@ -15,16 +15,15 @@ let make
   ...component,
   render: fun _self => {
     let classes =
-      classNameReduce
-        className
-        [
-          ocn ("navbar-nav", navbar),
-          ocn ("nav", not navbar),
-          ocn ("nav-tabs", tabs),
-          ocn ("nav-pills", pills),
-          ocn ("nav-justified", justified),
-          ocn ("flex-column", vertical)
-        ];
+      [
+        navbar ? "navbar-nav" : "nav",
+        tabs ? "nav-tabs" : "",
+        pills ? "nav-pills" : "",
+        justified ? "nav-justified" : "",
+        vertical ? "flex-column" : "",
+        unwrapStr i className
+      ]
+      |> String.concat " ";
     ReasonReact.createDomElement tag props::{"className": classes} children
   }
 };
@@ -54,7 +53,7 @@ module Item = {
       /* cssModule::(cssModule: option (Js.t {..}))=? */ children => {
     ...component,
     render: fun _self => {
-      let classes = classNameReduce className [cn "nav-item"];
+      let classes = ["nav-item", unwrapStr i className] |> String.concat " ";
       ReasonReact.createDomElement tag props::{"className": classes} children
     }
   };
@@ -84,8 +83,8 @@ module Link = {
             }
           );
       let classes =
-        classNameReduce
-          className [cn "nav-link", ocn ("disabled", disabled), ocn ("active", active)];
+        ["nav-link", disabled ? "disabled" : "", active ? "active" : "", unwrapStr i className]
+        |> String.concat " ";
       ReasonReact.createDomElement
         tag
         props::{

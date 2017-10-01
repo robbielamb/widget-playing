@@ -55,34 +55,34 @@ let make
     children => {
   ...component,
   render: fun _self => {
-    let bgColor (cls: option 'a) =>
+    let bgColor (cls: option Color.t) =>
       switch cls {
-      | None => ocn ("", false)
-      | Some x => ocn ("bg-" ^ Color.toString x, true)
+      | None => ""
+      | Some x => "bg-" ^ Color.toString x
       };
-    let fixedClass (cls: option 'b) =>
+    let fixedClass (cls: option Fixed.t) =>
       switch cls {
-      | None => ocn ("", false)
-      | Some x => ocn ("fixed-" ^ Fixed.toString x, true)
+      | None => ""
+      | Some x => "fixed-" ^ Fixed.toString x
       };
-    let stickyClass (cls: option 'c) =>
+    let stickyClass (cls: option string) =>
       switch cls {
-      | None => ocn ("", false)
-      | Some x => ocn ("sticky-" ^ x, true)
+      | None => ""
+      | Some x => "sticky-" ^ x
       };
     let classes =
-      classNameReduce
-        className
-        [
-          cn "navbar",
-          ocn ("navbar-toggleable", toggleable),
-          ocn ("navbar-light", light),
-          ocn ("navbar-inverse", inverse),
-          ocn ("navbar-full", full),
-          bgColor color,
-          fixedClass fixed,
-          stickyClass sticky
-        ];
+      [
+        "navbar",
+        toggleable ? "navbar-toggleable" : "",
+        light ? "navbar-light" : "",
+        inverse ? "navbar-inverse" : "",
+        full ? "navbar-full" : "",
+        bgColor color,
+        fixedClass fixed,
+        stickyClass sticky,
+        unwrapStr i className
+      ]
+      |> String.concat " ";
     ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
   }
 };
@@ -97,7 +97,7 @@ module Brand = {
       children => {
     ...component,
     render: fun _self => {
-      let classes = classNameReduce className [cn "navbar-brand"];
+      let classes = ["navbar-brand", unwrapStr i className] |> String.concat " ";
       ReasonReact.createDomElement tag props::{"className": classes, "href": href} children
     }
   };
@@ -115,13 +115,13 @@ module Toggler = {
     ...component,
     render: fun _self => {
       let classes =
-        classNameReduce
-          className
-          [
-            cn "navbar-toggler",
-            ocn ("navbar-toggler-right", right),
-            ocn ("navbar-toggler-left", left)
-          ];
+        [
+          "navbar-toggler",
+          right ? "navbar-toggler-right" : "",
+          left ? "navbar-toggler-left" : "",
+          unwrapStr i className
+        ]
+        |> String.concat " ";
       ReasonReact.createDomElement tag props::{"type": _type, "className": classes} children
     }
   };

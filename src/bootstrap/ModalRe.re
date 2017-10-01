@@ -72,15 +72,16 @@ let make
         Webapi.Dom.Element.setAttribute "tabIndex" "-1" el;
         /* Webapi.Dom.CssStyleDeclaration.t; */
         /* Webapi; */
-        let style = el |> Webapi.Dom.Element.asHtmlElement |> unwrapUnsafely |> Webapi.Dom.HtmlElement.style;       
+        let style =
+          el |> Webapi.Dom.Element.asHtmlElement |> unwrapUnsafely |> Webapi.Dom.HtmlElement.style;
         Webapi.Dom.CssStyleDeclaration.setProperty "position" "relative" "" style;
         Webapi.Dom.CssStyleDeclaration.setProperty "zIndex" (string_of_int zIndex) "" style;
-     
         self.state.el := Some el;
         let _ =
-          document |> Webapi.Dom.Document.asHtmlDocument |>
-          andThen Webapi.Dom.HtmlDocument.body |>
-          map (Webapi.Dom.Element.appendChild el);
+          document
+          |> Webapi.Dom.Document.asHtmlDocument
+          |> andThen Webapi.Dom.HtmlDocument.body
+          |> map (Webapi.Dom.Element.appendChild el);
         ()
       }
     ),
@@ -96,25 +97,32 @@ let make
     switch !self.state.el {
     | Some node =>
       let _ =
-        document |> Webapi.Dom.Document.asHtmlDocument |>
-        andThen Webapi.Dom.HtmlDocument.body |>
-        map (Webapi.Dom.Element.removeChild node);
+        document
+        |> Webapi.Dom.Document.asHtmlDocument
+        |> andThen Webapi.Dom.HtmlDocument.body
+        |> map (Webapi.Dom.Element.removeChild node);
       ()
     | None => ()
     }
   },
   reducer: fun _action state =>
     ReasonReact.Update {...state, isBodyOverflowing: not state.isBodyOverflowing},
-  render: fun (_self: ReasonReact.self state retainedProps actions) => {
-    not isOpen ? ReasonReact.nullElement : {
-    let content = ReasonReact.createDomElement "div" props::{"className": "modal-content"} children;
-    let dialog = ReasonReact.createDomElement "div" props::{"className": "modal-dialog", "role": "document"} [|content|];
-
-    let classNames = ["modal fade", isOpen ? "show" : ""] |> String.concat " ";
-    let style = ReactDOMRe.Style.make display::(isOpen ? "block" : "none") ();
-    ReasonReact.createDomElement "div" props::{"className": classNames, "role": "dialog", "style":style, "tabIndex":"-1"} [|dialog|];
-    }
-  }
+  render: fun (_self: ReasonReact.self state retainedProps actions) =>
+    not isOpen ?
+      ReasonReact.nullElement :
+      {
+        let content =
+          ReasonReact.createDomElement "div" props::{"className": "modal-content"} children;
+        let dialog =
+          ReasonReact.createDomElement
+            "div" props::{"className": "modal-dialog", "role": "document"} [|content|];
+        let classNames = ["modal fade", isOpen ? "show" : ""] |> String.concat " ";
+        let style = ReactDOMRe.Style.make display::(isOpen ? "block" : "none") ();
+        ReasonReact.createDomElement
+          "div"
+          props::{"className": classNames, "role": "dialog", "style": style, "tabIndex": "-1"}
+          [|dialog|]
+      }
 };
 
 module Header = {
@@ -129,7 +137,7 @@ module Header = {
       children => {
     ...component,
     render: fun _self => {
-      let classes = classNameReduce className [cn "modal-header"];
+      let classes = ["modal-header", unwrapStr i className] |> String.concat " ";
       let closeButton =
         switch toggle {
         | None => ReasonReact.nullElement

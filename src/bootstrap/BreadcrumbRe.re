@@ -9,7 +9,7 @@ let make
     children => {
   ...component,
   render: fun _self => {
-    let classes = classNameReduce className [cn "breadcrumb"];
+    let classes = ["breadcrumb", unwrapStr i className] |> String.concat " ";
     ReasonReact.createDomElement tag props::{"className": classes} children
   }
 };
@@ -24,7 +24,8 @@ module Item = {
       children => {
     ...component,
     render: fun _self => {
-      let classes = classNameReduce className [cn "breadcrumb-item", ocn ("active", active)];
+      let classes =
+        ["breadcrumb-item", active ? "active" : "", unwrapStr i className] |> String.concat " ";
       ReasonReact.createDomElement tag props::{"className": classes} children
     }
   };

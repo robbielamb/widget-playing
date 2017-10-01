@@ -12,7 +12,7 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
-    "clean": "bsb -make-clean"
+    "clean": "bsb -clean"
   },
   "devDependencies": {
     "bs-jest": "^0.1.0",
