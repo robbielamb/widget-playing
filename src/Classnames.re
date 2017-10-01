@@ -1,11 +1,9 @@
 /* This is an awful way to do classnames. Don't use it.  */
-
 type t =
   | Classname string
   | Option (string, bool);
 
-type classnameList =
-  | List t;
+type classnameList = list t;
 
 let classFilter (cl: t) =>
   switch cl {

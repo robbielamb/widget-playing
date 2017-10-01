@@ -12,9 +12,7 @@ Some handy links
 
 ## Examples
 
-See `app.re` for an example of how to use this code.
-
-Run `yarn start` to compile and see the example page.
+Examples are at https://github.com/robbielamb/widget-playing-example
 
 ## Todo
 

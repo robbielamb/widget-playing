@@ -1,6 +1,6 @@
 type jsUnsafe;
 
-external toJsUnsafe : 'a => jsUnsafe = "%identity";
+/* external toJsUnsafe : 'a => jsUnsafe = "%identity";
 
 let unwrapValue =
   fun
@@ -11,7 +11,7 @@ let unwrapValue =
   | `Callback c => toJsUnsafe c
   | `Element e => toJsUnsafe e
   | `Object o => toJsUnsafe o
-  | `Enum _ => assert false;
+  | `Enum _ => assert false; */
 
 let optionMap fn option =>
   switch option {
