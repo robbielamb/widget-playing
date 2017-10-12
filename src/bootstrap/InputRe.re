@@ -39,6 +39,9 @@ let make
     disabled::(disabled: bool)=false
     multiple::(multiple: option bool)=?
     className::(className: option string)=?
+    onInput::(onInput: option (ReactEventRe.Keyboard.t => unit))=?
+    onChange::(onChange: option (ReactEventRe.Form.t => unit))=?
+    value::(value: option string)=?
     children => {
   ...component,
   render: fun _self => {
@@ -83,7 +86,10 @@ let make
       "type": typeAttribute,
       "placeholder": Js.Null_undefined.from_opt placeholder,
       "multiple": Js.Null_undefined.from_opt multiple,
-      "disabled": Js.Boolean.to_js_boolean disabled
+      "disabled": Js.Boolean.to_js_boolean disabled,
+      "onInput" : Js.Null_undefined.from_opt onInput,
+      "onChange": Js.Null_undefined.from_opt onChange,
+      "value": Js.Null_undefined.from_opt value
     };
     /* let myProps=      multiple ? {..myProps, "multiple": "multi"} : myProps; */
     ReasonReact.createDomElement tag props::myProps children
