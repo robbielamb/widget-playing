@@ -8,6 +8,8 @@
   "sources": [ 
     {
       "dir": "src",
+      /* "type": "lib",  */
+     "public": ["Bootstrap"],
       "subdirs": ["bootstrap"]
     }
   ],
@@ -18,5 +20,6 @@
   ],
   "reason": {
     "react-jsx": 2
-  }
+  },
+  "namespace": true
 }

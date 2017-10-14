@@ -182,7 +182,7 @@ module Item = {
         | (_, _) => None
         };
       let classes =
-        ["dropdown-item", active ? "active" : "", disabled ? "disabled" : ""] |> String.concat " ";
+        ["dropdown-item", active ? "active" : "", disabled ? "disabled" : "", unwrapStr i classname] |> String.concat " ";
       ReasonReact.createDomElement
         tag
         props::{

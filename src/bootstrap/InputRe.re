@@ -29,7 +29,7 @@ type inputType =
 let component = ReasonReact.statelessComponent "Input";
 
 let make
-    tag::(tag: string)="p"
+    tag::(tag: string)="input"
     id::(id: option string)=?
     name::(name: string)=""
     _type::(_type: inputType)=Text
@@ -56,7 +56,7 @@ let make
       switch _type {
       | TextArea => "textarea"
       | Select => "select"
-      | _ => "input"
+      | _ => tag
       };
     let typeAttribute =
       switch _type {
