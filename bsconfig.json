@@ -16,6 +16,8 @@
   "bs-dependencies": [
     "reason-react",
     "bs-webapi",
+  ],
+  "bs-dev-dependencies": [
     "bs-jest"
   ],
   "reason": {
