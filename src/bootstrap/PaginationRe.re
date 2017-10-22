@@ -38,8 +38,8 @@ module Item = {
     ...component,
     render: fun _self => {
       let className =
-        ["page-item", active ? "active" : "", disabled ? "disabled" : "", unwrapStr i className] |>
-        String.concat " ";
+        ["page-item", active ? "active" : "", disabled ? "disabled" : "", unwrapStr i className]
+        |> String.concat " ";
       ReasonReact.createDomElement tag props::{"className": className} children
     }
   };
@@ -54,6 +54,7 @@ module Link = {
       next::(next: bool)=false
       previous::(previous: bool)=false
       href::(href: string)=""
+      onClick::(onClick: option (ReactEventRe.Mouse.t => unit))=?
       className::(className: option string)=?
       children => {
     ...component,
@@ -85,7 +86,14 @@ module Link = {
       let wrappedChildren = previous || next ? wrapChildren children : children;
       let className = [unwrapStr i className, "page-link"] |> String.concat " ";
       ReasonReact.createDomElement
-        tag props::{"className": className, "aria-label": ariaLabel, "href": href} wrappedChildren
+        tag
+        props::{
+          "className": className,
+          "aria-label": ariaLabel,
+          "href": href,
+          "onClick": Js.Null_undefined.from_opt onClick
+        }
+        wrappedChildren
     }
   };
 };

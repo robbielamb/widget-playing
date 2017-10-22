@@ -56,16 +56,7 @@ let make
     /* cssModule::(cssModule: option (Js.t {..}))=? */
     children => {
   ...component,
-  render: fun self => {
-    let click event _self =>
-      disabled ?
-        ReactEventRe.Mouse.preventDefault event :
-        (
-          switch onClick {
-          | None => ()
-          | Some cb => cb event
-          }
-        );
+  render: fun _self => {
     let btnColor = "btn" ^ (outline ? "-outline" : "") ^ "-" ^ Color.toString color;
     let btnSize =
       switch size {
@@ -87,9 +78,9 @@ let make
       tag
       props::{
         "className": classes,
-        "onClick": self.handle click,
+        "onClick": Js.Null_undefined.from_opt onClick,
         "aria-haspopup": mapBool ariaHaspopup,
-        "aria-expanded": (mapBool ariaExpanded)
+        "aria-expanded": mapBool ariaExpanded
       }
       children
   }
