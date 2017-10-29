@@ -59,3 +59,5 @@ module Pagination = PaginationRe;
 module Progress = ProgressRe;
 
 module Table = TableRe;
+
+module Tab = TabRe;
