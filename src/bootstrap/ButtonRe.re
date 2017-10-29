@@ -1,6 +1,6 @@
 include Utils;
 
-let component = ReasonReact.statelessComponent "Button";
+let component = ReasonReact.statelessComponent("Button");
 
 module Color = {
   type t =
@@ -11,7 +11,7 @@ module Color = {
     | Warning
     | Danger
     | Link;
-  let toString color =>
+  let toString = (color) =>
     switch color {
     | Primary => "primary"
     | Secondary => "secondary"
@@ -27,41 +27,43 @@ module Size = {
   type t =
     | SM
     | LG;
-  let toString size =>
+  let toString = (size) =>
     switch size {
     | SM => "sm"
     | LG => "lg"
     };
 };
 
-let mapBool b =>
+let mapBool = (b) =>
   switch b {
   | None => Js.Undefined.empty
-  | Some t => Js.Undefined.return (Js.Boolean.to_js_boolean t)
+  | Some(t) => Js.Undefined.return(Js.Boolean.to_js_boolean(t))
   };
 
-let make
-    tag::(tag: string)="button"
-    active::(active: bool)=false
-    block::(block: bool)=false
-    color::(color: Color.t)=Color.Secondary
-    disabled::(disabled: bool)=false
-    getRef::(getRef: option [ | `String string | `Element ReasonReact.reactElement])=?
-    outline::(outline: bool)=false
-    size::(size: option Size.t)=?
-    onClick::(onClick: option (ReactEventRe.Mouse.t => unit))=?
-    ariaHaspopup::(ariaHaspopup: option bool)=?
-    ariaExpanded::(ariaExpanded: option bool)=?
-    className::(className: option string)=?
-    /* cssModule::(cssModule: option (Js.t {..}))=? */
-    children => {
+let make =
+    (
+      ~tag: string="button",
+      ~active: bool=false,
+      ~block: bool=false,
+      ~color: Color.t=Color.Secondary,
+      ~disabled: bool=false,
+      ~getRef: option([ | `String(string) | `Element(ReasonReact.reactElement)])=?,
+      ~outline: bool=false,
+      ~size: option(Size.t)=?,
+      ~onClick: option((ReactEventRe.Mouse.t => unit))=?,
+      ~ariaHaspopup: option(bool)=?,
+      ~ariaExpanded: option(bool)=?,
+      ~className: option(string)=?,
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
+      children
+    ) => {
   ...component,
-  render: fun _self => {
-    let btnColor = "btn" ^ (outline ? "-outline" : "") ^ "-" ^ Color.toString color;
+  render: (_self) => {
+    let btnColor = "btn" ++ ((outline ? "-outline" : "") ++ ("-" ++ Color.toString(color)));
     let btnSize =
       switch size {
       | None => ""
-      | Some size => "btn-" ^ Size.toString size
+      | Some(size) => "btn-" ++ Size.toString(size)
       };
     let classes =
       [
@@ -71,18 +73,19 @@ let make
         block ? "btn-block" : "",
         active ? "active" : "",
         disabled ? "disabled" : "",
-        unwrapStr i className
+        unwrapStr(i, className)
       ]
-      |> String.concat " ";
-    ReasonReact.createDomElement
-      tag
-      props::{
+      |> String.concat(" ");
+    ReasonReact.createDomElement(
+      tag,
+      ~props={
         "className": classes,
-        "onClick": Js.Null_undefined.from_opt onClick,
-        "aria-haspopup": mapBool ariaHaspopup,
-        "aria-expanded": mapBool ariaExpanded
-      }
+        "onClick": Js.Null_undefined.from_opt(onClick),
+        "aria-haspopup": mapBool(ariaHaspopup),
+        "aria-expanded": mapBool(ariaExpanded)
+      },
       children
+    )
   }
 };
 
@@ -94,45 +97,43 @@ module Group = {
     type t =
       | SM
       | LG;
-    let toString size =>
+    let toString = (size) =>
       "btn-group"
-      ^ (
+      ++ (
         switch size {
         | SM => "sm"
         | LG => "lg"
         }
       );
-    let unwrap = Utils.unwrapStr toString;
+    let unwrap = Utils.unwrapStr(toString);
   };
-  let component = ReasonReact.statelessComponent "Button.Group";
-  let make
-      tag::(tag: string)="div"
-      className::(className: option string)=?
-      role::(role: string)="group"
-      size::(size: option Size.t)=?
-      vertical::(vertical: bool)=false
-      children => {
+  let component = ReasonReact.statelessComponent("Button.Group");
+  let make =
+      (
+        ~tag: string="div",
+        ~className: option(string)=?,
+        ~role: string="group",
+        ~size: option(Size.t)=?,
+        ~vertical: bool=false,
+        children
+      ) => {
     ...component,
-    render: fun _self => {
+    render: (_self) => {
       let classes =
-        [Size.unwrap size, vertical ? "btn-group-vertical" : "btn-group", unwrapStr i className]
-        |> String.concat " ";
-      ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+        [Size.unwrap(size), vertical ? "btn-group-vertical" : "btn-group", unwrapStr(i, className)]
+        |> String.concat(" ");
+      ReasonReact.createDomElement(tag, ~props={"className": classes, "role": role}, children)
     }
   };
 };
 
 module Toolbar = {
-  let component = ReasonReact.statelessComponent "Button.Toolbar";
-  let make
-      tag::(tag: string)="div"
-      className::(className: option string)=?
-      role::(role: string)="toolbar"
-      children => {
+  let component = ReasonReact.statelessComponent("Button.Toolbar");
+  let make = (~tag: string="div", ~className: option(string)=?, ~role: string="toolbar", children) => {
     ...component,
-    render: fun _self => {
-      let classes = ["btn-toolbar", unwrapStr i className] |> String.concat " ";
-      ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+    render: (_self) => {
+      let classes = ["btn-toolbar", unwrapStr(i, className)] |> String.concat(" ");
+      ReasonReact.createDomElement(tag, ~props={"className": classes, "role": role}, children)
     }
   };
 };

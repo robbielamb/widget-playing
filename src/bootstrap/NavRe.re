@@ -1,19 +1,21 @@
 include Utils;
 
 /* This could have more option and classes applied! */
-let component = ReasonReact.statelessComponent "Nav";
+let component = ReasonReact.statelessComponent("Nav");
 
-let make
-    tabs::(tabs: bool)=false
-    pills::(pills: bool)=false
-    vertical::(vertical: bool)=false
-    justified::(justified: bool)=false
-    navbar::(navbar: bool)=false
-    tag::(tag: string)="ul"
-    className::(className: option string)=?
-    /* cssModule::(cssModule: option (Js.t {..}))=? */ children => {
+let make =
+    (
+      ~tabs: bool=false,
+      ~pills: bool=false,
+      ~vertical: bool=false,
+      ~justified: bool=false,
+      ~navbar: bool=false,
+      ~tag: string="ul",
+      ~className: option(string)=?,
+      /* cssModule::(cssModule: option (Js.t {..}))=? */ children
+    ) => {
   ...component,
-  render: fun _self => {
+  render: (_self) => {
     let classes =
       [
         navbar ? "navbar-nav" : "nav",
@@ -21,10 +23,10 @@ let make
         pills ? "nav-pills" : "",
         justified ? "nav-justified" : "",
         vertical ? "flex-column" : "",
-        unwrapStr i className
+        unwrapStr(i, className)
       ]
-      |> String.concat " ";
-    ReasonReact.createDomElement tag props::{"className": classes} children
+      |> String.concat(" ");
+    ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
   }
 };
 
@@ -46,53 +48,58 @@ let make
          children;
    }; */
 module Item = {
-  let component = ReasonReact.statelessComponent "Nav.Item";
-  let make
-      tag::(tag: string)="li"
-      className::(className: option string)=?
-      /* cssModule::(cssModule: option (Js.t {..}))=? */ children => {
+  let component = ReasonReact.statelessComponent("Nav.Item");
+  let make =
+      (
+        ~tag: string="li",
+        ~className: option(string)=?,
+        /* cssModule::(cssModule: option (Js.t {..}))=? */ children
+      ) => {
     ...component,
-    render: fun _self => {
-      let classes = ["nav-item", unwrapStr i className] |> String.concat " ";
-      ReasonReact.createDomElement tag props::{"className": classes} children
+    render: (_self) => {
+      let classes = ["nav-item", unwrapStr(i, className)] |> String.concat(" ");
+      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
     }
   };
 };
 
 module Link = {
-  let component = ReasonReact.statelessComponent "Nav.Link";
-  let make
-      tag::(tag: string)="a"
-      getRef::(getRef: option [ | `String string | `Element ReasonReact.reactElement])=?
-      disabled::(disabled: bool)=false
-      active::(active: bool)=false
-      className::(className: option string)=?
-      onClick::(onClick: option (ReactEventRe.Mouse.t => unit))=?
-      href::(href: option string)=?
-      /* cssModule::(cssModule: option (Js.t {..}))=? */
-      children => {
+  let component = ReasonReact.statelessComponent("Nav.Link");
+  let make =
+      (
+        ~tag: string="a",
+        ~getRef: option([ | `String(string) | `Element(ReasonReact.reactElement)])=?,
+        ~disabled: bool=false,
+        ~active: bool=false,
+        ~className: option(string)=?,
+        ~onClick: option((ReactEventRe.Mouse.t => unit))=?,
+        ~href: option(string)=?,
+        /* cssModule::(cssModule: option (Js.t {..}))=? */
+        children
+      ) => {
     ...component,
-    render: fun self => {
-      let click event _self =>
+    render: (self) => {
+      let click = (event, _self) =>
         disabled ?
-          ReactEventRe.Mouse.preventDefault event :
+          ReactEventRe.Mouse.preventDefault(event) :
           (
             switch onClick {
             | None => ()
-            | Some cb => cb event
+            | Some(cb) => cb(event)
             }
           );
       let classes =
-        ["nav-link", disabled ? "disabled" : "", active ? "active" : "", unwrapStr i className]
-        |> String.concat " ";
-      ReasonReact.createDomElement
-        tag
-        props::{
+        ["nav-link", disabled ? "disabled" : "", active ? "active" : "", unwrapStr(i, className)]
+        |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={
           "className": classes,
-          "onClick": self.handle click,
-          "href": Js.Null_undefined.from_opt href
-        }
+          "onClick": self.handle(click),
+          "href": Js.Null_undefined.from_opt(href)
+        },
         children
+      )
     }
   };
 };

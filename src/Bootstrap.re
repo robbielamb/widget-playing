@@ -2,20 +2,19 @@ type jsUnsafe;
 
 /* external toJsUnsafe : 'a => jsUnsafe = "%identity";
 
-let unwrapValue =
-  fun
-  | `String s => toJsUnsafe s
-  | `Bool b => toJsUnsafe (Js.Boolean.to_js_boolean b)
-  | `Float f => toJsUnsafe f
-  | `Date d => toJsUnsafe d
-  | `Callback c => toJsUnsafe c
-  | `Element e => toJsUnsafe e
-  | `Object o => toJsUnsafe o
-  | `Enum _ => assert false; */
-
-let optionMap fn option =>
+   let unwrapValue =
+     fun
+     | `String s => toJsUnsafe s
+     | `Bool b => toJsUnsafe (Js.Boolean.to_js_boolean b)
+     | `Float f => toJsUnsafe f
+     | `Date d => toJsUnsafe d
+     | `Callback c => toJsUnsafe c
+     | `Element e => toJsUnsafe e
+     | `Object o => toJsUnsafe o
+     | `Enum _ => assert false; */
+let optionMap = (fn, option) =>
   switch option {
-  | Some value => Some (fn value)
+  | Some(value) => Some(fn(value))
   | None => None
   };
 

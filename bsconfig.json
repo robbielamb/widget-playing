@@ -15,7 +15,7 @@
   ],
   "bs-dependencies": [
     "reason-react",
-    "bs-webapi",
+    "bs-webapi"
   ],
   "bs-dev-dependencies": [
     "bs-jest"
@@ -23,5 +23,6 @@
   "reason": {
     "react-jsx": 2
   },
+  "refmt": 3,
   "namespace": true
 }

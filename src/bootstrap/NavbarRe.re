@@ -12,7 +12,7 @@ module Color = {
     | Dark
     | White
     | Transparent;
-  let toString color =>
+  let toString = (color) =>
     switch color {
     | Primary => "primary"
     | Secondary => "secondary"
@@ -31,44 +31,46 @@ module Fixed = {
   type t =
     | Top
     | Bottom;
-  let toString fixed =>
+  let toString = (fixed) =>
     switch fixed {
     | Top => "top"
     | Bottom => "bottom"
     };
 };
 
-let component = ReasonReact.statelessComponent "NavBar";
+let component = ReasonReact.statelessComponent("NavBar");
 
-let make
-    light::(light: bool)=false
-    inverse::(inverse: bool)=false
-    full::(full: bool)=false
-    fixed::(fixed: option Fixed.t)=?
-    sticky::(sticky: option string)=?
-    color::(color: option Color.t)=?
-    role::(role: option string)=?
-    tag::(tag: string)="nav"
-    className::(className: option string)=?
-    /* cssModule::(cssModule: option (Js.t {..}))=? */
-    toggleable::(toggleable: bool)=false
-    children => {
+let make =
+    (
+      ~light: bool=false,
+      ~inverse: bool=false,
+      ~full: bool=false,
+      ~fixed: option(Fixed.t)=?,
+      ~sticky: option(string)=?,
+      ~color: option(Color.t)=?,
+      ~role: option(string)=?,
+      ~tag: string="nav",
+      ~className: option(string)=?,
+      /* cssModule::(cssModule: option (Js.t {..}))=? */
+      ~toggleable: bool=false,
+      children
+    ) => {
   ...component,
-  render: fun _self => {
-    let bgColor (cls: option Color.t) =>
+  render: (_self) => {
+    let bgColor = (cls: option(Color.t)) =>
       switch cls {
       | None => ""
-      | Some x => "bg-" ^ Color.toString x
+      | Some(x) => "bg-" ++ Color.toString(x)
       };
-    let fixedClass (cls: option Fixed.t) =>
+    let fixedClass = (cls: option(Fixed.t)) =>
       switch cls {
       | None => ""
-      | Some x => "fixed-" ^ Fixed.toString x
+      | Some(x) => "fixed-" ++ Fixed.toString(x)
       };
-    let stickyClass (cls: option string) =>
+    let stickyClass = (cls: option(string)) =>
       switch cls {
       | None => ""
-      | Some x => "sticky-" ^ x
+      | Some(x) => "sticky-" ++ x
       };
     let classes =
       [
@@ -77,52 +79,56 @@ let make
         light ? "navbar-light" : "",
         inverse ? "navbar-inverse" : "",
         full ? "navbar-full" : "",
-        bgColor color,
-        fixedClass fixed,
-        stickyClass sticky,
-        unwrapStr i className
+        bgColor(color),
+        fixedClass(fixed),
+        stickyClass(sticky),
+        unwrapStr(i, className)
       ]
-      |> String.concat " ";
-    ReasonReact.createDomElement tag props::{"className": classes, "role": role} children
+      |> String.concat(" ");
+    ReasonReact.createDomElement(tag, ~props={"className": classes, "role": role}, children)
   }
 };
 
 module Brand = {
-  let component = ReasonReact.statelessComponent "Navbar.Brand";
-  let make
-      tag::(tag: string)="a"
-      className::(className: option string)=?
-      /* cssModule::(cssModule: option (Js.t {..}))=? */
-      href::(href: string)="#"
-      children => {
+  let component = ReasonReact.statelessComponent("Navbar.Brand");
+  let make =
+      (
+        ~tag: string="a",
+        ~className: option(string)=?,
+        /* cssModule::(cssModule: option (Js.t {..}))=? */
+        ~href: string="#",
+        children
+      ) => {
     ...component,
-    render: fun _self => {
-      let classes = ["navbar-brand", unwrapStr i className] |> String.concat " ";
-      ReasonReact.createDomElement tag props::{"className": classes, "href": href} children
+    render: (_self) => {
+      let classes = ["navbar-brand", unwrapStr(i, className)] |> String.concat(" ");
+      ReasonReact.createDomElement(tag, ~props={"className": classes, "href": href}, children)
     }
   };
 };
 
 module Toggler = {
-  let component = ReasonReact.statelessComponent "Navbar.Toggler";
-  let make
-      tag::(tag: string)="button"
-      _type::(_type: string)="button"
-      className::(className: option string)=?
-      right::(right: bool)=false
-      left::(left: bool)=false
-      children => {
+  let component = ReasonReact.statelessComponent("Navbar.Toggler");
+  let make =
+      (
+        ~tag: string="button",
+        ~_type: string="button",
+        ~className: option(string)=?,
+        ~right: bool=false,
+        ~left: bool=false,
+        children
+      ) => {
     ...component,
-    render: fun _self => {
+    render: (_self) => {
       let classes =
         [
           "navbar-toggler",
           right ? "navbar-toggler-right" : "",
           left ? "navbar-toggler-left" : "",
-          unwrapStr i className
+          unwrapStr(i, className)
         ]
-        |> String.concat " ";
-      ReasonReact.createDomElement tag props::{"type": _type, "className": classes} children
+        |> String.concat(" ");
+      ReasonReact.createDomElement(tag, ~props={"type": _type, "className": classes}, children)
     }
   };
 };
