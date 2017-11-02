@@ -5,14 +5,15 @@
   "private": true,
   "dependencies": {
     "bs-webapi": "^0.7.0",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
+    "react": "^15.6.2",
+    "react-dom": "^15.6.2",
     "react-transition-group": "^2.2.1"
   },
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
-    "clean": "bsb -clean"
+    "clean": "bsb -clean",
+    "prepair": "npm link bs-platform"
   },
   "devDependencies": {
     "bs-jest": "^0.1.0",

@@ -24,7 +24,6 @@ There is still quite a bit left to do, but someone could find some value in what
 * Add missing components
     * Dropdowns - Basics done. Still needs more work.
     * Fade
-    * Tabs
     * Tooltips
     * Popovers
     * Media
