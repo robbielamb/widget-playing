@@ -1,31 +1,6 @@
 include Utils;
+include Colors;
 
-module Color = {
-  type t =
-    | Primary
-    | Secondary
-    | Success
-    | Info
-    | Warning
-    | Danger
-    | Light
-    | Dark
-    | White
-    | Transparent;
-  let toString = (color) =>
-    switch color {
-    | Primary => "primary"
-    | Secondary => "secondary"
-    | Success => "success"
-    | Info => "info"
-    | Warning => "warning"
-    | Danger => "danger"
-    | Light => "light"
-    | Dark => "dark"
-    | White => "white"
-    | Transparent => "transparent"
-    };
-};
 
 module Fixed = {
   type t =
@@ -47,7 +22,7 @@ let make =
       ~full: bool=false,
       ~fixed: option(Fixed.t)=?,
       ~sticky: option(string)=?,
-      ~color: option(Color.t)=?,
+      ~color: option(BackgroundColor.t)=?,
       ~role: option(string)=?,
       ~tag: string="nav",
       ~className: option(string)=?,
@@ -56,12 +31,7 @@ let make =
       children
     ) => {
   ...component,
-  render: (_self) => {
-    let bgColor = (cls: option(Color.t)) =>
-      switch cls {
-      | None => ""
-      | Some(x) => "bg-" ++ Color.toString(x)
-      };
+  render: (_self) => { 
     let fixedClass = (cls: option(Fixed.t)) =>
       switch cls {
       | None => ""
@@ -79,7 +49,7 @@ let make =
         light ? "navbar-light" : "",
         inverse ? "navbar-inverse" : "",
         full ? "navbar-full" : "",
-        bgColor(color),
+        unwrapStr(BackgroundColor.toString,color),
         fixedClass(fixed),
         stickyClass(sticky),
         unwrapStr(i, className)
