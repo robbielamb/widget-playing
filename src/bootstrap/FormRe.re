@@ -1,7 +1,5 @@
 include Utils;
 
-include Colors;
-
 let component = ReasonReact.statelessComponent("Form");
 
 let make = (~tag: string="form", ~inline: bool=false, ~className: option(string)=?, children) => {
@@ -68,14 +66,14 @@ module Text = {
       (
         ~tag: string="small",
         ~inline: bool=false,
-        ~color: TextColor.t=TextColor.Muted,
+        ~color: Colors.Text.t=Colors.Text.Muted,
         ~className: option(string)=?,
         children
       ) => {
     ...component,
     render: (_self) => {
       let classes =
-        [unwrapStr(i, className), ! inline ? "form-text" : "", TextColor.toString(color)]
+        [unwrapStr(i, className), ! inline ? "form-text" : "", Colors.Text.toString(color)]
         |> String.concat(" ");
       ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
     }

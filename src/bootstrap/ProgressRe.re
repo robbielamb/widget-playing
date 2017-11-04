@@ -1,7 +1,5 @@
 include Utils;
 
-module BackgroundColor = Colors.BackgroundColor;
-
 let component = ReasonReact.statelessComponent("Progress");
 
 let make =
@@ -13,7 +11,7 @@ let make =
       ~max: float=100.0,
       ~animated: bool=false,
       ~striped: bool=false,
-      ~color: option(BackgroundColor.t)=?,
+      ~color: option(Colors.Background.t)=?,
       ~className: option(string)=?,
       /* barClassName::(barClassName: option string)=? */
       children
@@ -26,7 +24,7 @@ let make =
       [
         "progress-bar",
         animated ? "progress-bar-animated" : "",
-        BackgroundColor.unWrap(color),
+        Colors.Background.unWrap(color),
         animated || striped ? "progress-bar-striped" : "",
         unwrapStr(i, className)
       ]

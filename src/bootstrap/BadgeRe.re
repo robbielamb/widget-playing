@@ -1,33 +1,10 @@
 include Utils;
 
-module Color = {
-  type t =
-    | Primary
-    | Secondary
-    | Success
-    | Info
-    | Warning
-    | Danger
-    | Dark
-    | Light;
-  let toString = (color) =>
-    switch color {
-    | Primary => "primary"
-    | Secondary => "secondary"
-    | Success => "success"
-    | Info => "info"
-    | Warning => "warning"
-    | Danger => "danger"
-    | Dark => "dark"
-    | Light => "light"
-    };
-};
-
 let component = ReasonReact.statelessComponent("Badge");
 
 let make =
     (
-      ~color: Color.t=Color.Secondary,
+      ~color: Colors.Color.t=Colors.Color.Secondary,
       ~pill: bool=false,
       ~secondary: bool=false,
       ~tag: string="div",
@@ -43,7 +20,7 @@ let make =
       | None => tag
       | Some(_) => tag == "div" ? "a" : tag
       };
-    let badgeColor = "badge-" ++ Color.toString(color);
+    let badgeColor = "badge-" ++ Colors.Color.toString(color);
     let classes =
       [
         "badge",

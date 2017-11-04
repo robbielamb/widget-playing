@@ -1,31 +1,5 @@
 include Utils;
 
-module Color = {
-  type t =
-    | Primary
-    | Secondary
-    | Success
-    | Info
-    | Warning
-    | Danger
-    | Light
-    | Dark;
-  let toString = (color) =>
-    "alert-"
-    ++ (
-      switch color {
-      | Primary => "primary"
-      | Secondary => "secondary"
-      | Success => "success"
-      | Info => "info"
-      | Warning => "warning"
-      | Danger => "danger"
-      | Light => "light"
-      | Dark => "dark"
-      }
-    );
-};
-
 type action =
   | Open
   | Closing
@@ -44,7 +18,7 @@ let make =
     (
       ~className: option(string)=?,
       ~closeClassName: option(string)=?,
-      ~color: Color.t=Color.Success,
+      ~color: Colors.Color.t=Colors.Color.Success,
       ~isOpen: bool=true,
       ~toggle: option((ReactEventRe.Mouse.t => unit))=?,
       ~tag: string="div",
@@ -104,7 +78,12 @@ let make =
       | Closed => ""
       };
     let classes =
-      ["alert", Color.toString(color), transitionClasses, unwrapStr(i, className)]
+      [
+        "alert",
+        "alert" ++ Colors.Color.toString(color),
+        transitionClasses,
+        unwrapStr(i, className)
+      ]
       |> String.concat(" ");
     let alertElement = ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
     self.state.currentAction === Closed ? ReasonReact.nullElement : alertElement
@@ -119,7 +98,7 @@ module Auto = {
   let make =
       (
         ~className: option(string)=?,
-        ~color: Color.t=Color.Success,
+        ~color: Colors.Color.t=Colors.Color.Success,
         ~tag: string="div",
         ~closeAriaLabel: string="Close",
         /* cssModule::(cssModule: option (Js.t {..}))=? */

@@ -1,4 +1,28 @@
-module TextColor = {
+module Color = {
+  type t =
+    | Primary
+    | Secondary
+    | Success
+    | Info
+    | Warning
+    | Danger
+    | Light
+    | Dark;
+  let toString = (color) =>
+    switch color {
+    | Primary => "primary"
+    | Secondary => "secondary"
+    | Success => "success"
+    | Info => "info"
+    | Warning => "warning"
+    | Danger => "danger"
+    | Light => "light"
+    | Dark => "dark"
+    };
+  let unWrap = Utils.unwrapStr(toString);
+};
+
+module Text = {
   type t =
     | White
     | Dark
@@ -29,7 +53,7 @@ module TextColor = {
   let unWrap = Utils.unwrapStr(toString);
 };
 
-module BackgroundColor = {
+module Background = {
   type t =
     | Primary
     | Secondary
@@ -60,7 +84,7 @@ module BackgroundColor = {
   let unWrap = Utils.unwrapStr(toString);
 };
 
-module BorderColor = {
+module Border = {
   type t =
     | Primary
     | Secondary

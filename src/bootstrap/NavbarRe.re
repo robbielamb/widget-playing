@@ -1,6 +1,4 @@
 include Utils;
-include Colors;
-
 
 module Fixed = {
   type t =
@@ -22,7 +20,7 @@ let make =
       ~full: bool=false,
       ~fixed: option(Fixed.t)=?,
       ~sticky: option(string)=?,
-      ~color: option(BackgroundColor.t)=?,
+      ~color: option(Colors.Background.t)=?,
       ~role: option(string)=?,
       ~tag: string="nav",
       ~className: option(string)=?,
@@ -31,7 +29,7 @@ let make =
       children
     ) => {
   ...component,
-  render: (_self) => { 
+  render: (_self) => {
     let fixedClass = (cls: option(Fixed.t)) =>
       switch cls {
       | None => ""
@@ -49,7 +47,7 @@ let make =
         light ? "navbar-light" : "",
         inverse ? "navbar-inverse" : "",
         full ? "navbar-full" : "",
-        unwrapStr(BackgroundColor.toString,color),
+        unwrapStr(Colors.Background.toString, color),
         fixedClass(fixed),
         stickyClass(sticky),
         unwrapStr(i, className)

@@ -1,7 +1,5 @@
 include Utils;
 
-include Colors;
-
 module Size = {
   type t =
     | None
@@ -120,7 +118,7 @@ module Label = {
         ~inline: bool=false,
         ~disabled: bool=false,
         ~size: option(Size.t)=?,
-        ~color: option(TextColor.t)=?,
+        ~color: option(Colors.Text.t)=?,
         ~xs: option(shape)=Some(shape()),
         ~sm: option(shape)=?,
         ~md: option(shape)=?,
@@ -146,7 +144,7 @@ module Label = {
           },
           containsColClasses ? "col-form-label" : "",
           ! check && ! containsColClasses ? "form-control-label" : "",
-          TextColor.unWrap(color)
+          Colors.Text.unWrap(color)
         ]
         |> List.append(colClasses)
         |> String.concat(" ");

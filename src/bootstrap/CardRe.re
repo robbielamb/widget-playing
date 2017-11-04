@@ -1,16 +1,14 @@
 include Utils;
 
-include Colors;
-
 let component = ReasonReact.statelessComponent("Card");
 
 let make =
     (
       ~tag: string="div",
       ~className: option(string)=?,
-      ~color: option(TextColor.t)=?,
-      ~backgroundColor: option(BackgroundColor.t)=?,
-      ~borderColor: option(BorderColor.t)=?,
+      ~color: option(Colors.Text.t)=?,
+      ~backgroundColor: option(Colors.Background.t)=?,
+      ~borderColor: option(Colors.Border.t)=?,
       children
     ) => {
   ...component,
@@ -19,9 +17,9 @@ let make =
       [
         "card",
         unwrapStr(i, className),
-        TextColor.unWrap(color),
-        BackgroundColor.unWrap(backgroundColor),
-        BorderColor.unWrap(borderColor)
+        Colors.Text.unWrap(color),
+        Colors.Background.unWrap(backgroundColor),
+        Colors.Border.unWrap(borderColor)
       ]
       |> String.concat(" ");
     ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
