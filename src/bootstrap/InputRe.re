@@ -40,6 +40,7 @@ let make =
       ~className: option(string)=?,
       ~onInput: option((ReactEventRe.Keyboard.t => unit))=?,
       ~onChange: option((ReactEventRe.Form.t => unit))=?,
+      ~checked: option(bool)=?,
       ~value: option(string)=?,
       children
     ) => {
@@ -89,6 +90,7 @@ let make =
       "disabled": Js.Boolean.to_js_boolean(disabled),
       "onInput": Js.Null_undefined.from_opt(onInput),
       "onChange": Js.Null_undefined.from_opt(onChange),
+      "checked": Js.Null_undefined.from_opt(checked),
       "value": Js.Null_undefined.from_opt(value)
     };
     /* let myProps=      multiple ? {..myProps, "multiple": "multi"} : myProps; */
