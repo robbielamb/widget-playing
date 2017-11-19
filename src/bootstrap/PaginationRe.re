@@ -98,7 +98,7 @@ module Link = {
           "className": className,
           "aria-label": ariaLabel,
           "href": href,
-          "onClick": Js.Null_undefined.from_opt(onClick)
+          "onClick": Js.Nullable.from_opt(onClick)
         },
         wrappedChildren
       )

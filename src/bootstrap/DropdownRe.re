@@ -213,8 +213,8 @@ module Item = {
           "className": classes,
           "tabIndex": tabIndex,
           "onClick": self.handle(click),
-          "type": Js.Null_undefined.from_opt(_type),
-          "href": Js.Null_undefined.from_opt(href)
+          "type": Js.Nullable.from_opt(_type),
+          "href": Js.Nullable.from_opt(href)
         },
         children
       )

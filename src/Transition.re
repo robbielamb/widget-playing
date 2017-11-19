@@ -35,15 +35,15 @@ module Transition = {
         "appear": Js.Boolean.to_js_boolean(appear),
         "enter": Js.Boolean.to_js_boolean(enter),
         "exit": Js.Boolean.to_js_boolean(exit),
-        "timeout": Js.Null_undefined.from_opt(timeout),
-        "addEndListener": Js.Null_undefined.from_opt(addEndListener),
-        "onEnter": Js.Null_undefined.from_opt(onEnter),
-        "onEntering": Js.Null_undefined.from_opt(onEntering),
-        "onEntered": Js.Null_undefined.from_opt(onEntered),
-        "onExit": Js.Null_undefined.from_opt(onExit),
-        "onExiting": Js.Null_undefined.from_opt(onExiting),
-        "onExited": Js.Null_undefined.from_opt(onExited),
-        "className": Js.Null_undefined.from_opt(className)
+        "timeout": Js.Nullable.from_opt(timeout),
+        "addEndListener": Js.Nullable.from_opt(addEndListener),
+        "onEnter": Js.Nullable.from_opt(onEnter),
+        "onEntering": Js.Nullable.from_opt(onEntering),
+        "onEntered": Js.Nullable.from_opt(onEntered),
+        "onExit": Js.Nullable.from_opt(onExit),
+        "onExiting": Js.Nullable.from_opt(onExiting),
+        "onExited": Js.Nullable.from_opt(onExited),
+        "className": Js.Nullable.from_opt(className)
       },
       children
     );
@@ -66,10 +66,10 @@ module TransitionGroup = {
       ~reactClass=transitionGroup,
       ~props={
         "component": component,
-        "appear": Js.Undefined.from_opt(optionMap(Js.Boolean.to_js_boolean, appear)),
-        "enter": Js.Undefined.from_opt(optionMap(Js.Boolean.to_js_boolean, enter)),
-        "exit": Js.Undefined.from_opt(optionMap(Js.Boolean.to_js_boolean, exit)),
-        "childFactory": Js.Undefined.from_opt(childFactory)
+        "appear": Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, appear)),
+        "enter": Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, enter)),
+        "exit": Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, exit)),
+        "childFactory": Js.Nullable.from_opt(childFactory)
       },
       children
     );
@@ -80,12 +80,12 @@ module CSSTransition = {
     "CSSTransition";
   type classNames = {
     .
-    "appear": Js.null_undefined(string),
-    "appearActive": Js.null_undefined(string),
-    "enter": Js.null_undefined(string),
-    "enterActive": Js.null_undefined(string),
-    "exit": Js.null_undefined(string),
-    "exitActive": Js.null_undefined(string)
+    "appear": Js.nullable(string),
+    "appearActive": Js.nullable(string),
+    "enter": Js.nullable(string),
+    "enterActive": Js.nullable(string),
+    "exit": Js.nullable(string),
+    "exitActive": Js.nullable(string)
   };
   let classNames =
       (
@@ -98,12 +98,12 @@ module CSSTransition = {
         ()
       )
       : classNames => {
-    "appear": Js.Null_undefined.from_opt(appear),
-    "appearActive": Js.Null_undefined.from_opt(appearActive),
-    "enter": Js.Null_undefined.from_opt(enter),
-    "enterActive": Js.Null_undefined.from_opt(enterActive),
-    "exit": Js.Null_undefined.from_opt(exit),
-    "exitActive": Js.Null_undefined.from_opt(exitActive)
+    "appear": Js.Nullable.from_opt(appear),
+    "appearActive": Js.Nullable.from_opt(appearActive),
+    "enter": Js.Nullable.from_opt(enter),
+    "enterActive": Js.Nullable.from_opt(enterActive),
+    "exit": Js.Nullable.from_opt(exit),
+    "exitActive": Js.Nullable.from_opt(exitActive)
   };
   let make =
       (
@@ -134,16 +134,16 @@ module CSSTransition = {
         "appear": Js.Boolean.to_js_boolean(appear),
         "enter": Js.Boolean.to_js_boolean(enter),
         "exit": Js.Boolean.to_js_boolean(exit),
-        "timeout": Js.Null_undefined.from_opt(timeout),
-        "addEndListener": Js.Null_undefined.from_opt(addEndListener),
-        "classNames": Js.Null_undefined.from_opt(classNames),
-        "onEnter": Js.Null_undefined.from_opt(onEnter),
-        "onEntering": Js.Null_undefined.from_opt(onEntering),
-        "onEntered": Js.Null_undefined.from_opt(onEntered),
-        "onExit": Js.Null_undefined.from_opt(onExit),
-        "onExiting": Js.Null_undefined.from_opt(onExiting),
-        "onExited": Js.Null_undefined.from_opt(onExited),
-        "className": Js.Null_undefined.from_opt(className)
+        "timeout": Js.Nullable.from_opt(timeout),
+        "addEndListener": Js.Nullable.from_opt(addEndListener),
+        "classNames": Js.Nullable.from_opt(classNames),
+        "onEnter": Js.Nullable.from_opt(onEnter),
+        "onEntering": Js.Nullable.from_opt(onEntering),
+        "onEntered": Js.Nullable.from_opt(onEntered),
+        "onExit": Js.Nullable.from_opt(onExit),
+        "onExiting": Js.Nullable.from_opt(onExiting),
+        "onExited": Js.Nullable.from_opt(onExited),
+        "className": Js.Nullable.from_opt(className)
       },
       children
     );

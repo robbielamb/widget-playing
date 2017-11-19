@@ -36,8 +36,8 @@ module Size = {
 
 let mapBool = (b) =>
   switch b {
-  | None => Js.Undefined.empty
-  | Some(t) => Js.Undefined.return(Js.Boolean.to_js_boolean(t))
+  | None => Js.Nullable.null
+  | Some(t) => Js.Nullable.return(Js.Boolean.to_js_boolean(t))
   };
 
 let make =
@@ -80,7 +80,7 @@ let make =
       tag,
       ~props={
         "className": classes,
-        "onClick": Js.Null_undefined.from_opt(onClick),
+        "onClick": Js.Nullable.from_opt(onClick),
         "aria-haspopup": mapBool(ariaHaspopup),
         "aria-expanded": mapBool(ariaExpanded)
       },

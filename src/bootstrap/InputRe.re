@@ -82,16 +82,16 @@ let make =
       [unwrapStr(i, className), Size.toString(size), formControlClass] |> String.concat(" ");
     let myProps: Js.t({..}) = {
       "className": className,
-      "id": Js.Null_undefined.from_opt(id),
+      "id": Js.Nullable.from_opt(id),
       "name": name,
       "type": typeAttribute,
-      "placeholder": Js.Null_undefined.from_opt(placeholder),
-      "multiple": Js.Null_undefined.from_opt(multiple),
+      "placeholder": Js.Nullable.from_opt(placeholder),
+      "multiple": Js.Nullable.from_opt(multiple),
       "disabled": Js.Boolean.to_js_boolean(disabled),
-      "onInput": Js.Null_undefined.from_opt(onInput),
-      "onChange": Js.Null_undefined.from_opt(onChange),
-      "checked": Js.Null_undefined.from_opt(checked),
-      "value": Js.Null_undefined.from_opt(value)
+      "onInput": Js.Nullable.from_opt(onInput),
+      "onChange": Js.Nullable.from_opt(onChange),
+      "checked": Js.Nullable.from_opt(checked),
+      "value": Js.Nullable.from_opt(value)
     };
     /* let myProps=      multiple ? {..myProps, "multiple": "multi"} : myProps; */
     ReasonReact.createDomElement(tag, ~props=myProps, children)
@@ -152,7 +152,7 @@ module Label = {
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
-        ~props={"className": classes, "htmlFor": Js.Null_undefined.from_opt(_for)},
+        ~props={"className": classes, "htmlFor": Js.Nullable.from_opt(_for)},
         children
       )
     }
