@@ -120,7 +120,7 @@ module Label = {
         ~inline: bool=false,
         ~disabled: bool=false,
         ~size: option(Size.t)=?,
-        ~color: option(Colors.Text.t)=?,
+        ~color: option(ColorsRe.Text.t)=?,
         ~xs: option(shape)=Some(shape()),
         ~sm: option(shape)=?,
         ~md: option(shape)=?,
@@ -146,7 +146,7 @@ module Label = {
           },
           containsColClasses ? "col-form-label" : "",
           ! check && ! containsColClasses ? "form-control-label" : "",
-          Colors.Text.unWrap(color)
+          ColorsRe.Text.unWrap(color)
         ]
         |> List.append(colClasses)
         |> String.concat(" ");

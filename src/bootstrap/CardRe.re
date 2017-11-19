@@ -6,9 +6,9 @@ let make =
     (
       ~tag: string="div",
       ~className: option(string)=?,
-      ~color: option(Colors.Text.t)=?,
-      ~backgroundColor: option(Colors.Background.t)=?,
-      ~borderColor: option(Colors.Border.t)=?,
+      ~color: option(ColorsRe.Text.t)=?,
+      ~backgroundColor: option(ColorsRe.Background.t)=?,
+      ~borderColor: option(ColorsRe.Border.t)=?,
       children
     ) => {
   ...component,
@@ -17,9 +17,9 @@ let make =
       [
         "card",
         unwrapStr(i, className),
-        Colors.Text.unWrap(color),
-        Colors.Background.unWrap(backgroundColor),
-        Colors.Border.unWrap(borderColor)
+        ColorsRe.Text.unWrap(color),
+        ColorsRe.Background.unWrap(backgroundColor),
+        ColorsRe.Border.unWrap(borderColor)
       ]
       |> String.concat(" ");
     ReasonReact.createDomElement(tag, ~props={"className": classes}, children)

@@ -4,7 +4,7 @@ let component = ReasonReact.statelessComponent("Badge");
 
 let make =
     (
-      ~color: Colors.Color.t=Colors.Color.Secondary,
+      ~color: ColorsRe.Color.t=ColorsRe.Color.Secondary,
       ~pill: bool=false,
       ~secondary: bool=false,
       ~tag: string="div",
@@ -20,7 +20,7 @@ let make =
       | None => tag
       | Some(_) => tag == "div" ? "a" : tag
       };
-    let badgeColor = "badge-" ++ Colors.Color.toString(color);
+    let badgeColor = "badge-" ++ ColorsRe.Color.toString(color);
     let classes =
       [
         "badge",
@@ -32,7 +32,7 @@ let make =
       |> String.concat(" ");
     ReasonReact.createDomElement(
       tag,
-      ~props={"className": classes, "href": Js.Null_undefined.from_opt(href)},
+      ~props={"className": classes, "href": Js.Nullable.from_opt(href)},
       children
     )
   }

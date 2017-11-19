@@ -20,7 +20,7 @@ let make =
       ~full: bool=false,
       ~fixed: option(Fixed.t)=?,
       ~sticky: option(string)=?,
-      ~color: option(Colors.Background.t)=?,
+      ~color: option(ColorsRe.Background.t)=?,
       ~role: option(string)=?,
       ~tag: string="nav",
       ~className: option(string)=?,
@@ -47,7 +47,7 @@ let make =
         light ? "navbar-light" : "",
         inverse ? "navbar-inverse" : "",
         full ? "navbar-full" : "",
-        unwrapStr(Colors.Background.toString, color),
+        unwrapStr(ColorsRe.Background.toString, color),
         fixedClass(fixed),
         stickyClass(sticky),
         unwrapStr(i, className)

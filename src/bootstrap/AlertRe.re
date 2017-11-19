@@ -1,4 +1,5 @@
 include Utils;
+include ColorsRe;
 
 type action =
   | Open
@@ -18,7 +19,7 @@ let make =
     (
       ~className: option(string)=?,
       ~closeClassName: option(string)=?,
-      ~color: Colors.Color.t=Colors.Color.Success,
+      ~color: Color.t=Color.Success,
       ~isOpen: bool=true,
       ~toggle: option((ReactEventRe.Mouse.t => unit))=?,
       ~tag: string="div",
@@ -80,7 +81,7 @@ let make =
     let classes =
       [
         "alert",
-        "alert" ++ Colors.Color.toString(color),
+        "alert" ++ Color.toString(color),
         transitionClasses,
         unwrapStr(i, className)
       ]
@@ -98,7 +99,7 @@ module Auto = {
   let make =
       (
         ~className: option(string)=?,
-        ~color: Colors.Color.t=Colors.Color.Success,
+        ~color: Color.t=Color.Success,
         ~tag: string="div",
         ~closeAriaLabel: string="Close",
         /* cssModule::(cssModule: option (Js.t {..}))=? */

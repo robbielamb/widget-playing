@@ -26,6 +26,8 @@ module BreadCrumb = BreadcrumbRe;
 
 module Button = ButtonRe;
 
+module Colors = ColorsRe;
+
 module Dropdown = DropdownRe;
 
 module Fade = {

@@ -30,15 +30,15 @@ let component = ReasonReact.reducerComponentWithRetainedProps("Modal");
 let make =
     (
       ~isOpen: bool=false,
-      ~autoFocus: bool=true,
+/*       ~autoFocus: bool=true,
       ~size: option(string)=?,
       ~toggle: option((ReactEventRe.Mouse.t => unit))=?,
       ~keyboard: bool=true,
       ~role: string="dialog",
       ~labelledBy: option(string)=?,
-      ~backdrop: bool=true,
+      ~backdrop: bool=true, */
       ~onEnter: option((unit => unit))=?,
-      ~onExit: option((unit => unit))=?,
+/*       ~onExit: option((unit => unit))=?,
       ~onOpened: option((unit => unit))=?,
       ~onClosed: option((unit => unit))=?,
       ~className: option(string)=?,
@@ -46,7 +46,7 @@ let make =
       ~modalClassName: option(string)=?,
       ~backdropClassName: option(string)=?,
       ~contentClassName: option(string)=?,
-      ~fade: bool=true,
+      ~fade: bool=true, */
       ~zIndex: int=1050,
       /* backdropTransitionTimeout::(backdropTransitionTimeout: option int)=?
          backdropTransitionAppearTimeout::(backdropTransitionAppearTimeout: option int)=?

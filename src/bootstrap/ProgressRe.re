@@ -11,7 +11,7 @@ let make =
       ~max: float=100.0,
       ~animated: bool=false,
       ~striped: bool=false,
-      ~color: option(Colors.Background.t)=?,
+      ~color: option(ColorsRe.Background.t)=?,
       ~className: option(string)=?,
       /* barClassName::(barClassName: option string)=? */
       children
@@ -24,7 +24,7 @@ let make =
       [
         "progress-bar",
         animated ? "progress-bar-animated" : "",
-        Colors.Background.unWrap(color),
+        ColorsRe.Background.unWrap(color),
         animated || striped ? "progress-bar-striped" : "",
         unwrapStr(i, className)
       ]

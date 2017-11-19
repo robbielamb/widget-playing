@@ -66,14 +66,14 @@ module Text = {
       (
         ~tag: string="small",
         ~inline: bool=false,
-        ~color: Colors.Text.t=Colors.Text.Muted,
+        ~color: ColorsRe.Text.t=ColorsRe.Text.Muted,
         ~className: option(string)=?,
         children
       ) => {
     ...component,
     render: (_self) => {
       let classes =
-        [unwrapStr(i, className), ! inline ? "form-text" : "", Colors.Text.toString(color)]
+        [unwrapStr(i, className), ! inline ? "form-text" : "", ColorsRe.Text.toString(color)]
         |> String.concat(" ");
       ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
     }
