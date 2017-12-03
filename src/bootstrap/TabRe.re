@@ -1,8 +1,8 @@
 include Utils;
 
-type panelType('a) = {
-  id: 'a,
-  func: bool => ReasonReact.reactElement
+type tab('a) = {
+  tabId: 'a,
+  x: bool => ReasonReact.reactElement
 };
 
 module Content = {
@@ -12,12 +12,12 @@ module Content = {
         ~tag: string="div",
         ~className: option(string)=?,
         ~active: 'a,
-        children: array(panelType('a))
+        children: array(tab('a))
       ) => {
     ...component,
     render: (_self) => {
       let classes = ["tab-content", unwrapStr(i, className)] |> String.concat(" ");
-      let newChildren = Array.map((pane) => pane.func(pane.id == active), children);
+      let newChildren = Array.map((pane) => pane.x(pane.tabId == active), children);
       ReasonReact.createDomElement(tag, ~props={"className": classes}, newChildren)
     }
   };
@@ -36,8 +36,8 @@ module PaneComponent = {
 };
 
 module Pane = {
-  let create = (~id: 'a, ~tag: string="div", ~className: option(string)=?, children) => {
-    id,
-    func: (active: bool) => <PaneComponent tag active ?className> children </PaneComponent>
+  let create = (~tabId: 'a, ~tag: string="div", ~className: option(string)=?, children) => {
+    tabId,
+    x: (active: bool) => <PaneComponent tag active ?className> children </PaneComponent>
   };
 };

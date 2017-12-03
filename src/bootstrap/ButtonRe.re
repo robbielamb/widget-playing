@@ -47,14 +47,12 @@ let make =
       ~block: bool=false,
       ~color: Color.t=Color.Secondary,
       ~disabled: bool=false,
-      ~getRef: option([ | `String(string) | `Element(ReasonReact.reactElement)])=?,
       ~outline: bool=false,
       ~size: option(Size.t)=?,
       ~onClick: option((ReactEventRe.Mouse.t => unit))=?,
       ~ariaHaspopup: option(bool)=?,
       ~ariaExpanded: option(bool)=?,
       ~className: option(string)=?,
-      /* cssModule::(cssModule: option (Js.t {..}))=? */
       children
     ) => {
   ...component,

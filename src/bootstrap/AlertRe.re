@@ -1,4 +1,5 @@
 include Utils;
+
 include ColorsRe;
 
 type action =
@@ -79,12 +80,7 @@ let make =
       | Closed => ""
       };
     let classes =
-      [
-        "alert",
-        "alert" ++ Color.toString(color),
-        transitionClasses,
-        unwrapStr(i, className)
-      ]
+      ["alert", "alert-" ++ Color.toString(color), transitionClasses, unwrapStr(i, className)]
       |> String.concat(" ");
     let alertElement = ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
     self.state.currentAction === Closed ? ReasonReact.nullElement : alertElement
