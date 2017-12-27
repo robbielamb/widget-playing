@@ -43,7 +43,9 @@ let component = ReasonReact.reducerComponentWithRetainedProps("Collapse");
 let make =
     (
       ~isOpen: bool=true,
+      ~onOpening: option((unit => unit))=?,
       ~onOpened: option((unit => unit))=?,
+      ~onClosing: option((unit => unit))=?,
       ~onClosed: option((unit => unit))=?,
       ~tag: string="div",
       ~className: option(string)=?,
@@ -105,19 +107,19 @@ let make =
     | StartClosing =>
       ReasonReact.UpdateWithSideEffects(
         {...state, height: ref(Some(getHeight(state.element^))), currentState: Closing},
-        (({state, reduce}) => state.timer := setTimer(reduce, Closing, 0))
+        (({reduce}) =>  reduce((() => Closing), ()))
       )
     | Closing =>
       ReasonReact.UpdateWithSideEffects(
         {...state, height: ref(Some("0"))},
-        (({state, reduce}) => state.timer := setTimer(reduce, Closed, 350))
+        (({state, reduce}) => {maybeCall(onClosing); state.timer := setTimer(reduce, Closed, 350)})
       )
     | StartOpening =>
       ReasonReact.UpdateWithSideEffects(
         {...state, height: ref(Some(getHeight(state.element^))), currentState: Opening},
-        (({state, reduce}) => state.timer := setTimer(reduce, Opened, 350))
+        (({reduce}) => reduce((() => Opening), ()))
       )
-    | Opening => ReasonReact.SideEffects(((_self) => Js.log("Unused state.")))
+    | Opening => ReasonReact.SideEffects((({reduce}) => {maybeCall(onOpening); state.timer := setTimer(reduce, Opened, 350)}))
     }
   },
   render: (self: ReasonReact.self(state, retainedProps, action)) => {

@@ -13,10 +13,10 @@
   "scripts": {
     "build": "bsb -make-world",
     "start": "bsb -make-world -w",
-    "clean": "bsb -clean",
-    "prepare": "npm link bs-platform"
+    "clean": "bsb -clean"
   },
   "devDependencies": {
-    "bs-jest": "^0.1.0"
+    "bs-jest": "^0.1.0",
+    "bs-platform": "^2.1.0"
   }
 }

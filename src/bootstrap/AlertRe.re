@@ -26,6 +26,7 @@ let make =
       ~tag: string="div",
       ~closeAriaLabel: string="Close",
       /* cssModule::(cssModule: option (Js.t {..}))=? */
+      ~onClosed: option((unit => unit))=?,
       children
     ) => {
   ...component,
@@ -47,7 +48,17 @@ let make =
     switch action {
     | Open => ReasonReact.Update({...state, currentAction: Open})
     | Closing => ReasonReact.Update({...state, currentAction: Closing})
-    | Closed => ReasonReact.Update({...state, currentAction: Closed})
+    | Closed =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, currentAction: Closed},
+        (
+          (_self) =>
+            switch onClosed {
+            | None => ()
+            | Some(cb) => cb()
+            }
+        )
+      )
     },
   render: (self: ReasonReact.self(state, retainedProps, action)) => {
     let closeClasses = ["close", unwrapStr(i, closeClassName)] |> String.concat(" ");
@@ -98,6 +109,7 @@ module Auto = {
         ~color: Color.t=Color.Success,
         ~tag: string="div",
         ~closeAriaLabel: string="Close",
+        ~onClosed: option((unit => unit))=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
         children
       ) => {
@@ -117,6 +129,7 @@ module Auto = {
           /*  ::?cssModule */
           ~isOpen=self.state,
           ~toggle=self.reduce((_) => DoClose),
+          ~onClosed?,
           children
         )
       )
