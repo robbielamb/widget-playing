@@ -14,9 +14,9 @@ let make =
       children
     ) => {
   ...component,
-  render: (_self) => {
+  render: _self => {
     let tag =
-      switch href {
+      switch (href) {
       | None => tag
       | Some(_) => tag == "div" ? "a" : tag
       };
@@ -34,6 +34,6 @@ let make =
       tag,
       ~props={"className": classes, "href": Js.Nullable.from_opt(href)},
       children
-    )
+    );
   }
 };

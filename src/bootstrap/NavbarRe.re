@@ -4,8 +4,8 @@ module Fixed = {
   type t =
     | Top
     | Bottom;
-  let toString = (fixed) =>
-    switch fixed {
+  let toString = fixed =>
+    switch (fixed) {
     | Top => "top"
     | Bottom => "bottom"
     };
@@ -29,14 +29,14 @@ let make =
       children
     ) => {
   ...component,
-  render: (_self) => {
+  render: _self => {
     let fixedClass = (cls: option(Fixed.t)) =>
-      switch cls {
+      switch (cls) {
       | None => ""
       | Some(x) => "fixed-" ++ Fixed.toString(x)
       };
     let stickyClass = (cls: option(string)) =>
-      switch cls {
+      switch (cls) {
       | None => ""
       | Some(x) => "sticky-" ++ x
       };
@@ -53,7 +53,11 @@ let make =
         unwrapStr(i, className)
       ]
       |> String.concat(" ");
-    ReasonReact.createDomElement(tag, ~props={"className": classes, "role": role}, children)
+    ReasonReact.createDomElement(
+      tag,
+      ~props={"className": classes, "role": role},
+      children
+    );
   }
 };
 
@@ -68,9 +72,14 @@ module Brand = {
         children
       ) => {
     ...component,
-    render: (_self) => {
-      let classes = ["navbar-brand", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes, "href": href}, children)
+    render: _self => {
+      let classes =
+        ["navbar-brand", unwrapStr(i, className)] |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes, "href": href},
+        children
+      );
     }
   };
 };
@@ -87,7 +96,7 @@ module Toggler = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classes =
         [
           "navbar-toggler",
@@ -96,7 +105,11 @@ module Toggler = {
           unwrapStr(i, className)
         ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"type": _type, "className": classes}, children)
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"type": _type, "className": classes},
+        children
+      );
     }
   };
 };

@@ -11,8 +11,8 @@ module Color = {
     | Warning
     | Danger
     | Link;
-  let toString = (color) =>
-    switch color {
+  let toString = color =>
+    switch (color) {
     | Primary => "primary"
     | Secondary => "secondary"
     | Success => "success"
@@ -27,15 +27,15 @@ module Size = {
   type t =
     | SM
     | LG;
-  let toString = (size) =>
-    switch size {
+  let toString = size =>
+    switch (size) {
     | SM => "sm"
     | LG => "lg"
     };
 };
 
-let mapBool = (b) =>
-  switch b {
+let mapBool = b =>
+  switch (b) {
   | None => Js.Nullable.null
   | Some(t) => Js.Nullable.return(Js.Boolean.to_js_boolean(t))
   };
@@ -49,17 +49,18 @@ let make =
       ~disabled: bool=false,
       ~outline: bool=false,
       ~size: option(Size.t)=?,
-      ~onClick: option((ReactEventRe.Mouse.t => unit))=?,
+      ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
       ~ariaHaspopup: option(bool)=?,
       ~ariaExpanded: option(bool)=?,
       ~className: option(string)=?,
       children
     ) => {
   ...component,
-  render: (_self) => {
-    let btnColor = "btn" ++ ((outline ? "-outline" : "") ++ ("-" ++ Color.toString(color)));
+  render: _self => {
+    let btnColor =
+      "btn" ++ (outline ? "-outline" : "") ++ "-" ++ Color.toString(color);
     let btnSize =
-      switch size {
+      switch (size) {
       | None => ""
       | Some(size) => "btn-" ++ Size.toString(size)
       };
@@ -83,7 +84,7 @@ let make =
         "aria-expanded": mapBool(ariaExpanded)
       },
       children
-    )
+    );
   }
 };
 
@@ -95,10 +96,10 @@ module Group = {
     type t =
       | SM
       | LG;
-    let toString = (size) =>
+    let toString = size =>
       "btn-group"
       ++ (
-        switch size {
+        switch (size) {
         | SM => "sm"
         | LG => "lg"
         }
@@ -116,22 +117,41 @@ module Group = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classes =
-        [Size.unwrap(size), vertical ? "btn-group-vertical" : "btn-group", unwrapStr(i, className)]
+        [
+          Size.unwrap(size),
+          vertical ? "btn-group-vertical" : "btn-group",
+          unwrapStr(i, className)
+        ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes, "role": role}, children)
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes, "role": role},
+        children
+      );
     }
   };
 };
 
 module Toolbar = {
   let component = ReasonReact.statelessComponent("Button.Toolbar");
-  let make = (~tag: string="div", ~className: option(string)=?, ~role: string="toolbar", children) => {
+  let make =
+      (
+        ~tag: string="div",
+        ~className: option(string)=?,
+        ~role: string="toolbar",
+        children
+      ) => {
     ...component,
-    render: (_self) => {
-      let classes = ["btn-toolbar", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes, "role": role}, children)
+    render: _self => {
+      let classes =
+        ["btn-toolbar", unwrapStr(i, className)] |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes, "role": role},
+        children
+      );
     }
   };
 };

@@ -17,9 +17,10 @@ let make =
       children
     ) => {
   ...component,
-  render: (_self) => {
+  render: _self => {
     let percent = string_of_float(value /. max *. 100.0) ++ "0%";
-    let progressClasses = ["progress", unwrapStr(i, className)] |> String.concat(" ");
+    let progressClasses =
+      ["progress", unwrapStr(i, className)] |> String.concat(" ");
     let progressBarClasses =
       [
         "progress-bar",
@@ -51,6 +52,6 @@ let make =
     | (true, false) => wrapper(children)
     | (false, true) => progressBar
     | (false, false) => wrapper([|progressBar|])
-    }
+    };
   }
 };

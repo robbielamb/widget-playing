@@ -22,38 +22,38 @@ let make =
       ~closeClassName: option(string)=?,
       ~color: Color.t=Color.Success,
       ~isOpen: bool=true,
-      ~toggle: option((ReactEventRe.Mouse.t => unit))=?,
+      ~toggle: option(ReactEventRe.Mouse.t => unit)=?,
       ~tag: string="div",
       ~closeAriaLabel: string="Close",
       /* cssModule::(cssModule: option (Js.t {..}))=? */
-      ~onClosed: option((unit => unit))=?,
+      ~onClosed: option(unit => unit)=?,
       children
     ) => {
   ...component,
   initialState: () => {currentAction: isOpen ? Open : Closed, timer: ref(None)},
   retainedProps: ({isOpen: isOpen}: retainedProps),
-  didMount: (_self) => ReasonReact.NoUpdate,
-  willReceiveProps: (self) =>
+  didMount: _self => ReasonReact.NoUpdate,
+  willReceiveProps: self =>
     if (self.state.currentAction === Open && isOpen === false) {
-      let timer = Js.Global.setTimeout(self.reduce((_) => Closed), 250);
-      {currentAction: Closing, timer: ref(Some(timer))}
+      let timer = Js.Global.setTimeout((_) => self.send(Closed), 250);
+      {currentAction: Closing, timer: ref(Some(timer))};
     } else {
-      self.state
+      self.state;
     },
-  willUnmount: (self) => {
+  willUnmount: self => {
     self.state.timer := None;
-    ()
+    ();
   },
   reducer: (action, state) =>
-    switch action {
+    switch (action) {
     | Open => ReasonReact.Update({...state, currentAction: Open})
     | Closing => ReasonReact.Update({...state, currentAction: Closing})
     | Closed =>
       ReasonReact.UpdateWithSideEffects(
         {...state, currentAction: Closed},
         (
-          (_self) =>
-            switch onClosed {
+          _self =>
+            switch (onClosed) {
             | None => ()
             | Some(cb) => cb()
             }
@@ -61,9 +61,10 @@ let make =
       )
     },
   render: (self: ReasonReact.self(state, retainedProps, action)) => {
-    let closeClasses = ["close", unwrapStr(i, closeClassName)] |> String.concat(" ");
+    let closeClasses =
+      ["close", unwrapStr(i, closeClassName)] |> String.concat(" ");
     let toggleElement =
-      switch toggle {
+      switch (toggle) {
       | None => ReasonReact.nullElement
       | Some(cb) =>
         ReasonReact.createDomElement(
@@ -85,16 +86,27 @@ let make =
       };
     let children = ArrayLabels.append([|toggleElement|], children);
     let transitionClasses =
-      switch self.state.currentAction {
+      switch (self.state.currentAction) {
       | Open => "fade show"
       | Closing => "fade"
       | Closed => ""
       };
     let classes =
-      ["alert", "alert-" ++ Color.toString(color), transitionClasses, unwrapStr(i, className)]
+      [
+        "alert",
+        "alert-" ++ Color.toString(color),
+        transitionClasses,
+        unwrapStr(i, className)
+      ]
       |> String.concat(" ");
-    let alertElement = ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
-    self.state.currentAction === Closed ? ReasonReact.nullElement : alertElement
+    let alertElement =
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
+    self.state.currentAction === Closed ?
+      ReasonReact.nullElement : alertElement;
   }
 };
 
@@ -109,40 +121,44 @@ module Auto = {
         ~color: Color.t=Color.Success,
         ~tag: string="div",
         ~closeAriaLabel: string="Close",
-        ~onClosed: option((unit => unit))=?,
+        ~onClosed: option(unit => unit)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
         children
       ) => {
     ...component,
     initialState: () => true,
     reducer: (action, _state) =>
-      switch action {
+      switch (action) {
       | DoClose => ReasonReact.Update(false)
       },
-    render: (self) =>
+    render: self =>
       ReasonReact.element(
         make(
           ~className?,
           ~color,
           ~tag,
           ~closeAriaLabel,
-          /*  ::?cssModule */
           ~isOpen=self.state,
-          ~toggle=self.reduce((_) => DoClose),
+          ~toggle=(_) => self.send(DoClose),
           ~onClosed?,
           children
         )
       )
+    /*  ::?cssModule */
   };
 };
 
 module Link = {
   /* TODO: Add more link */
   let component = ReasonReact.statelessComponent("Alert.Link");
-  let make = (children) => {
+  let make = children => {
     ...component,
-    render: (_self) =>
-      ReasonReact.createDomElement("a", ~props={"className": "alert-link"}, children)
+    render: _self =>
+      ReasonReact.createDomElement(
+        "a",
+        ~props={"className": "alert-link"},
+        children
+      )
   };
 };
 
@@ -150,9 +166,14 @@ module Heading = {
   let component = ReasonReact.statelessComponent("Alert.Header");
   let make = (~tag: string="h4", ~className: option(string)=?, children) => {
     ...component,
-    render: (_self) => {
-      let classes = ["alert-heading", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+    render: _self => {
+      let classes =
+        ["alert-heading", unwrapStr(i, className)] |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };

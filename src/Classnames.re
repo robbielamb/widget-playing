@@ -6,16 +6,19 @@ type t =
 type classnameList = list(t);
 
 let classFilter = (cl: t) =>
-  switch cl {
+  switch (cl) {
   | Classname(_name) => true
   | Option((_name, inc)) => inc
   };
 
 let classnameExtract = (cl: t) =>
-  switch cl {
+  switch (cl) {
   | Classname(name) => name
   | Option((name, _)) => name
   };
 
-let classNames = (classnameList) =>
-  classnameList |> List.filter(classFilter) |> List.map(classnameExtract) |> String.concat(" ");
+let classNames = classnameList =>
+  classnameList
+  |> List.filter(classFilter)
+  |> List.map(classnameExtract)
+  |> String.concat(" ");

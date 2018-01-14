@@ -11,10 +11,15 @@ module Container = {
         /* cssModule::(cssModule: option (Js.t {..}))=? */ children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classes =
-        [fluid ? "container-fluid" : "container", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+        [fluid ? "container-fluid" : "container", unwrapStr(i, className)]
+        |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };
@@ -30,10 +35,15 @@ module Row = {
         /* cssModule::(cssModule: option (Js.t {..}))=? */ children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classes =
-        ["row", noGutters ? "no-gutters" : "", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+        ["row", noGutters ? "no-gutters" : "", unwrapStr(i, className)]
+        |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };
@@ -65,40 +75,39 @@ module ColSizes = {
     let isXs = "xs" == colWidth;
     let interfix = isXs ? "-" : {j|-$(colWidth)-|j};
     let colClass =
-      switch shape.size {
+      switch (shape.size) {
       | Some(Auto) => {j|col$(interfix)auto|j}
       | Some(Size(size)) => {j|col$(interfix)$(size)|j}
       | None => isXs ? "col" : {j|col-$(colWidth)|j}
       };
     let formatClass = (name, intensity) => {
       let colSize = string_of_int(intensity);
-      {j|$(name)$(interfix)$(colSize)|j}
+      {j|$(name)$(interfix)$(colSize)|j};
     };
     let colPush =
-      switch shape.push {
+      switch (shape.push) {
       | Some(push) => formatClass("push", push)
       | None => ""
       };
     let colPull =
-      switch shape.pull {
+      switch (shape.pull) {
       | Some(pull) => formatClass("pull", pull)
       | None => ""
       };
     let colOffset =
-      switch shape.offset {
+      switch (shape.offset) {
       | Some(offset) => formatClass("offset", offset)
       | None => ""
       };
-    [colClass, colPush, colPull, colOffset]
+    [colClass, colPush, colPull, colOffset];
   };
   let processShapeList = (xs, sm, md, lg, xl) =>
     [("xs", xs), ("sm", sm), ("md", md), ("lg", lg), ("xl", xl)]
-    |> List.map(
-         ((col, maybeShape)) =>
-           switch maybeShape {
-           | None => []
-           | Some(shape) => genClasses(col, shape)
-           }
+    |> List.map(((col, maybeShape)) =>
+         switch (maybeShape) {
+         | None => []
+         | Some(shape) => genClasses(col, shape)
+         }
        )
     |> List.flatten;
 };
@@ -118,10 +127,16 @@ module Col = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classShapeList = processShapeList(xs, sm, md, lg, xl);
-      let classes = List.append([unwrapStr(i, className)], classShapeList) |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+      let classes =
+        List.append([unwrapStr(i, className)], classShapeList)
+        |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };

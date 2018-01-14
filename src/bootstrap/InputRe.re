@@ -5,8 +5,8 @@ module Size = {
     | None
     | Large
     | Small;
-  let toString = (size) =>
-    switch size {
+  let toString = size =>
+    switch (size) {
     | None => ""
     | Large => "form-control-lg"
     | Small => "form-control-sm"
@@ -38,29 +38,29 @@ let make =
       ~disabled: bool=false,
       ~multiple: option(bool)=?,
       ~className: option(string)=?,
-      ~onInput: option((ReactEventRe.Keyboard.t => unit))=?,
-      ~onChange: option((ReactEventRe.Form.t => unit))=?,
+      ~onInput: option(ReactEventRe.Keyboard.t => unit)=?,
+      ~onChange: option(ReactEventRe.Form.t => unit)=?,
       ~checked: option(bool)=?,
       ~value: option(string)=?,
       children
     ) => {
   ...component,
-  render: (_self) => {
+  render: _self => {
     let checkInput =
-      switch _type {
+      switch (_type) {
       | Radio => true
       | Checkbox => true
       | _ => false
       };
     let fileInput = _type === File;
     let tag =
-      switch _type {
+      switch (_type) {
       | TextArea => "textarea"
       | Select => "select"
       | _ => tag
       };
     let typeAttribute =
-      switch _type {
+      switch (_type) {
       | Select => ""
       | TextArea => ""
       | Text => "text"
@@ -79,7 +79,8 @@ let make =
       | (_, _, _) => "form-control"
       };
     let className =
-      [unwrapStr(i, className), Size.toString(size), formControlClass] |> String.concat(" ");
+      [unwrapStr(i, className), Size.toString(size), formControlClass]
+      |> String.concat(" ");
     let myProps: Js.t({..}) = {
       "className": className,
       "id": Js.Nullable.from_opt(id),
@@ -93,9 +94,9 @@ let make =
       "checked": Js.Nullable.from_opt(checked),
       "value": Js.Nullable.from_opt(value)
     };
-    /* let myProps=      multiple ? {..myProps, "multiple": "multi"} : myProps; */
-    ReasonReact.createDomElement(tag, ~props=myProps, children)
+    ReasonReact.createDomElement(tag, ~props=myProps, children);
   }
+  /* let myProps=      multiple ? {..myProps, "multiple": "multi"} : myProps; */
 };
 
 module Label = {
@@ -104,8 +105,8 @@ module Label = {
     type t =
       | SM
       | LG;
-    let toString = (size) =>
-      switch size {
+    let toString = size =>
+      switch (size) {
       | SM => "sm"
       | LG => "lg"
       };
@@ -130,7 +131,7 @@ module Label = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let colClasses = processShapeList(xs, sm, md, lg, xl);
       let containsColClasses = List.length(colClasses) > 0;
       let classes =
@@ -140,7 +141,7 @@ module Label = {
           check && ! inline ? "form-check-label" : "",
           check && inline ? "form-check-inline" : "",
           check && inline && disabled ? "disabled" : "",
-          switch size {
+          switch (size) {
           | None => ""
           | Some(s) => "col-form-label-" ++ Size.toString(s)
           },
@@ -154,7 +155,7 @@ module Label = {
         tag,
         ~props={"className": classes, "htmlFor": Js.Nullable.from_opt(_for)},
         children
-      )
+      );
     }
   };
 };

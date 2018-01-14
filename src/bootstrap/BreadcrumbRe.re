@@ -10,9 +10,10 @@ let make =
       children
     ) => {
   ...component,
-  render: (_self) => {
-    let classes = ["breadcrumb", unwrapStr(i, className)] |> String.concat(" ");
-    ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+  render: _self => {
+    let classes =
+      ["breadcrumb", unwrapStr(i, className)] |> String.concat(" ");
+    ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
   }
 };
 
@@ -27,10 +28,15 @@ module Item = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classes =
-        ["breadcrumb-item", active ? "active" : "", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+        ["breadcrumb-item", active ? "active" : "", unwrapStr(i, className)]
+        |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };

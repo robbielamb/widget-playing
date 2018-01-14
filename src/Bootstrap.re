@@ -13,7 +13,7 @@ type jsUnsafe;
      | `Object o => toJsUnsafe o
      | `Enum _ => assert false; */
 let optionMap = (fn, option) =>
-  switch option {
+  switch (option) {
   | Some(value) => Some(fn(value))
   | None => None
   };

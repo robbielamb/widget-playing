@@ -5,8 +5,8 @@ module Size = {
     | None
     | Large
     | Small;
-  let toString = (size) =>
-    switch size {
+  let toString = size =>
+    switch (size) {
     | None => ""
     | Large => "pagination-lg"
     | Small => "pagination-sm"
@@ -15,12 +15,23 @@ module Size = {
 
 let component = ReasonReact.statelessComponent("Pagination");
 
-let make = (~tag: string="ul", ~size: Size.t=None, ~className: option(string)=?, children) => {
+let make =
+    (
+      ~tag: string="ul",
+      ~size: Size.t=None,
+      ~className: option(string)=?,
+      children
+    ) => {
   ...component,
-  render: (_self) => {
+  render: _self => {
     let className =
-      ["pagination", Size.toString(size), unwrapStr(i, className)] |> String.concat(" ");
-    ReasonReact.createDomElement(tag, ~props={"className": className}, children)
+      ["pagination", Size.toString(size), unwrapStr(i, className)]
+      |> String.concat(" ");
+    ReasonReact.createDomElement(
+      tag,
+      ~props={"className": className},
+      children
+    );
   }
 };
 
@@ -35,11 +46,20 @@ module Item = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let className =
-        ["page-item", active ? "active" : "", disabled ? "disabled" : "", unwrapStr(i, className)]
+        [
+          "page-item",
+          active ? "active" : "",
+          disabled ? "disabled" : "",
+          unwrapStr(i, className)
+        ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": className}, children)
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": className},
+        children
+      );
     }
   };
 };
@@ -54,34 +74,34 @@ module Link = {
         ~next: bool=false,
         ~previous: bool=false,
         ~href: string="",
-        ~onClick: option((ReactEventRe.Mouse.t => unit))=?,
+        ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
         ~className: option(string)=?,
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let ariaLabel =
-        switch ariaLabel {
+        switch (ariaLabel) {
         | Some(label) => label
         | None => previous ? "Previous" : next ? "Next" : ""
         };
-      /* Create the default caret arrows */
-      let wrap = (codePoint) => [|
+      let wrap = codePoint => [|
         ReasonReact.stringToElement(Js.String.fromCodePoint(codePoint))
       |];
       let prevCaret = wrap(171);
       let nextCaret = wrap(187);
-      /* Use the default carets, if this is a prev or next and no children */
       let children =
         switch (Array.length(children)) {
         | 0 => previous ? prevCaret : next ? nextCaret : children
         | _ => children
         };
-      /* A helper to wrap iff we are a prev or next element */
-      let wrapChildren = (children) => [|
+      let wrapChildren = children => [|
         ReasonReact.createDomElement(
           "span",
-          ~props={"aria-hidden": Js.Boolean.to_js_boolean(true), "key": "caret"},
+          ~props={
+            "aria-hidden": Js.Boolean.to_js_boolean(true),
+            "key": "caret"
+          },
           children
         ),
         ReasonReact.createDomElement(
@@ -90,8 +110,10 @@ module Link = {
           [|ReasonReact.stringToElement(ariaLabel)|]
         )
       |];
-      let wrappedChildren = previous || next ? wrapChildren(children) : children;
-      let className = [unwrapStr(i, className), "page-link"] |> String.concat(" ");
+      let wrappedChildren =
+        previous || next ? wrapChildren(children) : children;
+      let className =
+        [unwrapStr(i, className), "page-link"] |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
         ~props={
@@ -101,7 +123,10 @@ module Link = {
           "onClick": Js.Nullable.from_opt(onClick)
         },
         wrappedChildren
-      )
+      );
     }
+    /* Create the default caret arrows */
+    /* Use the default carets, if this is a prev or next and no children */
+    /* A helper to wrap iff we are a prev or next element */
   };
 };

@@ -1,12 +1,12 @@
 let optionMap = (fn, option) =>
-  switch option {
+  switch (option) {
   | Some(value) => Some(fn(value))
   | None => None
   };
 
 module Transition = {
-  [@bs.module "react-transition-group"] external transition : ReasonReact.reactClass =
-    "Transition";
+  [@bs.module "react-transition-group"]
+  external transition : ReasonReact.reactClass = "Transition";
   let make =
       (
         ~_in: bool=false,
@@ -16,13 +16,13 @@ module Transition = {
         ~enter: bool=true,
         ~exit: bool=true,
         ~timeout: option(int)=?,
-        ~addEndListener: option(((Dom.element, unit => unit) => unit))=?,
-        ~onEnter: option(((Dom.element, bool) => unit))=?,
-        ~onEntering: option(((Dom.element, bool) => unit))=?,
-        ~onEntered: option(((Dom.element, bool) => unit))=?,
-        ~onExit: option((Dom.element => unit))=?,
-        ~onExiting: option((Dom.element => unit))=?,
-        ~onExited: option((Dom.element => unit))=?,
+        ~addEndListener: option((Dom.element, unit => unit) => unit)=?,
+        ~onEnter: option((Dom.element, bool) => unit)=?,
+        ~onEntering: option((Dom.element, bool) => unit)=?,
+        ~onEntered: option((Dom.element, bool) => unit)=?,
+        ~onExit: option(Dom.element => unit)=?,
+        ~onExiting: option(Dom.element => unit)=?,
+        ~onExited: option(Dom.element => unit)=?,
         ~className: option(string)=?,
         children
       ) =>
@@ -51,23 +51,25 @@ module Transition = {
 
 module TransitionGroup = {
   [@bs.module "react-transition-group/TransitionGroup"]
-  external transitionGroup : ReasonReact.reactClass =
-    "default";
+  external transitionGroup : ReasonReact.reactClass = "default";
   let make =
       (
         ~component: string="div",
         ~appear: option(bool)=?,
         ~enter: option(bool)=?,
         ~exit: option(bool)=?,
-        ~childFactory: option((ReasonReact.reactElement => ReasonReact.reactElement))=?,
+        ~childFactory:
+           option(ReasonReact.reactElement => ReasonReact.reactElement)=?,
         children
       ) =>
     ReasonReact.wrapJsForReason(
       ~reactClass=transitionGroup,
       ~props={
         "component": component,
-        "appear": Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, appear)),
-        "enter": Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, enter)),
+        "appear":
+          Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, appear)),
+        "enter":
+          Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, enter)),
         "exit": Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, exit)),
         "childFactory": Js.Nullable.from_opt(childFactory)
       },
@@ -76,8 +78,8 @@ module TransitionGroup = {
 };
 
 module CSSTransition = {
-  [@bs.module "react-transition-group"] external cssTransition : ReasonReact.reactClass =
-    "CSSTransition";
+  [@bs.module "react-transition-group"]
+  external cssTransition : ReasonReact.reactClass = "CSSTransition";
   type classNames = {
     .
     "appear": Js.nullable(string),
@@ -114,14 +116,14 @@ module CSSTransition = {
         ~enter: bool=true,
         ~exit: bool=true,
         ~timeout: option(int)=?,
-        ~addEndListener: option(((Dom.element, unit => unit) => unit))=?,
+        ~addEndListener: option((Dom.element, unit => unit) => unit)=?,
         ~classNames: option(classNames)=?,
-        ~onEnter: option(((Dom.element, bool) => unit))=?,
-        ~onEntering: option(((Dom.element, bool) => unit))=?,
-        ~onEntered: option(((Dom.element, bool) => unit))=?,
-        ~onExit: option((Dom.element => unit))=?,
-        ~onExiting: option((Dom.element => unit))=?,
-        ~onExited: option((Dom.element => unit))=?,
+        ~onEnter: option((Dom.element, bool) => unit)=?,
+        ~onEntering: option((Dom.element, bool) => unit)=?,
+        ~onEntered: option((Dom.element, bool) => unit)=?,
+        ~onExit: option(Dom.element => unit)=?,
+        ~onExiting: option(Dom.element => unit)=?,
+        ~onExited: option(Dom.element => unit)=?,
         ~className: option(string)=?,
         children
       ) =>
@@ -168,31 +170,39 @@ module MyTransition = {
     numbers: int,
     _in: bool
   };
-  let component = ReasonReact.reducerComponentWithRetainedProps("MyTransition");
-  let make = (~message: string, ~_in: bool, ~appear: bool, ~enter: bool, _children) => {
+  let component =
+    ReasonReact.reducerComponentWithRetainedProps("MyTransition");
+  let make =
+      (~message: string, ~_in: bool, ~appear: bool, ~enter: bool, _children) => {
     ...component,
     initialState: () =>
       switch (_in, appear) {
       | (true, true) => {status: Exited, nextStatus: Entering, timeoutId: None}
-      | (true, false) => {status: Entered, nextStatus: Exiting, timeoutId: None}
+      | (true, false) => {
+          status: Entered,
+          nextStatus: Exiting,
+          timeoutId: None
+        }
       | (false, _) => {status: Exited, nextStatus: Unmounted, timeoutId: None}
       },
     didUpdate: ({oldSelf, newSelf}) =>
       if (oldSelf.retainedProps.message !== newSelf.retainedProps.message) {
-        Js.log
-          ("They are different")
-          /* Js.Global.setTimeout */
+        Js.log("They are different");
       },
-    retainedProps: ({message, numbers: 42, _in}: retainedProps), /* didMount: fun _self => ReasonReact.Update Entering, */ /* self.reduce (fun () => Mounted), */
+    /* Js.Global.setTimeout */
+    retainedProps: ({message, numbers: 42, _in}: retainedProps),
     reducer: (action: action, _state) =>
-      switch action {
+      switch (action) {
       | Mounted =>
-        ReasonReact.UpdateWithSideEffects(Entering, ((_self) => Js.log("Reducer called")))
+        ReasonReact.UpdateWithSideEffects(
+          Entering,
+          (_self => Js.log("Reducer called"))
+        )
       },
-    render: (_self) =>
+    render: _self =>
       <div>
         <strong> (ReasonReact.stringToElement("Success")) </strong>
         <p> (ReasonReact.stringToElement(message)) </p>
-      </div>
+      </div> /* self.reduce (fun () => Mounted), */ /* didMount: fun _self => ReasonReact.Update Entering, */
   };
 };

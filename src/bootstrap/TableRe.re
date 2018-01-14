@@ -15,7 +15,7 @@ let make =
       children
     ) => {
   ...component,
-  render: (_self) => {
+  render: _self => {
     let classes =
       [
         "table",
@@ -28,13 +28,18 @@ let make =
         Utils.unwrapStr(Utils.i, classname)
       ]
       |> String.concat(" ");
-    let table = ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
+    let table =
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     responsive ?
       ReasonReact.createDomElement(
         responsiveTag,
         ~props={"className": "table-responsive"},
         [|table|]
       ) :
-      table
+      table;
   }
 };

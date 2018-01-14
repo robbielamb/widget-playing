@@ -1,4 +1,4 @@
-let i = (x) => x;
+let i = x => x;
 
 /* let cn c => Classnames.Classname c;
 
@@ -12,7 +12,7 @@ let i = (x) => x;
      List.rev_append baseClass classList |> Classnames.classNames
    }; */
 let unwrapStr = (f, maybeStr) =>
-  switch maybeStr {
+  switch (maybeStr) {
   | Some(v) => f(v)
   | None => ""
   };

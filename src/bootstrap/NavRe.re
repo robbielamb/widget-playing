@@ -15,7 +15,7 @@ let make =
       /* cssModule::(cssModule: option (Js.t {..}))=? */ children
     ) => {
   ...component,
-  render: (_self) => {
+  render: _self => {
     let classes =
       [
         navbar ? "navbar-nav" : "nav",
@@ -26,7 +26,7 @@ let make =
         unwrapStr(i, className)
       ]
       |> String.concat(" ");
-    ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+    ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
   }
 };
 
@@ -56,9 +56,14 @@ module Item = {
         /* cssModule::(cssModule: option (Js.t {..}))=? */ children
       ) => {
     ...component,
-    render: (_self) => {
-      let classes = ["nav-item", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+    render: _self => {
+      let classes =
+        ["nav-item", unwrapStr(i, className)] |> String.concat(" ");
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };
@@ -68,28 +73,34 @@ module Link = {
   let make =
       (
         ~tag: string="a",
-        ~getRef: option([ | `String(string) | `Element(ReasonReact.reactElement)])=?,
+        ~getRef:
+           option([ | `String(string) | `Element(ReasonReact.reactElement)])=?,
         ~disabled: bool=false,
         ~active: bool=false,
         ~className: option(string)=?,
-        ~onClick: option((ReactEventRe.Mouse.t => unit))=?,
+        ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
         ~href: option(string)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
         children
       ) => {
     ...component,
-    render: (self) => {
+    render: self => {
       let click = (event, _self) =>
         disabled ?
           ReactEventRe.Mouse.preventDefault(event) :
           (
-            switch onClick {
+            switch (onClick) {
             | None => ()
             | Some(cb) => cb(event)
             }
           );
       let classes =
-        ["nav-link", disabled ? "disabled" : "", active ? "active" : "", unwrapStr(i, className)]
+        [
+          "nav-link",
+          disabled ? "disabled" : "",
+          active ? "active" : "",
+          unwrapStr(i, className)
+        ]
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
@@ -99,7 +110,7 @@ module Link = {
           "href": Js.Nullable.from_opt(href)
         },
         children
-      )
+      );
     }
   };
 };

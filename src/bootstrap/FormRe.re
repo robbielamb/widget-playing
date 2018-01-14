@@ -2,11 +2,19 @@ include Utils;
 
 let component = ReasonReact.statelessComponent("Form");
 
-let make = (~tag: string="form", ~inline: bool=false, ~className: option(string)=?, children) => {
+let make =
+    (
+      ~tag: string="form",
+      ~inline: bool=false,
+      ~className: option(string)=?,
+      children
+    ) => {
   ...component,
-  render: (_self) => {
-    let classes = [unwrapStr(i, className), inline ? "form-inline" : ""] |> String.concat(" ");
-    ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+  render: _self => {
+    let classes =
+      [unwrapStr(i, className), inline ? "form-inline" : ""]
+      |> String.concat(" ");
+    ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
   }
 };
 
@@ -24,11 +32,20 @@ module Group = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classes =
-        [unwrapStr(i, className), "form-group", row ? "row" : "", disabled ? "disabled" : ""]
+        [
+          unwrapStr(i, className),
+          "form-group",
+          row ? "row" : "",
+          disabled ? "disabled" : ""
+        ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };
@@ -45,7 +62,7 @@ module Check = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classes =
         [
           unwrapStr(i, className),
@@ -55,7 +72,11 @@ module Check = {
           disabled ? "disabled" : ""
         ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };
@@ -71,11 +92,19 @@ module Text = {
         children
       ) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let classes =
-        [unwrapStr(i, className), ! inline ? "form-text" : "", ColorsRe.Text.toString(color)]
+        [
+          unwrapStr(i, className),
+          ! inline ? "form-text" : "",
+          ColorsRe.Text.toString(color)
+        ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(tag, ~props={"className": classes}, children)
+      ReasonReact.createDomElement(
+        tag,
+        ~props={"className": classes},
+        children
+      );
     }
   };
 };

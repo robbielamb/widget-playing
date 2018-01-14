@@ -8,8 +8,8 @@ module Color = {
     | Danger
     | Light
     | Dark;
-  let toString = (color) =>
-    switch color {
+  let toString = color =>
+    switch (color) {
     | Primary => "primary"
     | Secondary => "secondary"
     | Success => "success"
@@ -34,10 +34,10 @@ module Text = {
     | Info
     | Warning
     | Danger;
-  let toString = (color) =>
+  let toString = color =>
     "text-"
     ++ (
-      switch color {
+      switch (color) {
       | White => "white"
       | Dark => "dark"
       | Muted => "muted"
@@ -65,10 +65,10 @@ module Background = {
     | Dark
     | White
     | Transparent;
-  let toString = (color) =>
+  let toString = color =>
     "bg-"
     ++ (
-      switch color {
+      switch (color) {
       | Primary => "primary"
       | Secondary => "secondary"
       | Success => "success"
@@ -96,10 +96,10 @@ module Border = {
     | Dark
     | White
     | Transparent;
-  let toString = (color) =>
+  let toString = color =>
     "border-"
     ++ (
-      switch color {
+      switch (color) {
       | Primary => "primary"
       | Secondary => "secondary"
       | Success => "success"
