@@ -7,10 +7,13 @@
   "bsc-flags": ["-bs-no-version-header", "-bs-super-errors"],
   "sources": [ 
     {
-      "dir": "src",
-      /* "type": "lib",  */
-     "public": ["Bootstrap"],
-      "subdirs": ["bootstrap"]
+      "dir": "src",    
+      "public": ["Bootstrap"],
+      "subdirs": true
+    },
+    {
+      "dir": "example",
+      "type": "dev"
     }
   ],
   "bs-dependencies": [

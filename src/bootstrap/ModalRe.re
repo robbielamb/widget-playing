@@ -76,8 +76,8 @@ let make =
         Webapi.Dom.Element.setAttribute("tabIndex", "-1", el);
         let style =
           el
-          |> Webapi.Dom.Element.asHtmlElement
-          |> unwrapUnsafely
+          |> Webapi.Dom.Element.unsafeAsHtmlElement
+          /*|> unwrapUnsafely*/
           |> Webapi.Dom.HtmlElement.style;
         Webapi.Dom.CssStyleDeclaration.setProperty(
           "position",
