@@ -35,15 +35,15 @@ module Transition = {
         "appear": Js.Boolean.to_js_boolean(appear),
         "enter": Js.Boolean.to_js_boolean(enter),
         "exit": Js.Boolean.to_js_boolean(exit),
-        "timeout": Js.Nullable.from_opt(timeout),
-        "addEndListener": Js.Nullable.from_opt(addEndListener),
-        "onEnter": Js.Nullable.from_opt(onEnter),
-        "onEntering": Js.Nullable.from_opt(onEntering),
-        "onEntered": Js.Nullable.from_opt(onEntered),
-        "onExit": Js.Nullable.from_opt(onExit),
-        "onExiting": Js.Nullable.from_opt(onExiting),
-        "onExited": Js.Nullable.from_opt(onExited),
-        "className": Js.Nullable.from_opt(className)
+        "timeout": Js.Nullable.fromOption(timeout),
+        "addEndListener": Js.Nullable.fromOption(addEndListener),
+        "onEnter": Js.Nullable.fromOption(onEnter),
+        "onEntering": Js.Nullable.fromOption(onEntering),
+        "onEntered": Js.Nullable.fromOption(onEntered),
+        "onExit": Js.Nullable.fromOption(onExit),
+        "onExiting": Js.Nullable.fromOption(onExiting),
+        "onExited": Js.Nullable.fromOption(onExited),
+        "className": Js.Nullable.fromOption(className)
       },
       children
     );
@@ -67,11 +67,11 @@ module TransitionGroup = {
       ~props={
         "component": component,
         "appear":
-          Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, appear)),
+          Js.Nullable.fromOption(optionMap(Js.Boolean.to_js_boolean, appear)),
         "enter":
-          Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, enter)),
-        "exit": Js.Nullable.from_opt(optionMap(Js.Boolean.to_js_boolean, exit)),
-        "childFactory": Js.Nullable.from_opt(childFactory)
+          Js.Nullable.fromOption(optionMap(Js.Boolean.to_js_boolean, enter)),
+        "exit": Js.Nullable.fromOption(optionMap(Js.Boolean.to_js_boolean, exit)),
+        "childFactory": Js.Nullable.fromOption(childFactory)
       },
       children
     );
@@ -100,12 +100,12 @@ module CSSTransition = {
         ()
       )
       : classNames => {
-    "appear": Js.Nullable.from_opt(appear),
-    "appearActive": Js.Nullable.from_opt(appearActive),
-    "enter": Js.Nullable.from_opt(enter),
-    "enterActive": Js.Nullable.from_opt(enterActive),
-    "exit": Js.Nullable.from_opt(exit),
-    "exitActive": Js.Nullable.from_opt(exitActive)
+    "appear": Js.Nullable.fromOption(appear),
+    "appearActive": Js.Nullable.fromOption(appearActive),
+    "enter": Js.Nullable.fromOption(enter),
+    "enterActive": Js.Nullable.fromOption(enterActive),
+    "exit": Js.Nullable.fromOption(exit),
+    "exitActive": Js.Nullable.fromOption(exitActive)
   };
   let make =
       (
@@ -136,16 +136,16 @@ module CSSTransition = {
         "appear": Js.Boolean.to_js_boolean(appear),
         "enter": Js.Boolean.to_js_boolean(enter),
         "exit": Js.Boolean.to_js_boolean(exit),
-        "timeout": Js.Nullable.from_opt(timeout),
-        "addEndListener": Js.Nullable.from_opt(addEndListener),
-        "classNames": Js.Nullable.from_opt(classNames),
-        "onEnter": Js.Nullable.from_opt(onEnter),
-        "onEntering": Js.Nullable.from_opt(onEntering),
-        "onEntered": Js.Nullable.from_opt(onEntered),
-        "onExit": Js.Nullable.from_opt(onExit),
-        "onExiting": Js.Nullable.from_opt(onExiting),
-        "onExited": Js.Nullable.from_opt(onExited),
-        "className": Js.Nullable.from_opt(className)
+        "timeout": Js.Nullable.fromOption(timeout),
+        "addEndListener": Js.Nullable.fromOption(addEndListener),
+        "classNames": Js.Nullable.fromOption(classNames),
+        "onEnter": Js.Nullable.fromOption(onEnter),
+        "onEntering": Js.Nullable.fromOption(onEntering),
+        "onEntered": Js.Nullable.fromOption(onEntered),
+        "onExit": Js.Nullable.fromOption(onExit),
+        "onExiting": Js.Nullable.fromOption(onExiting),
+        "onExited": Js.Nullable.fromOption(onExited),
+        "className": Js.Nullable.fromOption(className)
       },
       children
     );

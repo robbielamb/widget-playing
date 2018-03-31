@@ -79,7 +79,7 @@ let make =
       tag,
       ~props={
         "className": classes,
-        "onClick": Js.Nullable.from_opt(onClick),
+        "onClick": Js.Nullable.fromOption(onClick),
         "aria-haspopup": mapBool(ariaHaspopup),
         "aria-expanded": mapBool(ariaExpanded)
       },

@@ -4,8 +4,8 @@ let make = (~className: option(string)=?, ~languages: option(array(string))=?, c
   ReasonReact.wrapJsForReason(
     ~reactClass=highlightClass,
     ~props={
-      "className": Js.Null_undefined.from_opt(className),
-      "languages": Js.Null_undefined.from_opt(languages)
+      "className": Js.Null_undefined.fromOption(className),
+      "languages": Js.Null_undefined.fromOption(languages)
     },
     children
   );

@@ -41,9 +41,9 @@ let make =
        ReasonReact.wrapJsForReason
          reactClass::navDropdown
          props::{
-           "tag": Js.Nullable.from_opt (optionMap unwrapValue tag),
-           "className": Js.Nullable.from_opt className,
-           "cssModule": Js.Nullable.from_opt cssModule
+           "tag": Js.Nullable.fromOption (optionMap unwrapValue tag),
+           "className": Js.Nullable.fromOption className,
+           "cssModule": Js.Nullable.fromOption cssModule
          }
          children;
    }; */
@@ -107,7 +107,7 @@ module Link = {
         ~props={
           "className": classes,
           "onClick": self.handle(click),
-          "href": Js.Nullable.from_opt(href)
+          "href": Js.Nullable.fromOption(href)
         },
         children
       );

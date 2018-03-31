@@ -32,7 +32,7 @@ let make =
       |> String.concat(" ");
     ReasonReact.createDomElement(
       tag,
-      ~props={"className": classes, "href": Js.Nullable.from_opt(href)},
+      ~props={"className": classes, "href": Js.Nullable.fromOption(href)},
       children
     );
   }

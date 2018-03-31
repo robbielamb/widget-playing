@@ -35,7 +35,7 @@ let getHeight = maybeElement =>
   | Some(el) => ReasonReact.refToJsObj(el)##scrollHeight ++ "px"
   };
 
-let setRef = (theRef, state) => state.element := Js.Nullable.to_opt(theRef);
+let setRef = (theRef, state) => state.element := Js.Nullable.toOption(theRef);
 
 /* state.height := getHeight !state.element */
 let component = ReasonReact.reducerComponentWithRetainedProps("Collapse");
