@@ -88,7 +88,7 @@ let make =
       "type": typeAttribute,
       "placeholder": Js.Nullable.fromOption(placeholder),
       "multiple": Js.Nullable.fromOption(multiple),
-      "disabled": Js.Boolean.to_js_boolean(disabled),
+      "disabled": disabled,
       "onInput": Js.Nullable.fromOption(onInput),
       "onChange": Js.Nullable.fromOption(onChange),
       "checked": Js.Nullable.fromOption(checked),

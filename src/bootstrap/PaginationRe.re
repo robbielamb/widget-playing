@@ -99,7 +99,7 @@ module Link = {
         ReasonReact.createDomElement(
           "span",
           ~props={
-            "aria-hidden": Js.Boolean.to_js_boolean(true),
+            "aria-hidden": true,
             "key": "caret"
           },
           children

@@ -37,7 +37,7 @@ module Size = {
 let mapBool = b =>
   switch (b) {
   | None => Js.Nullable.null
-  | Some(t) => Js.Nullable.return(Js.Boolean.to_js_boolean(t))
+  | Some(t) => Js.Nullable.return(t)
   };
 
 let make =

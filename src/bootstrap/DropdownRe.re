@@ -172,7 +172,7 @@ module Menu = {
         ~props={
           "className": classNames,
           "tabIndex": "-1",
-          "aria-hidden": Js.Boolean.to_js_boolean(! isOpen),
+          "aria-hidden": (! isOpen),
           "role": "menu"
         },
         children

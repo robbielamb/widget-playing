@@ -29,12 +29,12 @@ module Transition = {
     ReasonReact.wrapJsForReason(
       ~reactClass=transition,
       ~props={
-        "in": Js.Boolean.to_js_boolean(_in),
-        "mountOnEnter": Js.Boolean.to_js_boolean(mountOnEnter),
-        "unmountOnExit": Js.Boolean.to_js_boolean(unmountOnExit),
-        "appear": Js.Boolean.to_js_boolean(appear),
-        "enter": Js.Boolean.to_js_boolean(enter),
-        "exit": Js.Boolean.to_js_boolean(exit),
+        "in": _in,
+        "mountOnEnter": mountOnEnter,
+        "unmountOnExit": unmountOnExit,
+        "appear": appear,
+        "enter": enter,
+        "exit": exit,
         "timeout": Js.Nullable.fromOption(timeout),
         "addEndListener": Js.Nullable.fromOption(addEndListener),
         "onEnter": Js.Nullable.fromOption(onEnter),
@@ -67,10 +67,10 @@ module TransitionGroup = {
       ~props={
         "component": component,
         "appear":
-          Js.Nullable.fromOption(optionMap(Js.Boolean.to_js_boolean, appear)),
+          Js.Nullable.fromOption(appear),
         "enter":
-          Js.Nullable.fromOption(optionMap(Js.Boolean.to_js_boolean, enter)),
-        "exit": Js.Nullable.fromOption(optionMap(Js.Boolean.to_js_boolean, exit)),
+          Js.Nullable.fromOption(enter),
+        "exit": Js.Nullable.fromOption(exit),
         "childFactory": Js.Nullable.fromOption(childFactory)
       },
       children
@@ -130,12 +130,12 @@ module CSSTransition = {
     ReasonReact.wrapJsForReason(
       ~reactClass=cssTransition,
       ~props={
-        "in": Js.Boolean.to_js_boolean(_in),
-        "mountOnEnter": Js.Boolean.to_js_boolean(mountOnEnter),
-        "unmountOnExit": Js.Boolean.to_js_boolean(unmountOnExit),
-        "appear": Js.Boolean.to_js_boolean(appear),
-        "enter": Js.Boolean.to_js_boolean(enter),
-        "exit": Js.Boolean.to_js_boolean(exit),
+        "in": _in,
+        "mountOnEnter": mountOnEnter,
+        "unmountOnExit": unmountOnExit,
+        "appear": appear,
+        "enter": enter,
+        "exit": exit,
         "timeout": Js.Nullable.fromOption(timeout),
         "addEndListener": Js.Nullable.fromOption(addEndListener),
         "classNames": Js.Nullable.fromOption(classNames),
