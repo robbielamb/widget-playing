@@ -3,7 +3,7 @@ include WidgetPlaying.Bootstrap;
 let code: string =
   [%bs.raw {|require('Examples/TabsExample.re')|}] |> Examples.prepCode;
 
-let se = ReasonReact.stringToElement;
+let se = ReasonReact.string;
 
 type tabs =
   | Tab1

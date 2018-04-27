@@ -86,7 +86,7 @@ module Link = {
         | None => previous ? "Previous" : next ? "Next" : ""
         };
       let wrap = codePoint => [|
-        ReasonReact.stringToElement(Js.String.fromCodePoint(codePoint))
+        ReasonReact.string(Js.String.fromCodePoint(codePoint))
       |];
       let prevCaret = wrap(171);
       let nextCaret = wrap(187);
@@ -107,7 +107,7 @@ module Link = {
         ReasonReact.createDomElement(
           "span",
           ~props={"className": "sr-only", "key": "sr"},
-          [|ReasonReact.stringToElement(ariaLabel)|]
+          [|ReasonReact.string(ariaLabel)|]
         )
       |];
       let wrappedChildren =

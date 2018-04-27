@@ -57,5 +57,5 @@ let elementForRoute = route =>
   | Routes.ProgressExampleRoute => <ProgressExample />
   | Routes.TableExampleRoute => <TableExample />
   | Routes.TabExampleRoute => <TabsExample />
-  | Routes.NotFound => <div> (ReasonReact.stringToElement("Not Found")) </div>
+  | Routes.NotFound => <div> (ReasonReact.string("Not Found")) </div>
   };

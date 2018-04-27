@@ -3,7 +3,7 @@ include Bootstrap;
 
 [@bs.module] external logo : string = "./logo.svg";
 
-let se = ReasonReact.stringToElement;
+let se = ReasonReact.string;
 
 let exampleHighlight = code =>
   <Highlight languages=[|"html"|]> (se(code)) </Highlight>;

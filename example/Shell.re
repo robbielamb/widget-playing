@@ -17,7 +17,7 @@ let navNav = (handle, currentRoute, routeTo, name) => {
   let navTo = navTo(routeTo);
   let el =
     <Bootstrap.Nav.Link href disabled onClick=(handle(navTo))>
-      (ReasonReact.stringToElement(name))
+      (ReasonReact.string(name))
     </Bootstrap.Nav.Link>;
   el;
 };
@@ -27,19 +27,14 @@ let component = ReasonReact.reducerComponent("Shell");
 let make = _children => {
   ...component,
   initialState: () => {currentRoute: ( Router.currentPath() |> Router.pathHandler)},
-  didMount: _self => {
-    ReasonReact.NoUpdate
+  didMount: self => {
+    let watcherId = ReasonReact.Router.watchUrl(url => {
+      let route = Router.urlHandler(url);
+      self.send(SetRoute(route));
+    });
+    self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherId));
   },
-  subscriptions: self => [
-    Sub(
-      () =>
-        ReasonReact.Router.watchUrl(url => {
-          let route = Router.urlHandler(url);
-          self.send(SetRoute(route));
-        }),
-      ReasonReact.Router.unwatchUrl
-    )
-  ],
+ 
   reducer: (action, _state) =>
     switch action {
     | SetRoute(route) => ReasonReact.Update({currentRoute: route})
@@ -52,7 +47,7 @@ let make = _children => {
     <div>
       <Bootstrap.Navbar light=false color=Bootstrap.Colors.Background.Dark>
         <Bootstrap.Navbar.Brand>
-          (ReasonReact.stringToElement("Widget Play"))
+          (ReasonReact.string("Widget Play"))
         </Bootstrap.Navbar.Brand>
       </Bootstrap.Navbar>
       <Bootstrap.Layout.Container>
@@ -65,7 +60,7 @@ let make = _children => {
                 ()
               )
             )>
-            <p> (ReasonReact.stringToElement("Select Example")) </p>
+            <p> (ReasonReact.string("Select Example")) </p>
             <Bootstrap.Nav vertical=true>
               <Bootstrap.Nav.Item>
                 (navTo(Routes.AlertExampleRoute, "Alerts"))

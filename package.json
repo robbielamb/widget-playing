@@ -8,7 +8,7 @@
     "react": ">=16.2.0",
     "react-dom": ">=16.2.0",
     "react-transition-group": "^2.2.1",
-    "reason-react": "^0.3.4"
+    "reason-react": "^0.4.0"
   },
   "scripts": {
     "build": "bsb -make-world",
@@ -28,7 +28,6 @@
     "node-sass": "^4.7.2",
     "raw-loader": "^0.5.1",
     "react-fast-highlight": "^2.2.0",
-    "reason-react": "^0.3.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.19.1",
     "webpack": "^3.10.0",

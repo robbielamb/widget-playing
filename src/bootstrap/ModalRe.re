@@ -16,11 +16,12 @@ let unwrapUnsafely =
   | None => raise(Invalid_argument("Passed `None` to unwrapUnsafely"));
 
 type actions =
+  | DidMount
   | BackgroundClick;
 
 type state = {
   el: ref(option(Dom.element)),
-  isBodyOverflowing: bool
+  isBodyOverflowing: bool,
 };
 
 type retainedProps = {isOpen: bool};
@@ -56,50 +57,14 @@ let make =
          modalTransitionAppearTimeout::(modalTransitionAppearTimeout: option int)=?
          modalTransitionEnterTimeout::(modalTransitionEnterTimeout: option int)=?
          modalTransitionLeaveTimeout::(modalTransitionLeaveTimeout: option int)=? */
-      children
+      children,
     ) => {
   ...component,
   retainedProps: {
-    isOpen: isOpen
+    isOpen: isOpen,
   },
   initialState: () => {el: ref(None), isBodyOverflowing: false},
-  didMount: self =>
-    ReasonReact.SideEffects(
-      _self => {
-        isOpen ? () : /*** toggle portal */ ();
-        switch (onEnter) {
-        | Some(cb) => cb()
-        | None => ()
-        };
-        let document = Webapi.Dom.document;
-        let el = document |> Webapi.Dom.Document.createElement("div");
-        Webapi.Dom.Element.setAttribute("tabIndex", "-1", el);
-        let style =
-          el
-          |> Webapi.Dom.Element.unsafeAsHtmlElement
-          /*|> unwrapUnsafely*/
-          |> Webapi.Dom.HtmlElement.style;
-        Webapi.Dom.CssStyleDeclaration.setProperty(
-          "position",
-          "relative",
-          "",
-          style
-        );
-        Webapi.Dom.CssStyleDeclaration.setProperty(
-          "zIndex",
-          string_of_int(zIndex),
-          "",
-          style
-        );
-        self.state.el := Some(el);
-        let _ =
-          document
-          |> Webapi.Dom.Document.asHtmlDocument
-          |> andThen(Webapi.Dom.HtmlDocument.body)
-          |> map(Webapi.Dom.Element.appendChild(el));
-        ();
-      }
-    ),
+  didMount: self => self.send(DidMount),
   didUpdate: ({oldSelf, newSelf}) =>
     if (oldSelf.retainedProps.isOpen === newSelf.retainedProps.isOpen) {
       Js.log("NoChange");
@@ -117,30 +82,72 @@ let make =
     | None => ()
     };
   },
-  reducer: (_action, state) =>
-    ReasonReact.Update({
-      ...state,
-      isBodyOverflowing: ! state.isBodyOverflowing
-    }),
+  reducer: (action, state) =>
+    switch (action) {
+    | BackgroundClick =>
+      ReasonReact.Update({
+        ...state,
+        isBodyOverflowing: ! state.isBodyOverflowing,
+      })
+    | DidMount =>
+      ReasonReact.SideEffects(
+        (
+          self => {
+            isOpen ? () : /*** toggle portal */ ();
+            switch (onEnter) {
+            | Some(cb) => cb()
+            | None => ()
+            };
+            let document = Webapi.Dom.document;
+            let el = document |> Webapi.Dom.Document.createElement("div");
+            Webapi.Dom.Element.setAttribute("tabIndex", "-1", el);
+            let style =
+              el
+              |> Webapi.Dom.Element.unsafeAsHtmlElement
+              /*|> unwrapUnsafely*/
+              |> Webapi.Dom.HtmlElement.style;
+            Webapi.Dom.CssStyleDeclaration.setProperty(
+              "position",
+              "relative",
+              "",
+              style,
+            );
+            Webapi.Dom.CssStyleDeclaration.setProperty(
+              "zIndex",
+              string_of_int(zIndex),
+              "",
+              style,
+            );
+            self.state.el := Some(el);
+            let _ =
+              document
+              |> Webapi.Dom.Document.asHtmlDocument
+              |> andThen(Webapi.Dom.HtmlDocument.body)
+              |> map(Webapi.Dom.Element.appendChild(el));
+            ();
+          }
+        ),
+      )
+    },
   /* Webapi.Dom.CssStyleDeclaration.t; */
   /* Webapi; */
   /* willReceiveProps: fun self => self.state, */
   /* shouldUpdate: fun {oldSelf, newSelf} => (oldSelf.retainedProps.isOpen === newSelf.retainedProps.isOpen) ? true : false, */
   render: (_self: ReasonReact.self(state, retainedProps, actions)) =>
     ! isOpen ?
-      ReasonReact.nullElement :
+      ReasonReact.null :
       {
         let content =
           ReasonReact.createDomElement(
             "div",
             ~props={"className": "modal-content"},
-            children
+            children,
           );
         let dialog =
           ReasonReact.createDomElement(
             "div",
             ~props={"className": "modal-dialog", "role": "document"},
-            [|content|]
+            [|content|],
           );
         let classNames =
           ["modal fade", isOpen ? "show" : ""] |> String.concat(" ");
@@ -152,11 +159,11 @@ let make =
             "className": classNames,
             "role": "dialog",
             "style": style,
-            "tabIndex": "-1"
+            "tabIndex": "-1",
           },
-          [|dialog|]
+          [|dialog|],
         );
-      }
+      },
   /* willUpdate: fun _oldAndNewSelf => (), */
 };
 
@@ -170,7 +177,7 @@ module Header = {
         ~className: option(string)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
         ~closeAriaLabel: string="Close",
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -178,7 +185,7 @@ module Header = {
         ["modal-header", unwrapStr(i, className)] |> String.concat(" ");
       let closeButton =
         switch (toggle) {
-        | None => ReasonReact.nullElement
+        | None => ReasonReact.null
         | Some(cb) =>
           ReasonReact.createDomElement(
             "button",
@@ -186,29 +193,31 @@ module Header = {
               "type": "button",
               "onClick": cb,
               "className": "close",
-              "aria-label": closeAriaLabel
+              "aria-label": closeAriaLabel,
             },
             [|
               ReasonReact.createDomElement(
                 "span",
                 ~props={"aria-hidden": "true"},
-                [|ReasonReact.stringToElement(Js.String.fromCharCode(215))|]
-              )
-            |]
+                [|
+                  ReasonReact.string(Js.String.fromCharCode(215)),
+                |],
+              ),
+            |],
           )
         };
       let inner =
         ReasonReact.createDomElement(
           tag,
           ~props={"className": "modal-title"},
-          children
+          children,
         );
       ReasonReact.createDomElement(
         wrapTag,
         ~props={"className": classes},
-        [|inner, closeButton|]
+        [|inner, closeButton|],
       );
-    }
+    },
   };
 };
 
@@ -219,7 +228,7 @@ module Body = {
         ~tag: string="div",
         ~className: option(string)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
-        children
+        children,
       ) => {
     ...component,
     render: _self =>
@@ -227,10 +236,10 @@ module Body = {
         tag,
         ~props={
           "className":
-            String.concat(" ", ["modal-body", unwrapStr(i, className)])
+            String.concat(" ", ["modal-body", unwrapStr(i, className)]),
         },
-        children
-      )
+        children,
+      ),
   };
 };
 
@@ -240,7 +249,7 @@ module Footer = {
       (
         ~tag: string="div",
         ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */ children
+        /* cssModule::(cssModule: option (Js.t {..}))=? */ children,
       ) => {
     ...component,
     render: _self =>
@@ -248,9 +257,9 @@ module Footer = {
         tag,
         ~props={
           "className":
-            String.concat(" ", ["modal-footer", unwrapStr(i, className)])
+            String.concat(" ", ["modal-footer", unwrapStr(i, className)]),
         },
-        children
-      )
+        children,
+      ),
   };
 };

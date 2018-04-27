@@ -3,7 +3,7 @@ include WidgetPlaying.Bootstrap;
 let code: string =
   [%bs.raw {|require('Examples/AlertExample.re')|}] |> Examples.prepCode;
 
-let se = ReasonReact.stringToElement;
+let se = ReasonReact.string;
 
 type action =
   | Toggle;
@@ -23,9 +23,9 @@ let make = (~message, _children) => {
     <Examples.Example title="Alerts">
       <Alert.Auto color=Colors.Color.Warning>
         <Alert.Heading>
-          (ReasonReact.stringToElement("Success"))
+          (ReasonReact.string("Success"))
         </Alert.Heading>
-        <p> (ReasonReact.stringToElement(message)) </p>
+        <p> (ReasonReact.string(message)) </p>
       </Alert.Auto>
       (Examples.highlight(code))
     </Examples.Example>

@@ -3,7 +3,7 @@ include WidgetPlaying.Bootstrap;
 let code: string =
   [%bs.raw {|require('Examples/CollapseExample.re')|}] |> Examples.prepCode;
 
-let se = ReasonReact.stringToElement;
+let se = ReasonReact.string;
 
 module Collapser = {
   type action =

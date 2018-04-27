@@ -201,8 +201,8 @@ module MyTransition = {
       },
     render: _self =>
       <div>
-        <strong> (ReasonReact.stringToElement("Success")) </strong>
-        <p> (ReasonReact.stringToElement(message)) </p>
+        <strong> (ReasonReact.string("Success")) </strong>
+        <p> (ReasonReact.string(message)) </p>
       </div> /* self.reduce (fun () => Mounted), */ /* didMount: fun _self => ReasonReact.Update Entering, */
   };
 };

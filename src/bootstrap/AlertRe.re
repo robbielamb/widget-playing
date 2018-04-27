@@ -32,7 +32,7 @@ let make =
   ...component,
   initialState: () => {currentAction: isOpen ? Open : Closed, timer: ref(None)},
   retainedProps: ({isOpen: isOpen}: retainedProps),
-  didMount: _self => ReasonReact.NoUpdate,
+  didMount: _self => (),
   willReceiveProps: self =>
     if (self.state.currentAction === Open && isOpen === false) {
       let timer = Js.Global.setTimeout((_) => self.send(Closed), 250);
@@ -65,7 +65,7 @@ let make =
       ["close", unwrapStr(i, closeClassName)] |> String.concat(" ");
     let toggleElement =
       switch (toggle) {
-      | None => ReasonReact.nullElement
+      | None => ReasonReact.null
       | Some(cb) =>
         ReasonReact.createDomElement(
           "button",
@@ -79,7 +79,7 @@ let make =
             ReasonReact.createDomElement(
               "span",
               ~props={"aria-hidden": "true"},
-              [|ReasonReact.stringToElement(Js.String.fromCharCode(215))|]
+              [|ReasonReact.string(Js.String.fromCharCode(215))|]
             )
           |]
         )
@@ -106,7 +106,7 @@ let make =
         children
       );
     self.state.currentAction === Closed ?
-      ReasonReact.nullElement : alertElement;
+      ReasonReact.null : alertElement;
   }
 };
 
