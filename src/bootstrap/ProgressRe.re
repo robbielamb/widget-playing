@@ -48,7 +48,7 @@ let make =
         ~props={"className": progressClasses, "role": "progressbar"}
       );
     switch (multi, bar) {
-    | (true, true) => ReasonReact.arrayToElement(children) /*** This option doesn't actually make sense. */
+    | (true, true) => ReasonReact.array(children) /*** This option doesn't actually make sense. */
     | (true, false) => wrapper(children)
     | (false, true) => progressBar
     | (false, false) => wrapper([|progressBar|])
