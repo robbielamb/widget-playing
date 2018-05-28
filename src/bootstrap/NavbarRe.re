@@ -16,8 +16,6 @@ let component = ReasonReact.statelessComponent("NavBar");
 let make =
     (
       ~light: bool=false,
-      ~inverse: bool=false,
-      ~full: bool=false,
       ~fixed: option(Fixed.t)=?,
       ~sticky: option(string)=?,
       ~color: option(ColorsRe.Background.t)=?,
@@ -44,9 +42,7 @@ let make =
       [
         "navbar",
         toggleable ? "navbar-toggleable" : "",
-        light ? "navbar-light" : "",
-        inverse ? "navbar-inverse" : "",
-        full ? "navbar-full" : "",
+        light ? "navbar-light" : "navbar-dark",
         unwrapStr(ColorsRe.Background.toString, color),
         fixedClass(fixed),
         stickyClass(sticky),
@@ -68,7 +64,7 @@ module Brand = {
         ~tag: string="a",
         ~className: option(string)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
-        ~href: string="#",
+        ~href: string="",
         children
       ) => {
     ...component,
@@ -90,25 +86,25 @@ module Toggler = {
       (
         ~tag: string="button",
         ~_type: string="button",
+        ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
         ~className: option(string)=?,
-        ~right: bool=false,
-        ~left: bool=false,
-        children
+        _children
       ) => {
     ...component,
     render: _self => {
+      let span = <span className="navbar-toggler-icon"/>;
       let classes =
         [
           "navbar-toggler",
-          right ? "navbar-toggler-right" : "",
-          left ? "navbar-toggler-left" : "",
           unwrapStr(i, className)
         ]
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
-        ~props={"type": _type, "className": classes},
-        children
+        ~props={"type": _type, "className": classes,
+        "onClick": Js.Nullable.fromOption(onClick),
+      },
+       [|span|]
       );
     }
   };
