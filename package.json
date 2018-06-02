@@ -8,7 +8,7 @@
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-transition-group": "^2.3.1",
-    "reason-react": "^0.4.1"
+    "reason-react": "^0.4.2"
   },
   "scripts": {
     "build": "bsb -make-world",
@@ -19,7 +19,7 @@
   "devDependencies": {
     "bootstrap": "^4.1.1",
     "bs-jest": "^0.1.0",
-    "bs-platform": "^3.0.0",
+    "bs-platform": "^3.1.4",
     "concurrently": "^3.5.1",
     "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^0.28.11",

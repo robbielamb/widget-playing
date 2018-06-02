@@ -31,7 +31,7 @@ let make =
       ~tag: string="input",
       ~id: option(string)=?,
       ~name: string="",
-      ~_type: inputType=Text,
+      ~type_: inputType=Text,
       ~size: Size.t=Size.None,
       ~plainText: bool=false,
       ~placeholder: option(string)=?,
@@ -47,20 +47,20 @@ let make =
   ...component,
   render: _self => {
     let checkInput =
-      switch (_type) {
+      switch (type_) {
       | Radio => true
       | Checkbox => true
       | _ => false
       };
-    let fileInput = _type === File;
+    let fileInput = type_ === File;
     let tag =
-      switch (_type) {
+      switch (type_) {
       | TextArea => "textarea"
       | Select => "select"
       | _ => tag
       };
     let typeAttribute =
-      switch (_type) {
+      switch (type_) {
       | Select => ""
       | TextArea => ""
       | Text => "text"

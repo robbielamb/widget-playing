@@ -236,7 +236,7 @@ module Item = {
         | None => "button"
         | Some(_) => "a"
         };
-      let _type =
+      let type_ =
         switch (onClick, tag) {
         | (Some(_), "button") => Some("button")
         | (_, _) => None
@@ -255,7 +255,7 @@ module Item = {
           "className": classes,
           "tabIndex": tabIndex,
           "onClick": self.handle(click),
-          "type": Js.Nullable.fromOption(_type),
+          "type": Js.Nullable.fromOption(type_),
           "href": Js.Nullable.fromOption(href)
         },
         children

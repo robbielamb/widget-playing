@@ -15,7 +15,7 @@ let make = _children => {
         <Form.Group>
           <Input.Label _for="exampleEmail"> (se("Email")) </Input.Label>
           <Input
-            _type=Input.Email
+            type_=Input.Email
             name="email"
             id="exampleEmail"
             placeholder="with a placeholder"
@@ -24,7 +24,7 @@ let make = _children => {
         <Form.Group>
           <Input.Label _for="examplePassword"> (se("Password")) </Input.Label>
           <Input
-            _type=Input.Password
+            type_=Input.Password
             name="email"
             id="examplePassword"
             placeholder="password here"
@@ -33,7 +33,7 @@ let make = _children => {
         <Form.Group>
           <Input.Label _for="selectExample"> (se("Select")) </Input.Label>
           <Input
-            _type=Input.Select
+            type_=Input.Select
             name="select"
             id="selectExample"
             placeholder="foo">
@@ -48,7 +48,7 @@ let make = _children => {
             (se("Select Multiple"))
           </Input.Label>
           <Input
-            _type=Input.Select
+            type_=Input.Select
             name="multi-select"
             id="selectMultiExample"
             placeholder="foo"
@@ -64,7 +64,7 @@ let make = _children => {
         <Form.Group>
           <Input.Label _for="exampleTextArea"> (se("Text Area")) </Input.Label>
           <Input
-            _type=Input.TextArea
+            type_=Input.TextArea
             name="textarea"
             id="exampleTextArea"
             placeholder="with a placeholder"
@@ -75,7 +75,7 @@ let make = _children => {
             (se("File Upload Time"))
           </Input.Label>
           <Input
-            _type=Input.File
+            type_=Input.File
             name="file"
             id="exampleFile"
             placeholder="with a placeholder"
@@ -92,26 +92,26 @@ let make = _children => {
           <legend> (se("Hello Radio (buttons>")) </legend>
           <Form.Check>
             <Input.Label check=true>
-              <Input _type=Input.Radio name="radio1" />
+              <Input type_=Input.Radio name="radio1" />
               (se(" Radio 1"))
             </Input.Label>
           </Form.Check>
           <Form.Check>
             <Input.Label check=true>
-              <Input _type=Input.Radio name="radio1" />
+              <Input type_=Input.Radio name="radio1" />
               (se(" Radio 2"))
             </Input.Label>
           </Form.Check>
           <Form.Check disabled=true>
             <Input.Label check=true>
-              <Input _type=Input.Radio name="radio1" disabled=true />
+              <Input type_=Input.Radio name="radio1" disabled=true />
               (se(" Radio 3 - Disabled"))
             </Input.Label>
           </Form.Check>
         </Form.Group>
         <Form.Check>
           <Input.Label check=true>
-            <Input _type=Input.Checkbox name="check-box" />
+            <Input type_=Input.Checkbox name="check-box" />
             (se("  This is a checkbox"))
           </Input.Label>
         </Form.Check>

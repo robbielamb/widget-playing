@@ -9,7 +9,7 @@ module Transition = {
   external transition : ReasonReact.reactClass = "Transition";
   let make =
       (
-        ~_in: bool=false,
+        ~in_: bool=false,
         ~mountOnEnter: bool=false,
         ~unmountOnExit: bool=false,
         ~appear: bool=false,
@@ -29,7 +29,7 @@ module Transition = {
     ReasonReact.wrapJsForReason(
       ~reactClass=transition,
       ~props={
-        "in": _in,
+        "in": in_,
         "mountOnEnter": mountOnEnter,
         "unmountOnExit": unmountOnExit,
         "appear": appear,
@@ -109,7 +109,7 @@ module CSSTransition = {
   };
   let make =
       (
-        ~_in: bool=false,
+        ~in_: bool=false,
         ~mountOnEnter: bool=false,
         ~unmountOnExit: bool=false,
         ~appear: bool=false,
@@ -130,7 +130,7 @@ module CSSTransition = {
     ReasonReact.wrapJsForReason(
       ~reactClass=cssTransition,
       ~props={
-        "in": _in,
+        "in": in_,
         "mountOnEnter": mountOnEnter,
         "unmountOnExit": unmountOnExit,
         "appear": appear,
@@ -168,15 +168,15 @@ module MyTransition = {
   type retainedProps = {
     message: string,
     numbers: int,
-    _in: bool
+    in_: bool
   };
   let component =
     ReasonReact.reducerComponentWithRetainedProps("MyTransition");
   let make =
-      (~message: string, ~_in: bool, ~appear: bool, ~enter: bool, _children) => {
+      (~message: string, ~in_: bool, ~appear: bool, ~enter: bool, _children) => {
     ...component,
     initialState: () =>
-      switch (_in, appear) {
+      switch (in_, appear) {
       | (true, true) => {status: Exited, nextStatus: Entering, timeoutId: None}
       | (true, false) => {
           status: Entered,
@@ -190,7 +190,7 @@ module MyTransition = {
         Js.log("They are different");
       },
     /* Js.Global.setTimeout */
-    retainedProps: ({message, numbers: 42, _in}: retainedProps),
+    retainedProps: ({message, numbers: 42, in_}: retainedProps),
     reducer: (action: action, _state) =>
       switch (action) {
       | Mounted =>

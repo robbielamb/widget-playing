@@ -85,7 +85,7 @@ module Toggler = {
   let make =
       (
         ~tag: string="button",
-        ~_type: string="button",
+        ~type_: string="button",
         ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
         ~className: option(string)=?,
         _children
@@ -101,7 +101,7 @@ module Toggler = {
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
-        ~props={"type": _type, "className": classes,
+        ~props={"type": type_, "className": classes,
         "onClick": Js.Nullable.fromOption(onClick),
       },
        [|span|]

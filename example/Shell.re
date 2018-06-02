@@ -8,7 +8,7 @@ type action =
 
 let navTo = (route, event, _self) => {
   ReactEventRe.Mouse.preventDefault(event);
-  Navigate._to(route);
+  Navigate.to_(route);
 };
 
 let navNav = (handle, currentRoute, routeTo, name) => {

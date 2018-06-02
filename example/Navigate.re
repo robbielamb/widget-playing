@@ -15,7 +15,7 @@ let pathFor = (route) =>
   | Routes.NotFound => "/notFound"
   };
 
-let _to = (route) => {
+let to_ = (route) => {
   let path = pathFor(route);
   ReasonReact.Router.push(path);
 };
