@@ -133,7 +133,7 @@ module Label = {
     ...component,
     render: _self => {
       let colClasses = processShapeList(xs, sm, md, lg, xl);
-      let containsColClasses = List.length(colClasses) > 0;
+      let containsColClasses = Belt.List.length(colClasses) > 0;
       let classes =
         [
           unwrapStr(i, className),
@@ -149,7 +149,7 @@ module Label = {
           ! check && ! containsColClasses ? "form-control-label" : "",
           ColorsRe.Text.unWrap(color)
         ]
-        |> List.append(colClasses)
+        |. Belt.List.concat(colClasses)
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,

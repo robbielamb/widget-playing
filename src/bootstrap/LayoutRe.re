@@ -103,13 +103,13 @@ module ColSizes = {
   };
   let processShapeList = (xs, sm, md, lg, xl) =>
     [("xs", xs), ("sm", sm), ("md", md), ("lg", lg), ("xl", xl)]
-    |> List.map(((col, maybeShape)) =>
+    |. Belt.List.map(((col, maybeShape)) =>
          switch (maybeShape) {
          | None => []
          | Some(shape) => genClasses(col, shape)
          }
        )
-    |> List.flatten;
+    |> Belt.List.flatten;
 };
 
 module Col = {
@@ -130,7 +130,7 @@ module Col = {
     render: _self => {
       let classShapeList = processShapeList(xs, sm, md, lg, xl);
       let classes =
-        List.append([unwrapStr(i, className)], classShapeList)
+        Belt.List.concat([unwrapStr(i, className)], classShapeList)
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
