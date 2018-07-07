@@ -13,7 +13,7 @@ let make = _children => {
     <Examples.Example title="Forms & Input">
       <Form>
         <Form.Group>
-          <Input.Label _for="exampleEmail"> (se("Email")) </Input.Label>
+          <Input.Label for_="exampleEmail"> (se("Email")) </Input.Label>
           <Input
             type_=Input.Email
             name="email"
@@ -22,7 +22,7 @@ let make = _children => {
           />
         </Form.Group>
         <Form.Group>
-          <Input.Label _for="examplePassword"> (se("Password")) </Input.Label>
+          <Input.Label for_="examplePassword"> (se("Password")) </Input.Label>
           <Input
             type_=Input.Password
             name="email"
@@ -31,7 +31,17 @@ let make = _children => {
           />
         </Form.Group>
         <Form.Group>
-          <Input.Label _for="selectExample"> (se("Select")) </Input.Label>
+          <Input.Label for_="exampleRequired"> (se("Required Field")) </Input.Label>
+          <Input
+            type_=Input.Text
+            name="required"
+            id="exampleRequired"
+            placeholder="Required Text"
+            required=true
+          />
+        </Form.Group>
+        <Form.Group>
+          <Input.Label for_="selectExample"> (se("Select")) </Input.Label>
           <Input
             type_=Input.Select
             name="select"
@@ -44,7 +54,7 @@ let make = _children => {
           </Input>
         </Form.Group>
         <Form.Group>
-          <Input.Label _for="selecMultitExample">
+          <Input.Label for_="selecMultitExample">
             (se("Select Multiple"))
           </Input.Label>
           <Input
@@ -62,7 +72,7 @@ let make = _children => {
           </Input>
         </Form.Group>
         <Form.Group>
-          <Input.Label _for="exampleTextArea"> (se("Text Area")) </Input.Label>
+          <Input.Label for_="exampleTextArea"> (se("Text Area")) </Input.Label>
           <Input
             type_=Input.TextArea
             name="textarea"
@@ -71,7 +81,7 @@ let make = _children => {
           />
         </Form.Group>
         <Form.Group>
-          <Input.Label _for="exampleFile">
+          <Input.Label for_="exampleFile">
             (se("File Upload Time"))
           </Input.Label>
           <Input

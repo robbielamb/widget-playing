@@ -42,7 +42,8 @@ let make =
       ~onChange: option(ReactEventRe.Form.t => unit)=?,
       ~checked: option(bool)=?,
       ~value: option(string)=?,
-      children
+      ~required: bool=false,
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -78,9 +79,7 @@ let make =
       | (false, false, true) => "form-check-input"
       | (_, _, _) => "form-control"
       };
-    let className =
-      [unwrapStr(i, className), Size.toString(size), formControlClass]
-      |> String.concat(" ");
+    let className = [unwrapStr(i, className), Size.toString(size), formControlClass] |> String.concat(" ");
     let myProps: Js.t({..}) = {
       "className": className,
       "id": Js.Nullable.fromOption(id),
@@ -92,10 +91,11 @@ let make =
       "onInput": Js.Nullable.fromOption(onInput),
       "onChange": Js.Nullable.fromOption(onChange),
       "checked": Js.Nullable.fromOption(checked),
-      "value": Js.Nullable.fromOption(value)
+      "value": Js.Nullable.fromOption(value),
+      "required": required,
     };
     ReasonReact.createDomElement(tag, ~props=myProps, children);
-  }
+  },
   /* let myProps=      multiple ? {..myProps, "multiple": "multi"} : myProps; */
 };
 
@@ -115,7 +115,7 @@ module Label = {
   let make =
       (
         ~tag: string="label",
-        ~_for: option(string)=?,
+        ~for_: option(string)=?,
         ~hidden: bool=false,
         ~check: bool=false,
         ~inline: bool=false,
@@ -128,7 +128,7 @@ module Label = {
         ~lg: option(shape)=?,
         ~xl: option(shape)=?,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -147,15 +147,15 @@ module Label = {
           },
           containsColClasses ? "col-form-label" : "",
           ! check && ! containsColClasses ? "form-control-label" : "",
-          ColorsRe.Text.unWrap(color)
+          ColorsRe.Text.unWrap(color),
         ]
         |. Belt.List.concat(colClasses)
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
-        ~props={"className": classes, "htmlFor": Js.Nullable.fromOption(_for)},
-        children
+        ~props={"className": classes, "htmlFor": Js.Nullable.fromOption(for_)},
+        children,
       );
-    }
+    },
   };
 };

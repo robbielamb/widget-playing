@@ -26,6 +26,12 @@
   "reason": {
     "react-jsx": 2
   },
+  
+  "package-specs": {
+    "module":"es6",
+    "in-source": true
+  },
   "refmt": 3,
-  "namespace": true
+  "namespace": true,
+  "suffix": ".bs.js"
 }
