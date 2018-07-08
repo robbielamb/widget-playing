@@ -22,6 +22,7 @@ type inputType =
   | Select
   | Radio
   | Checkbox
+  | Date
   | Url;
 
 let component = ReasonReact.statelessComponent("Input");
@@ -70,6 +71,7 @@ let make =
       | Radio => "radio"
       | Checkbox => "checkbox"
       | Email => "email"
+      | Date => "date"
       | Url => "url"
       };
     let formControlClass =

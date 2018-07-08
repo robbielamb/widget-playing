@@ -25,7 +25,7 @@ let make = _children => {
           <Input.Label for_="examplePassword"> (se("Password")) </Input.Label>
           <Input
             type_=Input.Password
-            name="email"
+            name="password"
             id="examplePassword"
             placeholder="password here"
           />
@@ -40,6 +40,16 @@ let make = _children => {
             required=true
           />
         </Form.Group>
+        <Form.Group>
+        <Input.Label for_="exampleDate"> (se("Date")) </Input.Label>
+        <Input
+          type_=Input.Date
+          name="exampleDate"
+          id="exampleDate"
+          placeholder="Birthday!"
+          required=true
+        />
+      </Form.Group>
         <Form.Group>
           <Input.Label for_="selectExample"> (se("Select")) </Input.Label>
           <Input
