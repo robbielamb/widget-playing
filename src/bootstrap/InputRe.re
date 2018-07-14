@@ -14,15 +14,18 @@ module Size = {
 };
 
 type inputType =
-  | Text
-  | TextArea
-  | Email
-  | Password
-  | File
-  | Select
-  | Radio
+  | Button
   | Checkbox
   | Date
+  | Email
+  | File
+  | Password
+  | Radio
+  | Reset
+  | Select
+  | Submit
+  | Text
+  | TextArea
   | Url;
 
 let component = ReasonReact.statelessComponent("Input");
@@ -43,6 +46,7 @@ let make =
       ~onChange: option(ReactEventRe.Form.t => unit)=?,
       ~onBlur: option(ReactEventRe.Focus.t => unit)=?,
       ~checked: option(bool)=?,
+      ~valid: option(bool)=?,
       ~value: option(string)=?,
       ~required: bool=false,
       children,
@@ -64,15 +68,18 @@ let make =
       };
     let typeAttribute =
       switch (type_) {
+      | Button => "button"
+      | Checkbox => "checkbox"
+      | Date => "date"
+      | Email => "email"
+      | File => "file"
+      | Password => "password"
+      | Radio => "radio"
+      | Reset => "reset"
       | Select => ""
+      | Submit => "submit"
       | TextArea => ""
       | Text => "text"
-      | Password => "password"
-      | File => "file"
-      | Radio => "radio"
-      | Checkbox => "checkbox"
-      | Email => "email"
-      | Date => "date"
       | Url => "url"
       };
     let formControlClass =
@@ -82,7 +89,14 @@ let make =
       | (false, false, true) => "form-check-input"
       | (_, _, _) => "form-control"
       };
-    let className = [unwrapStr(i, className), Size.toString(size), formControlClass] |> String.concat(" ");
+    let validClassName =
+      switch (valid) {
+      | None => ""
+      | Some(true) => "is-valid"
+      | Some(false) => "is-invalid"
+      };
+    let className =
+      [unwrapStr(i, className), Size.toString(size), formControlClass, validClassName] |> String.concat(" ");
     let myProps: Js.t({..}) = {
       "className": className,
       "id": Js.Nullable.fromOption(id),
@@ -100,7 +114,6 @@ let make =
     };
     ReasonReact.createDomElement(tag, ~props=myProps, children);
   },
-  /* let myProps=      multiple ? {..myProps, "multiple": "multi"} : myProps; */
 };
 
 module Label = {
