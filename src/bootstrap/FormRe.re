@@ -18,7 +18,22 @@ let make =
   }
 };
 
-module Feedback = {};
+module Feedback = {
+  let component = ReasonReact.statelessComponent("Form.Feedback");
+
+  let make = (
+    ~tag: string="div",
+    ~valid: bool=true,    
+
+    children
+  ) => {
+    ...component,
+    render: (_self) => {
+      let className = valid ? "is-valid" : "is-invalid";
+      ReasonReact.createDomElement(tag, ~props={"className": className}, children);
+    }
+  };
+};
 
 module Group = {
   let component = ReasonReact.statelessComponent("Form.Group");

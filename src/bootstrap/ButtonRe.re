@@ -34,6 +34,18 @@ module Size = {
     };
 };
 
+module Type = {
+  type t = 
+    | Button
+    | Submit;
+  let toString = type_ => {
+    switch(type_) {
+    | Button => "button"
+    | Submit => "sumbit"
+   }
+  };
+};
+
 let mapBool = b =>
   switch (b) {
   | None => Js.Nullable.null
@@ -50,6 +62,7 @@ let make =
       ~outline: bool=false,
       ~size: option(Size.t)=?,
       ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
+      ~type_: Type.t=Type.Button,
       ~ariaHaspopup: option(bool)=?,
       ~ariaExpanded: option(bool)=?,
       ~className: option(string)=?,
@@ -75,11 +88,13 @@ let make =
         unwrapStr(i, className)
       ]
       |> String.concat(" ");
+    let buttonType = Type.toString(type_);
     ReasonReact.createDomElement(
       tag,
       ~props={
         "className": classes,
         "onClick": Js.Nullable.fromOption(onClick),
+        "type": buttonType,
         "aria-haspopup": mapBool(ariaHaspopup),
         "aria-expanded": mapBool(ariaExpanded)
       },
