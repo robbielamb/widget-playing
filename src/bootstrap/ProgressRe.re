@@ -31,7 +31,7 @@ let make =
       ]
       |> String.concat(" ");
     let progressBar =
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         "div",
         ~props={
           "className": progressBarClasses,
@@ -39,13 +39,13 @@ let make =
           "aria-valuenow": value,
           "aria-valuemin": 0,
           "aria-valuemax": max,
-        },
+        } |. ReactDOMRe.objToDOMProps,
         children,
       );
     let wrapper =
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": progressClasses, "role": "progressbar"},
+        ~props={"className": progressClasses, "role": "progressbar"} |. ReactDOMRe.objToDOMProps,
       );
     switch (multi, bar) {
     | (true, true) => ReasonReact.array(children) /*** This option doesn't actually make sense. */

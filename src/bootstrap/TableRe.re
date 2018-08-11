@@ -29,15 +29,15 @@ let make =
       ]
       |> String.concat(" ");
     let table =
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes}  |. ReactDOMRe.objToDOMProps,
         children,
       );
     responsive ?
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElement(
         responsiveTag,
-        ~props={"className": "table-responsive"},
+        ~props={"className": "table-responsive"} |. ReactDOMRe.objToDOMProps,
         [|table|],
       ) :
       table;

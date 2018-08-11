@@ -26,9 +26,9 @@ let make =
         unwrapStr(i, className),
       ]
       |> String.concat(" ");
-    ReasonReact.createDomElement(
+    ReactDOMRe.createElementVariadic(
       tag,
-      ~props={"className": classes},
+      ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
       children,
     );
   },
@@ -63,9 +63,9 @@ module Item = {
     render: _self => {
       let classes =
         ["nav-item", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -77,12 +77,12 @@ module Link = {
   let make =
       (
         ~tag: string="a",
-        ~getRef:
-           option([ | `String(string) | `Element(ReasonReact.reactElement)])=?,
+        /* ~getRef:
+           option([ | `String(string) | `Element(ReasonReact.reactElement)])=?, */
         ~disabled: bool=false,
         ~active: bool=false,
         ~className: option(string)=?,
-        ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
+        ~onClick: option(ReactEvent.Mouse.t => unit)=?,
         ~href: option(string)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
         children,
@@ -106,13 +106,13 @@ module Link = {
           unwrapStr(i, className),
         ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
         ~props={
           "className": classes,
           "onClick": self.handle(click),
           "href": Js.Nullable.fromOption(href),
-        },
+        } |. ReactDOMRe.objToDOMProps,
         children,
       );
     },

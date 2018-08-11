@@ -26,7 +26,7 @@ let component = ReasonReact.reducerComponent("Shell");
 let make = _children => {
   ...component,
   initialState: () => {
-    currentRoute: Router.currentPath() |> Router.pathHandler,
+    currentRoute: ReasonReact.Router.dangerouslyGetInitialUrl() |> Router.urlHandler,
   },
   didMount: self => {
     let watcherId =

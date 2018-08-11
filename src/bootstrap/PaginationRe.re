@@ -27,9 +27,9 @@ let make =
     let className =
       ["pagination", Size.toString(size), unwrapStr(i, className)]
       |> String.concat(" ");
-    ReasonReact.createDomElement(
+    ReactDOMRe.createElementVariadic(
       tag,
-      ~props={"className": className},
+      ~props={"className": className} |. ReactDOMRe.objToDOMProps,
       children,
     );
   },
@@ -55,9 +55,9 @@ module Item = {
           unwrapStr(i, className),
         ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": className},
+        ~props={"className": className} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -74,7 +74,7 @@ module Link = {
         ~next: bool=false,
         ~previous: bool=false,
         ~href: string="",
-        ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
+        ~onClick: option(ReactEvent.Mouse.t => unit)=?,
         ~className: option(string)=?,
         children,
       ) => {
@@ -96,14 +96,14 @@ module Link = {
         | _ => children
         };
       let wrapChildren = children => [|
-        ReasonReact.createDomElement(
+        ReactDOMRe.createElementVariadic(
           "span",
-          ~props={"aria-hidden": true, "key": "caret"},
+          ~props={"aria-hidden": true, "key": "caret"} |. ReactDOMRe.objToDOMProps,
           children,
         ),
-        ReasonReact.createDomElement(
+        ReactDOMRe.createElementVariadic(
           "span",
-          ~props={"className": "sr-only", "key": "sr"},
+          ~props={"className": "sr-only", "key": "sr"} |. ReactDOMRe.objToDOMProps,
           [|ReasonReact.string(ariaLabel)|],
         ),
       |];
@@ -111,14 +111,14 @@ module Link = {
         previous || next ? wrapChildren(children) : children;
       let className =
         [unwrapStr(i, className), "page-link"] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
         ~props={
           "className": className,
           "aria-label": ariaLabel,
           "href": href,
           "onClick": Js.Nullable.fromOption(onClick),
-        },
+        } |. ReactDOMRe.objToDOMProps,
         wrappedChildren,
       );
     },

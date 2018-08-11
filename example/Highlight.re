@@ -10,8 +10,8 @@ let make =
   ReasonReact.wrapJsForReason(
     ~reactClass=highlightClass,
     ~props={
-      "className": Js.Null_undefined.fromOption(className),
-      "languages": Js.Null_undefined.fromOption(languages),
+      "className": Js.Nullable.fromOption(className),
+      "languages": Js.Nullable.fromOption(languages),
     },
     children,
   );

@@ -49,9 +49,9 @@ let make =
         unwrapStr(i, className),
       ]
       |> String.concat(" ");
-    ReasonReact.createDomElement(
+    ReactDOMRe.createElementVariadic(
       tag,
-      ~props={"className": classes, "role": role},
+      ~props={"className": classes, "role": role} |. ReactDOMRe.objToDOMProps,
       children,
     );
   },
@@ -71,9 +71,9 @@ module Brand = {
     render: _self => {
       let classes =
         ["navbar-brand", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes, "href": href},
+        ~props={"className": classes, "href": href} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -86,7 +86,7 @@ module Toggler = {
       (
         ~tag: string="button",
         ~type_: string="button",
-        ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
+        ~onClick: option(ReactEvent.Mouse.t => unit)=?,
         ~className: option(string)=?,
         _children,
       ) => {
@@ -95,13 +95,13 @@ module Toggler = {
       let span = <span className="navbar-toggler-icon" />;
       let classes =
         ["navbar-toggler", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
         ~props={
           "type": type_,
           "className": classes,
           "onClick": Js.Nullable.fromOption(onClick),
-        },
+        } |. ReactDOMRe.objToDOMProps,
         [|span|],
       );
     },
