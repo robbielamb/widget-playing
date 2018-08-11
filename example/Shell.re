@@ -1,4 +1,3 @@
-
 type state = {currentRoute: Routes.t};
 
 type action =
@@ -7,7 +6,7 @@ type action =
   | Close;
 
 let navTo = (route, event, _self) => {
-  ReactEventRe.Mouse.preventDefault(event);
+  ReactEvent.Mouse.preventDefault(event);
   Navigate.to_(route);
 };
 
@@ -26,17 +25,19 @@ let component = ReasonReact.reducerComponent("Shell");
 
 let make = _children => {
   ...component,
-  initialState: () => {currentRoute: ( Router.currentPath() |> Router.pathHandler)},
+  initialState: () => {
+    currentRoute: Router.currentPath() |> Router.pathHandler,
+  },
   didMount: self => {
-    let watcherId = ReasonReact.Router.watchUrl(url => {
-      let route = Router.urlHandler(url);
-      self.send(SetRoute(route));
-    });
+    let watcherId =
+      ReasonReact.Router.watchUrl(url => {
+        let route = Router.urlHandler(url);
+        self.send(SetRoute(route));
+      });
     self.onUnmount(() => ReasonReact.Router.unwatchUrl(watcherId));
   },
- 
   reducer: (action, _state) =>
-    switch action {
+    switch (action) {
     | SetRoute(route) => ReasonReact.Update({currentRoute: route})
     | _ => ReasonReact.NoUpdate
     },
@@ -57,7 +58,7 @@ let make = _children => {
             md=(
               Bootstrap.Layout.Col.shape(
                 ~size=Bootstrap.Layout.ColSizes.Size(2),
-                ()
+                (),
               )
             )>
             <p> (ReasonReact.string("Select Example")) </p>
@@ -81,5 +82,5 @@ let make = _children => {
         </Bootstrap.Layout.Row>
       </Bootstrap.Layout.Container>
     </div>;
-  }
+  },
 };

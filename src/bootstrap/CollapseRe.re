@@ -12,7 +12,7 @@ type state = {
   currentState: action,
   timer: ref(option(Js.Global.timeoutId)),
   element: ref(option(ReasonReact.reactRef)),
-  height: ref(option(string))
+  height: ref(option(string)),
 };
 
 type retainedProps = {isOpen: bool};
@@ -35,7 +35,8 @@ let getHeight = maybeElement =>
   | Some(el) => ReasonReact.refToJsObj(el)##scrollHeight ++ "px"
   };
 
-let setRef = (theRef, state) => state.element := Js.Nullable.toOption(theRef);
+let setRef = (theRef, state) =>
+  state.element := Js.Nullable.toOption(theRef);
 
 /* state.height := getHeight !state.element */
 let component = ReasonReact.reducerComponentWithRetainedProps("Collapse");
@@ -49,21 +50,21 @@ let make =
       ~onClosed: option(unit => unit)=?,
       ~tag: string="div",
       ~className: option(string)=?,
-      children
+      children,
     ) => {
   ...component,
   initialState: () => {
     currentState: isOpen ? Opened : Closed,
     timer: ref(None),
     element: ref(None),
-    height: ref(None)
+    height: ref(None),
   },
   retainedProps: {
-    isOpen: isOpen
+    isOpen: isOpen,
   },
   willReceiveProps: self => {
     let setTimer = action =>
-      Some(Js.Global.setTimeout((_) => self.send(action), 0));
+      Some(Js.Global.setTimeout(_ => self.send(action), 0));
     if (self.retainedProps.isOpen !== isOpen) {
       let _ = unsetTimer(self.state.timer^);
       switch (self.state.currentState) {
@@ -73,7 +74,7 @@ let make =
           ...self.state,
           currentState: StartClosing,
           timer: ref(setTimer(StartClosing)),
-          height: ref(Some(getHeight(self.state.element^)))
+          height: ref(Some(getHeight(self.state.element^))),
         }
       | Closed
       | StartClosing
@@ -81,7 +82,7 @@ let make =
           ...self.state,
           currentState: StartOpening,
           timer: ref(setTimer(StartOpening)),
-          height: ref(None)
+          height: ref(None),
         }
       };
     } else {
@@ -95,26 +96,26 @@ let make =
   },
   reducer: (action, state) => {
     let setTimer = (send, action, timeout) =>
-      Some(Js.Global.setTimeout((_) => send(action), timeout));
+      Some(Js.Global.setTimeout(_ => send(action), timeout));
     switch (action) {
     | Opened =>
       ReasonReact.UpdateWithSideEffects(
         {...state, currentState: Opened, height: ref(None)},
-        (_self => maybeCall(onOpened))
+        (_self => maybeCall(onOpened)),
       )
     | Closed =>
       ReasonReact.UpdateWithSideEffects(
         {...state, currentState: Closed, height: ref(None)},
-        (_self => maybeCall(onClosed))
+        (_self => maybeCall(onClosed)),
       )
     | StartClosing =>
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
           height: ref(Some(getHeight(state.element^))),
-          currentState: Closing
+          currentState: Closing,
         },
-        (({send}) => send(Closing))
+        (({send}) => send(Closing)),
       )
     | Closing =>
       ReasonReact.UpdateWithSideEffects(
@@ -124,16 +125,16 @@ let make =
             maybeCall(onClosing);
             state.timer := setTimer(send, Closed, 350);
           }
-        )
+        ),
       )
     | StartOpening =>
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
           height: ref(Some(getHeight(state.element^))),
-          currentState: Opening
+          currentState: Opening,
         },
-        (({send}) => send(Opening))
+        (({send}) => send(Opening)),
       )
     | Opening =>
       ReasonReact.SideEffects(
@@ -142,7 +143,7 @@ let make =
             maybeCall(onOpening);
             state.timer := setTimer(send, Opened, 350);
           }
-        )
+        ),
       )
     };
   },
@@ -162,9 +163,9 @@ let make =
       ~props={
         "className": classes,
         "ref": reactRef => setRef(reactRef, self.state),
-        "style": style
+        "style": style,
       },
-      children
+      children,
     );
-  }
+  },
 };

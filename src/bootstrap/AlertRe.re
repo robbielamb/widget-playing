@@ -9,7 +9,7 @@ type action =
 
 type state = {
   currentAction: action,
-  timer: ref(option(Js.Global.timeoutId))
+  timer: ref(option(Js.Global.timeoutId)),
 };
 
 type retainedProps = {isOpen: bool};
@@ -22,20 +22,23 @@ let make =
       ~closeClassName: option(string)=?,
       ~color: Color.t=Color.Success,
       ~isOpen: bool=true,
-      ~toggle: option(ReactEventRe.Mouse.t => unit)=?,
+      ~toggle: option(ReactEvent.Mouse.t => unit)=?,
       ~tag: string="div",
       ~closeAriaLabel: string="Close",
       /* cssModule::(cssModule: option (Js.t {..}))=? */
       ~onClosed: option(unit => unit)=?,
-      children
+      children,
     ) => {
   ...component,
-  initialState: () => {currentAction: isOpen ? Open : Closed, timer: ref(None)},
+  initialState: () => {
+    currentAction: isOpen ? Open : Closed,
+    timer: ref(None),
+  },
   retainedProps: ({isOpen: isOpen}: retainedProps),
   didMount: _self => (),
   willReceiveProps: self =>
     if (self.state.currentAction === Open && isOpen === false) {
-      let timer = Js.Global.setTimeout((_) => self.send(Closed), 250);
+      let timer = Js.Global.setTimeout(_ => self.send(Closed), 250);
       {currentAction: Closing, timer: ref(Some(timer))};
     } else {
       self.state;
@@ -57,7 +60,7 @@ let make =
             | None => ()
             | Some(cb) => cb()
             }
-        )
+        ),
       )
     },
   render: (self: ReasonReact.self(state, retainedProps, action)) => {
@@ -67,21 +70,21 @@ let make =
       switch (toggle) {
       | None => ReasonReact.null
       | Some(cb) =>
-        ReasonReact.createDomElement(
+        ReactDOMRe.createElement(
           "button",
           ~props={
             "type": "button",
             "className": closeClasses,
             "onClick": cb,
-            "aria-label": closeAriaLabel
-          },
+            "aria-label": closeAriaLabel,
+          } |. ReactDOMRe.objToDOMProps,
           [|
-            ReasonReact.createDomElement(
+            ReactDOMRe.createElement(
               "span",
-              ~props={"aria-hidden": "true"},
-              [|ReasonReact.string(Js.String.fromCharCode(215))|]
-            )
-          |]
+              ~props={"aria-hidden": "true"} |. ReactDOMRe.objToDOMProps,
+              [|ReasonReact.string(Js.String.fromCharCode(215))|],
+            ),
+          |],
         )
       };
     let children = ArrayLabels.append([|toggleElement|], children);
@@ -96,18 +99,17 @@ let make =
         "alert",
         "alert-" ++ Color.toString(color),
         transitionClasses,
-        unwrapStr(i, className)
+        unwrapStr(i, className),
       ]
       |> String.concat(" ");
     let alertElement =
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
-        children
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        children,
       );
-    self.state.currentAction === Closed ?
-      ReasonReact.null : alertElement;
-  }
+    self.state.currentAction === Closed ? ReasonReact.null : alertElement;
+  },
 };
 
 module Auto = {
@@ -123,7 +125,7 @@ module Auto = {
         ~closeAriaLabel: string="Close",
         ~onClosed: option(unit => unit)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
-        children
+        children,
       ) => {
     ...component,
     initialState: () => true,
@@ -139,11 +141,11 @@ module Auto = {
           ~tag,
           ~closeAriaLabel,
           ~isOpen=self.state,
-          ~toggle=(_) => self.send(DoClose),
+          ~toggle=_ => self.send(DoClose),
           ~onClosed?,
-          children
-        )
-      )
+          children,
+        ),
+      ),
     /*  ::?cssModule */
   };
 };
@@ -154,11 +156,11 @@ module Link = {
   let make = children => {
     ...component,
     render: _self =>
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         "a",
-        ~props={"className": "alert-link"},
-        children
-      )
+        ~props={"className": "alert-link"} |. ReactDOMRe.objToDOMProps,
+        children,
+      ),
   };
 };
 
@@ -169,11 +171,11 @@ module Heading = {
     render: _self => {
       let classes =
         ["alert-heading", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
-        children
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        children,
       );
-    }
+    },
   };
 };

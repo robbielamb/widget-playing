@@ -63,5 +63,5 @@ let make = _children => {
         </Pagination.Item>
       </Pagination>
       (Examples.exampleHighlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

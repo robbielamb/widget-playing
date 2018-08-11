@@ -1,7 +1,6 @@
 include Bootstrap;
 
-
-[@bs.module] external logo : string = "./logo.svg";
+[@bs.module] external logo: string = "./logo.svg";
 
 let se = ReasonReact.string;
 
@@ -10,7 +9,7 @@ let exampleHighlight = code =>
 
 let highlight = exampleHighlight;
 
-let prepCode = (code: string) : string =>
+let prepCode = (code: string): string =>
   code
   |> Js.String.split("\n")
   |> Js.Array.sliceFrom(7)
@@ -25,6 +24,6 @@ module Example = {
       let _ = Js.Array.unshift(title, children);
       let col = ReasonReact.element(Layout.Col.make(children));
       <Layout.Row className="mb-4 border p-2"> col </Layout.Row>;
-    }
+    },
   };
 };

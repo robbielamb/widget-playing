@@ -24,7 +24,7 @@ let make =
       ~className: option(string)=?,
       /* cssModule::(cssModule: option (Js.t {..}))=? */
       ~toggleable: bool=false,
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -46,15 +46,15 @@ let make =
         unwrapStr(ColorsRe.Background.toString, color),
         fixedClass(fixed),
         stickyClass(sticky),
-        unwrapStr(i, className)
+        unwrapStr(i, className),
       ]
       |> String.concat(" ");
     ReasonReact.createDomElement(
       tag,
       ~props={"className": classes, "role": role},
-      children
+      children,
     );
-  }
+  },
 };
 
 module Brand = {
@@ -65,7 +65,7 @@ module Brand = {
         ~className: option(string)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
         ~href: string="",
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -74,9 +74,9 @@ module Brand = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes, "href": href},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -88,24 +88,22 @@ module Toggler = {
         ~type_: string="button",
         ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
         ~className: option(string)=?,
-        _children
+        _children,
       ) => {
     ...component,
     render: _self => {
-      let span = <span className="navbar-toggler-icon"/>;
+      let span = <span className="navbar-toggler-icon" />;
       let classes =
-        [
-          "navbar-toggler",
-          unwrapStr(i, className)
-        ]
-        |> String.concat(" ");
+        ["navbar-toggler", unwrapStr(i, className)] |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
-        ~props={"type": type_, "className": classes,
-        "onClick": Js.Nullable.fromOption(onClick),
-      },
-       [|span|]
+        ~props={
+          "type": type_,
+          "className": classes,
+          "onClick": Js.Nullable.fromOption(onClick),
+        },
+        [|span|],
       );
-    }
+    },
   };
 };

@@ -87,7 +87,7 @@ let make =
     | BackgroundClick =>
       ReasonReact.Update({
         ...state,
-        isBodyOverflowing: ! state.isBodyOverflowing,
+        isBodyOverflowing: !state.isBodyOverflowing,
       })
     | DidMount =>
       ReasonReact.SideEffects(
@@ -134,7 +134,7 @@ let make =
   /* willReceiveProps: fun self => self.state, */
   /* shouldUpdate: fun {oldSelf, newSelf} => (oldSelf.retainedProps.isOpen === newSelf.retainedProps.isOpen) ? true : false, */
   render: (_self: ReasonReact.self(state, retainedProps, actions)) =>
-    ! isOpen ?
+    !isOpen ?
       ReasonReact.null :
       {
         let content =
@@ -199,9 +199,7 @@ module Header = {
               ReasonReact.createDomElement(
                 "span",
                 ~props={"aria-hidden": "true"},
-                [|
-                  ReasonReact.string(Js.String.fromCharCode(215)),
-                |],
+                [|ReasonReact.string(Js.String.fromCharCode(215))|],
               ),
             |],
           )

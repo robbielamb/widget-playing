@@ -11,7 +11,7 @@ let make =
       ~className: option(string)=?,
       ~href: option(string)=?,
       /*  cssModule::(cssModule: option (Js.t {..}))=? */
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -22,18 +22,9 @@ let make =
       };
     let badgeColor = "badge-" ++ ColorsRe.Color.toString(color);
     let classes =
-      [
-        "badge",
-        badgeColor,
-        pill ? "badge-pill" : "",
-        secondary ? "badge-secondary" : "",
-        unwrapStr(i, className)
-      ]
+      ["badge", badgeColor, pill ? "badge-pill" : "", secondary ? "badge-secondary" : "", unwrapStr(i, className)]
       |> String.concat(" ");
-    ReasonReact.createDomElement(
-      tag,
-      ~props={"className": classes, "href": Js.Nullable.fromOption(href)},
-      children
-    );
-  }
+    let props = {"className": classes, "href": Js.Nullable.fromOption(href)} |. ReactDOMRe.objToDOMProps;
+    ReactDOMRe.createElementVariadic(tag, ~props, children);
+  },
 };

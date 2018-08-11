@@ -6,32 +6,29 @@ let make =
     (
       ~tag: string="form",
       ~inline: bool=false,
+      ~onSubmit: option(ReactEvent.Form.t => unit)=?,
       ~className: option(string)=?,
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
-    let classes =
-      [unwrapStr(i, className), inline ? "form-inline" : ""]
-      |> String.concat(" ");
-    ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
-  }
+    let classes = [unwrapStr(i, className), inline ? "form-inline" : ""] |> String.concat(" ");
+    let props = ReactDOMRe.objToDOMProps({"className": classes, "onSubmit": Js.Nullable.fromOption(onSubmit)});
+
+    ReactDOMRe.createElementVariadic(tag, ~props, children);
+  },
 };
 
 module Feedback = {
   let component = ReasonReact.statelessComponent("Form.Feedback");
 
-  let make = (
-    ~tag: string="div",
-    ~valid: bool=true,    
-
-    children
-  ) => {
+  let make = (~tag: string="div", ~valid: bool=true, children) => {
     ...component,
-    render: (_self) => {
+    render: _self => {
       let className = valid ? "is-valid" : "is-invalid";
-      ReasonReact.createDomElement(tag, ~props={"className": className}, children);
-    }
+      let props=ReactDOMRe.objToDOMProps({"className": className});
+      ReactDOMRe.createElementVariadic(tag, ~props, children);
+    },
   };
 };
 
@@ -44,24 +41,15 @@ module Group = {
         ~disabled: bool=false,
         ~inline: bool=false,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
       let classes =
-        [
-          unwrapStr(i, className),
-          "form-group",
-          row ? "row" : "",
-          disabled ? "disabled" : ""
-        ]
-        |> String.concat(" ");
-      ReasonReact.createDomElement(
-        tag,
-        ~props={"className": classes},
-        children
-      );
-    }
+        [unwrapStr(i, className), "form-group", row ? "row" : "", disabled ? "disabled" : ""] |> String.concat(" ");
+        let props = {"className": classes} |. ReactDOMRe.objToDOMProps;
+      ReactDOMRe.createElementVariadic(tag, ~props, children);
+    },
   };
 };
 
@@ -74,7 +62,7 @@ module Check = {
         ~inline: bool=false,
         ~disabled: bool=false,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -84,15 +72,12 @@ module Check = {
           "form-check",
           row ? "row" : "",
           inline ? "form-check-inline" : "",
-          disabled ? "disabled" : ""
+          disabled ? "disabled" : "",
         ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
-        tag,
-        ~props={"className": classes},
-        children
-      );
-    }
+      let props = {"className": classes} |. ReactDOMRe.objToDOMProps;
+      ReactDOMRe.createElementVariadic(tag, ~props, children);
+    },
   };
 };
 
@@ -104,23 +89,15 @@ module Text = {
         ~inline: bool=false,
         ~color: ColorsRe.Text.t=ColorsRe.Text.Muted,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
       let classes =
-        [
-          unwrapStr(i, className),
-          ! inline ? "form-text" : "",
-          ColorsRe.Text.toString(color)
-        ]
-        |> String.concat(" ");
-      ReasonReact.createDomElement(
-        tag,
-        ~props={"className": classes},
-        children
-      );
-    }
+        [unwrapStr(i, className), ! inline ? "form-text" : "", ColorsRe.Text.toString(color)] |> String.concat(" ");
+        let props={"className": classes} |. ReactDOMRe.objToDOMProps;
+      ReactDOMRe.createElementVariadic(tag, ~props, children);
+    },
   };
 };
 /* Should this just be a Label? Should we have an Input doo dad with an Input.Label? Then perhaps an Input.Text? */

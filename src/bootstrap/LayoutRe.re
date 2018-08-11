@@ -8,7 +8,7 @@ module Container = {
         ~fluid: bool=false,
         ~tag: string="div",
         ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */ children
+        /* cssModule::(cssModule: option (Js.t {..}))=? */ children,
       ) => {
     ...component,
     render: _self => {
@@ -18,9 +18,9 @@ module Container = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -32,7 +32,7 @@ module Row = {
         ~noGutters: bool=false,
         ~tag: string="div",
         ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */ children
+        /* cssModule::(cssModule: option (Js.t {..}))=? */ children,
       ) => {
     ...component,
     render: _self => {
@@ -42,9 +42,9 @@ module Row = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -56,7 +56,7 @@ module ColSizes = {
     size: option(size),
     push: option(int),
     pull: option(int),
-    offset: option(int)
+    offset: option(int),
   };
   let shape =
       (
@@ -64,12 +64,12 @@ module ColSizes = {
         ~push: option(int)=?,
         ~pull: option(int)=?,
         ~offset: option(int)=?,
-        ()
+        (),
       ) => {
     size,
     push,
     pull,
-    offset
+    offset,
   };
   let genClasses = (colWidth: string, shape: shape) => {
     let isXs = "xs" == colWidth;
@@ -103,12 +103,14 @@ module ColSizes = {
   };
   let processShapeList = (xs, sm, md, lg, xl) =>
     [("xs", xs), ("sm", sm), ("md", md), ("lg", lg), ("xl", xl)]
-    |. Belt.List.map(((col, maybeShape)) =>
-         switch (maybeShape) {
-         | None => []
-         | Some(shape) => genClasses(col, shape)
-         }
-       )
+    ->(
+        Belt.List.map(((col, maybeShape)) =>
+          switch (maybeShape) {
+          | None => []
+          | Some(shape) => genClasses(col, shape)
+          }
+        )
+      )
     |> Belt.List.flatten;
 };
 
@@ -124,7 +126,7 @@ module Col = {
         ~lg: option(shape)=?,
         ~xl: option(shape)=?,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -135,8 +137,8 @@ module Col = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };

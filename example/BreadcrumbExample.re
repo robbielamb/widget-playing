@@ -16,10 +16,8 @@ let make = _children => {
       </BreadCrumb>
       <BreadCrumb>
         <BreadCrumb.Item> (se("home")) </BreadCrumb.Item>
-        <BreadCrumb.Item active=true>
-          (se("more"))
-        </BreadCrumb.Item>
+        <BreadCrumb.Item active=true> (se("more")) </BreadCrumb.Item>
       </BreadCrumb>
       (Examples.exampleHighlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

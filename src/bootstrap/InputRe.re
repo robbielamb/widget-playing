@@ -96,7 +96,13 @@ let make =
       | Some(false) => "is-invalid"
       };
     let className =
-      [unwrapStr(i, className), Size.toString(size), formControlClass, validClassName] |> String.concat(" ");
+      [
+        unwrapStr(i, className),
+        Size.toString(size),
+        formControlClass,
+        validClassName,
+      ]
+      |> String.concat(" ");
     let myProps: Js.t({..}) = {
       "className": className,
       "id": Js.Nullable.fromOption(id),
@@ -155,7 +161,7 @@ module Label = {
         [
           unwrapStr(i, className),
           hidden ? "sr-only" : "",
-          check && ! inline ? "form-check-label" : "",
+          check && !inline ? "form-check-label" : "",
           check && inline ? "form-check-inline" : "",
           check && inline && disabled ? "disabled" : "",
           switch (size) {
@@ -163,14 +169,17 @@ module Label = {
           | Some(s) => "col-form-label-" ++ Size.toString(s)
           },
           containsColClasses ? "col-form-label" : "",
-          ! check && ! containsColClasses ? "form-control-label" : "",
+          !check && !containsColClasses ? "form-control-label" : "",
           ColorsRe.Text.unWrap(color),
         ]
-        |. Belt.List.concat(colClasses)
+        ->(Belt.List.concat(colClasses))
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
-        ~props={"className": classes, "htmlFor": Js.Nullable.fromOption(for_)},
+        ~props={
+          "className": classes,
+          "htmlFor": Js.Nullable.fromOption(for_),
+        },
         children,
       );
     },

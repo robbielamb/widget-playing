@@ -1,5 +1,5 @@
-let pathFor = (route) =>
-  switch route {
+let pathFor = route =>
+  switch (route) {
   | Routes.AlertExampleRoute => "/alert"
   | Routes.BadgesExampleRoute => "/badges"
   | Routes.BreadcrumbExampleRoute => "/breadcrumbs"
@@ -15,7 +15,7 @@ let pathFor = (route) =>
   | Routes.NotFound => "/notFound"
   };
 
-let to_ = (route) => {
+let to_ = route => {
   let path = pathFor(route);
   ReasonReact.Router.push(path);
 };

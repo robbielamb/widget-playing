@@ -14,7 +14,7 @@ let make =
       ~color: option(ColorsRe.Background.t)=?,
       ~className: option(string)=?,
       /* barClassName::(barClassName: option string)=? */
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -27,7 +27,7 @@ let make =
         animated ? "progress-bar-animated" : "",
         ColorsRe.Background.unWrap(color),
         animated || striped ? "progress-bar-striped" : "",
-        unwrapStr(i, className)
+        unwrapStr(i, className),
       ]
       |> String.concat(" ");
     let progressBar =
@@ -38,14 +38,14 @@ let make =
           "style": ReactDOMRe.Style.make(~width=percent, ()),
           "aria-valuenow": value,
           "aria-valuemin": 0,
-          "aria-valuemax": max
+          "aria-valuemax": max,
         },
-        children
+        children,
       );
     let wrapper =
       ReasonReact.createDomElement(
         tag,
-        ~props={"className": progressClasses, "role": "progressbar"}
+        ~props={"className": progressClasses, "role": "progressbar"},
       );
     switch (multi, bar) {
     | (true, true) => ReasonReact.array(children) /*** This option doesn't actually make sense. */
@@ -53,5 +53,5 @@ let make =
     | (false, true) => progressBar
     | (false, false) => wrapper([|progressBar|])
     };
-  }
+  },
 };

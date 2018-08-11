@@ -12,7 +12,7 @@ let make =
       ~responsive: bool=false,
       ~responsiveTag: string="div",
       ~classname: option(string)=?,
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -25,21 +25,21 @@ let make =
         hover ? "table-hover" : "",
         reflow ? "table-reflow" : "",
         small ? "table-small" : "",
-        Utils.unwrapStr(Utils.i, classname)
+        Utils.unwrapStr(Utils.i, classname),
       ]
       |> String.concat(" ");
     let table =
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
     responsive ?
       ReasonReact.createDomElement(
         responsiveTag,
         ~props={"className": "table-responsive"},
-        [|table|]
+        [|table|],
       ) :
       table;
-  }
+  },
 };

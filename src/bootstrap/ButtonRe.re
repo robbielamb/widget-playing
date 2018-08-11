@@ -35,15 +35,14 @@ module Size = {
 };
 
 module Type = {
-  type t = 
+  type t =
     | Button
     | Submit;
-  let toString = type_ => {
-    switch(type_) {
+  let toString = type_ =>
+    switch (type_) {
     | Button => "button"
     | Submit => "sumbit"
-   }
-  };
+    };
 };
 
 let mapBool = b =>
@@ -61,12 +60,12 @@ let make =
       ~disabled: bool=false,
       ~outline: bool=false,
       ~size: option(Size.t)=?,
-      ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
+      ~onClick: option(ReactEvent.Mouse.t => unit)=?,
       ~type_: Type.t=Type.Button,
       ~ariaHaspopup: option(bool)=?,
       ~ariaExpanded: option(bool)=?,
       ~className: option(string)=?,
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -85,22 +84,23 @@ let make =
         block ? "btn-block" : "",
         active ? "active" : "",
         disabled ? "disabled" : "",
-        unwrapStr(i, className)
+        unwrapStr(i, className),
       ]
       |> String.concat(" ");
     let buttonType = Type.toString(type_);
-    ReasonReact.createDomElement(
-      tag,
-      ~props={
+    let props={
         "className": classes,
         "onClick": Js.Nullable.fromOption(onClick),
         "type": buttonType,
         "aria-haspopup": mapBool(ariaHaspopup),
-        "aria-expanded": mapBool(ariaExpanded)
-      },
-      children
+        "aria-expanded": mapBool(ariaExpanded),
+      } |. ReactDOMRe.objToDOMProps;
+    ReactDOMRe.createElementVariadic(
+      tag,
+      ~props,
+      children,
     );
-  }
+  },
 };
 
 /* TODO: Make this guy work */
@@ -129,7 +129,7 @@ module Group = {
         ~role: string="group",
         ~size: option(Size.t)=?,
         ~vertical: bool=false,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -137,15 +137,16 @@ module Group = {
         [
           Size.unwrap(size),
           vertical ? "btn-group-vertical" : "btn-group",
-          unwrapStr(i, className)
+          unwrapStr(i, className),
         ]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      let props={"className": classes, "role": role} |. ReactDOMRe.objToDOMProps;
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes, "role": role},
-        children
+        ~props,
+        children,
       );
-    }
+    },
   };
 };
 
@@ -156,17 +157,18 @@ module Toolbar = {
         ~tag: string="div",
         ~className: option(string)=?,
         ~role: string="toolbar",
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
       let classes =
         ["btn-toolbar", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+        let props={"className": classes, "role": role} |. ReactDOMRe.objToDOMProps;
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes, "role": role},
-        children
+        ~props,
+        children,
       );
-    }
+    },
   };
 };

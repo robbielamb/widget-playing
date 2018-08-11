@@ -13,5 +13,5 @@ let make = _children => {
     <Examples.Example title="Badges">
       <Badge color=Colors.Color.Primary> (se("Default")) </Badge>
       (Examples.exampleHighlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

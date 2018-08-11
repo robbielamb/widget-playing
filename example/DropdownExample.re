@@ -22,8 +22,8 @@ let make = _children => {
   ...component,
   initialState: () => {isOpen: false},
   reducer: (action, state) =>
-    switch action {
-    | Toggle => ReasonReact.Update({isOpen: ! state.isOpen})
+    switch (action) {
+    | Toggle => ReasonReact.Update({isOpen: !state.isOpen})
     },
   render: self =>
     <Examples.Example title="Dropdowns">
@@ -44,5 +44,5 @@ let make = _children => {
         </Dropdown.Menu>
       </Dropdown>
       (Examples.exampleHighlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

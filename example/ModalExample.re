@@ -21,8 +21,8 @@ let make = _children => {
   ...component,
   initialState: () => false,
   reducer: (action, state) =>
-    switch action {
-    | Toggle => ReasonReact.Update(! state)
+    switch (action) {
+    | Toggle => ReasonReact.Update(!state)
     },
   render: ({state, send}) =>
     <Examples.Example title="Modal">
@@ -47,5 +47,5 @@ let make = _children => {
         </Modal.Footer>
       </Modal>
       (Examples.exampleHighlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

@@ -17,7 +17,7 @@ let make =
       ~isOpen: bool=false,
       ~toggle: option(unit => unit)=?,
       ~classname: option(string)=?,
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -25,15 +25,15 @@ let make =
       [
         group ? "btn-group" : "dropdown",
         isOpen ? "show" : "",
-        unwrapStr(i, classname)
+        unwrapStr(i, classname),
       ]
       |> String.concat(" ");
     ReasonReact.createDomElement(
       tag,
       ~props={"className": classNames},
-      children
+      children,
     );
-  }
+  },
 };
 
 module Toggle = {
@@ -42,7 +42,7 @@ module Toggle = {
     onClick: option(ReactEventRe.Mouse.t => unit),
     toggle: unit => unit,
     disabled: bool,
-    tag: option(string)
+    tag: option(string),
   };
   let handleOnClick =
       (
@@ -51,16 +51,16 @@ module Toggle = {
           ReasonReact.self(
             ReasonReact.stateless,
             retainedProps,
-            ReasonReact.actionless
-          )
+            ReasonReact.actionless,
+          ),
       ) => {
     let props = self.retainedProps;
     Js.log("onClicking");
     props.disabled ?
-      ReactEventRe.Mouse.preventDefault(event) :
+      ReactEvent.Mouse.preventDefault(event) :
       {
         if (props.nav && props.tag === None) {
-          ReactEventRe.Mouse.preventDefault(event);
+          ReactEvent.Mouse.preventDefault(event);
         };
         switch (props.onClick) {
         | None => ()
@@ -85,7 +85,7 @@ module Toggle = {
         ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
         ~toggle: unit => unit,
         ~classname: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     retainedProps: {
@@ -93,7 +93,7 @@ module Toggle = {
       disabled,
       tag,
       nav,
-      toggle
+      toggle,
     },
     render:
       (
@@ -101,15 +101,15 @@ module Toggle = {
           ReasonReact.self(
             ReasonReact.stateless,
             retainedProps,
-            ReasonReact.actionless
-          )
+            ReasonReact.actionless,
+          ),
       ) => {
       let classNames =
         [
           caret || split ? "dropdown-toggle" : "",
           split ? "dropdown-toggle-split" : "",
           isOpen ? "active" : "",
-          unwrapStr(i, classname)
+          unwrapStr(i, classname),
         ]
         |> String.concat(" ");
       let tag =
@@ -128,8 +128,8 @@ module Toggle = {
             ~disabled,
             ~ariaHaspopup=true,
             ~ariaExpanded=isOpen,
-            children
-          )
+            children,
+          ),
         )
       | _ =>
         ReasonReact.createDomElement(
@@ -137,12 +137,12 @@ module Toggle = {
           ~props={
             "className": classNames,
             "href": "#",
-            "onClick": self.handle(handleOnClick)
+            "onClick": self.handle(handleOnClick),
           },
-          children
+          children,
         )
       };
-    }
+    },
   };
 };
 
@@ -155,7 +155,7 @@ module Menu = {
         ~alignRight: bool=false,
         ~isOpen: bool,
         ~classname: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -164,7 +164,7 @@ module Menu = {
           "dropdown-menu",
           alignRight ? "dropdown-menu-right" : "",
           isOpen ? "show" : "",
-          unwrapStr(i, classname)
+          unwrapStr(i, classname),
         ]
         |> String.concat(" ");
       ReasonReact.createDomElement(
@@ -172,12 +172,12 @@ module Menu = {
         ~props={
           "className": classNames,
           "tabIndex": "-1",
-          "aria-hidden": (! isOpen),
-          "role": "menu"
+          "aria-hidden": !isOpen,
+          "role": "menu",
         },
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -189,8 +189,8 @@ module Divider = {
       ReasonReact.createDomElement(
         "div",
         ~props={"className": "dropdown-divider"},
-        children
-      )
+        children,
+      ),
   };
 };
 
@@ -202,8 +202,8 @@ module Header = {
       ReasonReact.createDomElement(
         "h6",
         ~props={"className": "dropdown-header"},
-        children
-      )
+        children,
+      ),
   };
 };
 
@@ -217,13 +217,13 @@ module Item = {
         ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
         ~href: option(string)=?,
         ~classname: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: self => {
       let click = (event, _self) =>
         disabled ?
-          ReactEventRe.Mouse.preventDefault(event) :
+          ReactEvent.Mouse.preventDefault(event) :
           (
             switch (onClick) {
             | None => ()
@@ -246,7 +246,7 @@ module Item = {
           "dropdown-item",
           active ? "active" : "",
           disabled ? "disabled" : "",
-          unwrapStr(i, classname)
+          unwrapStr(i, classname),
         ]
         |> String.concat(" ");
       ReasonReact.createDomElement(
@@ -256,10 +256,10 @@ module Item = {
           "tabIndex": tabIndex,
           "onClick": self.handle(click),
           "type": Js.Nullable.fromOption(type_),
-          "href": Js.Nullable.fromOption(href)
+          "href": Js.Nullable.fromOption(href),
         },
-        children
+        children,
       );
-    }
+    },
   };
 };

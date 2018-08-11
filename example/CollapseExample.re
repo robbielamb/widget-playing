@@ -12,18 +12,18 @@ module Collapser = {
     | Closed;
   type state = {
     isOpen: bool,
-    status: string
+    status: string,
   };
   let component = ReasonReact.reducerComponent("Collapser");
   let make = _children => {
     ...component,
     initialState: () => {isOpen: true, status: "Open"},
     reducer: (action, state) =>
-      switch action {
+      switch (action) {
       | Toggle =>
         ReasonReact.Update({
-          isOpen: ! state.isOpen,
-          status: ! state.isOpen ? "Opening..." : "Collapsing..."
+          isOpen: !state.isOpen,
+          status: !state.isOpen ? "Opening..." : "Collapsing...",
         })
       | Opened => ReasonReact.Update({...state, status: "Open"})
       | Closed => ReasonReact.Update({...state, status: "Closed"})
@@ -45,7 +45,7 @@ module Collapser = {
             </Card.Body>
           </Card>
         </Collapse>
-      </div>
+      </div>,
   };
 };
 
@@ -57,5 +57,5 @@ let make = _children => {
     <Examples.Example title="Collapse">
       <Collapser />
       (Examples.exampleHighlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

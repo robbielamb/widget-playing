@@ -10,7 +10,7 @@ type action =
 
 type state = bool;
 
-let toggle = (event: ReactEventRe.Mouse.t) => {
+let toggle = (event: ReactEvent.Mouse.t) => {
   Js.log(event);
   Toggle;
 };
@@ -22,11 +22,9 @@ let make = (~message, _children) => {
   render: _self =>
     <Examples.Example title="Alerts">
       <Alert.Auto color=Colors.Color.Warning>
-        <Alert.Heading>
-          (ReasonReact.string("Success"))
-        </Alert.Heading>
+        <Alert.Heading> (ReasonReact.string("Success")) </Alert.Heading>
         <p> (ReasonReact.string(message)) </p>
       </Alert.Auto>
       (Examples.highlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

@@ -6,7 +6,7 @@ let optionMap = (fn, option) =>
 
 module Transition = {
   [@bs.module "react-transition-group"]
-  external transition : ReasonReact.reactClass = "Transition";
+  external transition: ReasonReact.reactClass = "Transition";
   let make =
       (
         ~in_: bool=false,
@@ -24,7 +24,7 @@ module Transition = {
         ~onExiting: option(Dom.element => unit)=?,
         ~onExited: option(Dom.element => unit)=?,
         ~className: option(string)=?,
-        children
+        children,
       ) =>
     ReasonReact.wrapJsForReason(
       ~reactClass=transition,
@@ -43,15 +43,15 @@ module Transition = {
         "onExit": Js.Nullable.fromOption(onExit),
         "onExiting": Js.Nullable.fromOption(onExiting),
         "onExited": Js.Nullable.fromOption(onExited),
-        "className": Js.Nullable.fromOption(className)
+        "className": Js.Nullable.fromOption(className),
       },
-      children
+      children,
     );
 };
 
 module TransitionGroup = {
   [@bs.module "react-transition-group/TransitionGroup"]
-  external transitionGroup : ReasonReact.reactClass = "default";
+  external transitionGroup: ReasonReact.reactClass = "default";
   let make =
       (
         ~component: string="div",
@@ -60,26 +60,24 @@ module TransitionGroup = {
         ~exit: option(bool)=?,
         ~childFactory:
            option(ReasonReact.reactElement => ReasonReact.reactElement)=?,
-        children
+        children,
       ) =>
     ReasonReact.wrapJsForReason(
       ~reactClass=transitionGroup,
       ~props={
         "component": component,
-        "appear":
-          Js.Nullable.fromOption(appear),
-        "enter":
-          Js.Nullable.fromOption(enter),
+        "appear": Js.Nullable.fromOption(appear),
+        "enter": Js.Nullable.fromOption(enter),
         "exit": Js.Nullable.fromOption(exit),
-        "childFactory": Js.Nullable.fromOption(childFactory)
+        "childFactory": Js.Nullable.fromOption(childFactory),
       },
-      children
+      children,
     );
 };
 
 module CSSTransition = {
   [@bs.module "react-transition-group"]
-  external cssTransition : ReasonReact.reactClass = "CSSTransition";
+  external cssTransition: ReasonReact.reactClass = "CSSTransition";
   type classNames = {
     .
     "appear": Js.nullable(string),
@@ -87,7 +85,7 @@ module CSSTransition = {
     "enter": Js.nullable(string),
     "enterActive": Js.nullable(string),
     "exit": Js.nullable(string),
-    "exitActive": Js.nullable(string)
+    "exitActive": Js.nullable(string),
   };
   let classNames =
       (
@@ -97,7 +95,7 @@ module CSSTransition = {
         ~enterActive: option(string)=?,
         ~exit: option(string)=?,
         ~exitActive: option(string)=?,
-        ()
+        (),
       )
       : classNames => {
     "appear": Js.Nullable.fromOption(appear),
@@ -105,7 +103,7 @@ module CSSTransition = {
     "enter": Js.Nullable.fromOption(enter),
     "enterActive": Js.Nullable.fromOption(enterActive),
     "exit": Js.Nullable.fromOption(exit),
-    "exitActive": Js.Nullable.fromOption(exitActive)
+    "exitActive": Js.Nullable.fromOption(exitActive),
   };
   let make =
       (
@@ -125,7 +123,7 @@ module CSSTransition = {
         ~onExiting: option(Dom.element => unit)=?,
         ~onExited: option(Dom.element => unit)=?,
         ~className: option(string)=?,
-        children
+        children,
       ) =>
     ReasonReact.wrapJsForReason(
       ~reactClass=cssTransition,
@@ -145,9 +143,9 @@ module CSSTransition = {
         "onExit": Js.Nullable.fromOption(onExit),
         "onExiting": Js.Nullable.fromOption(onExiting),
         "onExited": Js.Nullable.fromOption(onExited),
-        "className": Js.Nullable.fromOption(className)
+        "className": Js.Nullable.fromOption(className),
       },
-      children
+      children,
     );
 };
 
@@ -163,12 +161,12 @@ module MyTransition = {
   type state = {
     status,
     nextStatus: status,
-    timeoutId: option(Js.Global.timeoutId)
+    timeoutId: option(Js.Global.timeoutId),
   };
   type retainedProps = {
     message: string,
     numbers: int,
-    in_: bool
+    in_: bool,
   };
   let component =
     ReasonReact.reducerComponentWithRetainedProps("MyTransition");
@@ -177,13 +175,21 @@ module MyTransition = {
     ...component,
     initialState: () =>
       switch (in_, appear) {
-      | (true, true) => {status: Exited, nextStatus: Entering, timeoutId: None}
+      | (true, true) => {
+          status: Exited,
+          nextStatus: Entering,
+          timeoutId: None,
+        }
       | (true, false) => {
           status: Entered,
           nextStatus: Exiting,
-          timeoutId: None
+          timeoutId: None,
         }
-      | (false, _) => {status: Exited, nextStatus: Unmounted, timeoutId: None}
+      | (false, _) => {
+          status: Exited,
+          nextStatus: Unmounted,
+          timeoutId: None,
+        }
       },
     didUpdate: ({oldSelf, newSelf}) =>
       if (oldSelf.retainedProps.message !== newSelf.retainedProps.message) {
@@ -196,7 +202,7 @@ module MyTransition = {
       | Mounted =>
         ReasonReact.UpdateWithSideEffects(
           Entering,
-          (_self => Js.log("Reducer called"))
+          (_self => Js.log("Reducer called")),
         )
       },
     render: _self =>

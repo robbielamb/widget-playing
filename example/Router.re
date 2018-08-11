@@ -1,9 +1,9 @@
-[@bs.get] external location : Dom.window => Dom.location = "";
+[@bs.get] external location: Dom.window => Dom.location = "";
 
-[@bs.get] external pathname : Dom.location => string = "";
+[@bs.get] external pathname: Dom.location => string = "";
 
 let currentPath = () =>
-  switch [%external window] {
+  switch ([%external window]) {
   | None => []
   | Some((window: Dom.window)) =>
     switch (window |> location |> pathname) {
@@ -24,7 +24,7 @@ let currentPath = () =>
 
 let pathHandler = (url: list(string)) =>
   Routes.(
-    switch url {
+    switch (url) {
     | ["alert"] => AlertExampleRoute
     | ["badges"] => BadgesExampleRoute
     | ["buttons"] => ButtonExampleRoute
@@ -44,7 +44,7 @@ let pathHandler = (url: list(string)) =>
 let urlHandler = (url: ReasonReact.Router.url) => pathHandler(url.path);
 
 let elementForRoute = route =>
-  switch route {
+  switch (route) {
   | Routes.AlertExampleRoute => <AlertExample message="This is an alert" />
   | Routes.BadgesExampleRoute => <BadgesExample />
   | Routes.BreadcrumbExampleRoute => <BreadcrumbExample />

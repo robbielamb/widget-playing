@@ -2,7 +2,7 @@ include Utils;
 
 type tab('a) = {
   tabId: 'a,
-  x: bool => ReasonReact.reactElement
+  x: bool => ReasonReact.reactElement,
 };
 
 module Content = {
@@ -12,7 +12,7 @@ module Content = {
         ~tag: string="div",
         ~className: option(string)=?,
         ~active: 'a,
-        children: array(tab('a))
+        children: array(tab('a)),
       ) => {
     ...component,
     render: _self => {
@@ -23,9 +23,9 @@ module Content = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        newChildren
+        newChildren,
       );
-    }
+    },
   };
 };
 
@@ -36,7 +36,7 @@ module PaneComponent = {
         ~tag: string="div",
         ~active: bool=false,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -46,17 +46,22 @@ module PaneComponent = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
 module Pane = {
   let create =
-      (~tabId: 'a, ~tag: string="div", ~className: option(string)=?, children) => {
+      (
+        ~tabId: 'a,
+        ~tag: string="div",
+        ~className: option(string)=?,
+        children,
+      ) => {
     tabId,
     x: (active: bool) =>
-      <PaneComponent tag active ?className> children </PaneComponent>
+      <PaneComponent tag active ?className> children </PaneComponent>,
   };
 };

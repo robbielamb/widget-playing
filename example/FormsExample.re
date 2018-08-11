@@ -31,7 +31,9 @@ let make = _children => {
           />
         </Form.Group>
         <Form.Group>
-          <Input.Label for_="exampleRequired"> (se("Required Field")) </Input.Label>
+          <Input.Label for_="exampleRequired">
+            (se("Required Field"))
+          </Input.Label>
           <Input
             type_=Input.Text
             name="required"
@@ -41,15 +43,15 @@ let make = _children => {
           />
         </Form.Group>
         <Form.Group>
-        <Input.Label for_="exampleDate"> (se("Date")) </Input.Label>
-        <Input
-          type_=Input.Date
-          name="exampleDate"
-          id="exampleDate"
-          placeholder="Birthday!"
-          required=true
-        />
-      </Form.Group>
+          <Input.Label for_="exampleDate"> (se("Date")) </Input.Label>
+          <Input
+            type_=Input.Date
+            name="exampleDate"
+            id="exampleDate"
+            placeholder="Birthday!"
+            required=true
+          />
+        </Form.Group>
         <Form.Group>
           <Input.Label for_="selectExample"> (se("Select")) </Input.Label>
           <Input
@@ -82,7 +84,9 @@ let make = _children => {
           </Input>
         </Form.Group>
         <Form.Group>
-          <Input.Label for_="exampleTextArea"> (se("Text Area")) </Input.Label>
+          <Input.Label for_="exampleTextArea">
+            (se("Text Area"))
+          </Input.Label>
           <Input
             type_=Input.TextArea
             name="textarea"
@@ -103,7 +107,7 @@ let make = _children => {
           <Form.Text>
             (
               se(
-                "This is a bit of example text to help explain the dialog above."
+                "This is a bit of example text to help explain the dialog above.",
               )
             )
           </Form.Text>
@@ -137,5 +141,5 @@ let make = _children => {
         </Form.Check>
       </Form>
       (Examples.exampleHighlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

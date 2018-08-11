@@ -20,7 +20,7 @@ let make =
       ~tag: string="ul",
       ~size: Size.t=None,
       ~className: option(string)=?,
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -30,9 +30,9 @@ let make =
     ReasonReact.createDomElement(
       tag,
       ~props={"className": className},
-      children
+      children,
     );
-  }
+  },
 };
 
 module Item = {
@@ -43,7 +43,7 @@ module Item = {
         ~active: bool=false,
         ~disabled: bool=false,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -52,15 +52,15 @@ module Item = {
           "page-item",
           active ? "active" : "",
           disabled ? "disabled" : "",
-          unwrapStr(i, className)
+          unwrapStr(i, className),
         ]
         |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
         ~props={"className": className},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -76,7 +76,7 @@ module Link = {
         ~href: string="",
         ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
@@ -86,7 +86,7 @@ module Link = {
         | None => previous ? "Previous" : next ? "Next" : ""
         };
       let wrap = codePoint => [|
-        ReasonReact.string(Js.String.fromCodePoint(codePoint))
+        ReasonReact.string(Js.String.fromCodePoint(codePoint)),
       |];
       let prevCaret = wrap(171);
       let nextCaret = wrap(187);
@@ -98,17 +98,14 @@ module Link = {
       let wrapChildren = children => [|
         ReasonReact.createDomElement(
           "span",
-          ~props={
-            "aria-hidden": true,
-            "key": "caret"
-          },
-          children
+          ~props={"aria-hidden": true, "key": "caret"},
+          children,
         ),
         ReasonReact.createDomElement(
           "span",
           ~props={"className": "sr-only", "key": "sr"},
-          [|ReasonReact.string(ariaLabel)|]
-        )
+          [|ReasonReact.string(ariaLabel)|],
+        ),
       |];
       let wrappedChildren =
         previous || next ? wrapChildren(children) : children;
@@ -120,11 +117,11 @@ module Link = {
           "className": className,
           "aria-label": ariaLabel,
           "href": href,
-          "onClick": Js.Nullable.fromOption(onClick)
+          "onClick": Js.Nullable.fromOption(onClick),
         },
-        wrappedChildren
+        wrappedChildren,
       );
-    }
+    },
     /* Create the default caret arrows */
     /* Use the default carets, if this is a prev or next and no children */
     /* A helper to wrap iff we are a prev or next element */

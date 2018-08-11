@@ -27,5 +27,5 @@ let make = _children => {
       (se(" "))
       <Button color=Button.Color.Link> (se("Link")) </Button>
       (Examples.exampleHighlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

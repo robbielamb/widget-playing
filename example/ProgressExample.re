@@ -6,9 +6,9 @@ let code: string =
 let se = ReasonReact.string;
 
 let component = ReasonReact.statelessComponent("ProgressExample");
-let make = (_children) => {
+let make = _children => {
   ...component,
-  render: (_self) =>
+  render: _self =>
     <Examples.Example title="Progress Bars">
       <div className="text-center"> (se("0%")) </div>
       <Progress />
@@ -37,5 +37,5 @@ let make = (_children) => {
         (se("Animated"))
       </Progress>
       (Examples.highlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

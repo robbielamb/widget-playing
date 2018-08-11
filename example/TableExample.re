@@ -6,9 +6,9 @@ let code: string =
 let se = ReasonReact.string;
 
 let component = ReasonReact.statelessComponent("TableExample");
-let make = (_children) => {
+let make = _children => {
   ...component,
-  render: (_self) =>
+  render: _self =>
     <Examples.Example title="Table example">
       <Table bordered=true striped=true hover=true>
         <thead>
@@ -47,5 +47,5 @@ let make = (_children) => {
         </tbody>
       </Table>
       (Examples.highlight(code))
-    </Examples.Example>
+    </Examples.Example>,
 };

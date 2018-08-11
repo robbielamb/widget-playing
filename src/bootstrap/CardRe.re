@@ -9,7 +9,7 @@ let make =
       ~color: option(ColorsRe.Text.t)=?,
       ~backgroundColor: option(ColorsRe.Background.t)=?,
       ~borderColor: option(ColorsRe.Border.t)=?,
-      children
+      children,
     ) => {
   ...component,
   render: _self => {
@@ -19,11 +19,15 @@ let make =
         unwrapStr(i, className),
         ColorsRe.Text.unWrap(color),
         ColorsRe.Background.unWrap(backgroundColor),
-        ColorsRe.Border.unWrap(borderColor)
+        ColorsRe.Border.unWrap(borderColor),
       ]
       |> String.concat(" ");
-    ReasonReact.createDomElement(tag, ~props={"className": classes}, children);
-  }
+    ReasonReact.createDomElement(
+      tag,
+      ~props={"className": classes},
+      children,
+    );
+  },
 };
 
 module Body = {
@@ -36,9 +40,9 @@ module Body = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -52,9 +56,9 @@ module Columns = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -68,9 +72,9 @@ module Deck = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -84,9 +88,9 @@ module Footer = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -100,9 +104,9 @@ module CardGroup = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -116,9 +120,9 @@ module Header = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -146,18 +150,19 @@ module Img = {
         ~alt: string="",
         ~fixed: Fixed.t=None,
         ~className: option(string)=?,
-        children
+        children,
       ) => {
     ...component,
     render: _self => {
       let classes =
-        [Fixed.toString(fixed), unwrapStr(i, className)] |> String.concat(" ");
+        [Fixed.toString(fixed), unwrapStr(i, className)]
+        |> String.concat(" ");
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes, "src": src, "alt": alt},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -171,9 +176,9 @@ module ImgOverlay = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -188,9 +193,9 @@ module Link = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -204,9 +209,9 @@ module Title = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -220,9 +225,9 @@ module Subtitle = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
 
@@ -236,8 +241,8 @@ module Text = {
       ReasonReact.createDomElement(
         tag,
         ~props={"className": classes},
-        children
+        children,
       );
-    }
+    },
   };
 };
