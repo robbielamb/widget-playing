@@ -158,13 +158,13 @@ let make =
       [collapsingClasses, unwrapStr(i, className)] |> String.concat(" ");
     let maybeHeight = self.state.height^;
     let style = ReactDOMRe.Style.make(~height=?maybeHeight, ());
-    ReasonReact.createDomElement(
+    ReactDOMRe.createElementVariadic(
       tag,
       ~props={
         "className": classes,
         "ref": reactRef => setRef(reactRef, self.state),
         "style": style,
-      },
+      } |. ReactDOMRe.objToDOMProps,
       children,
     );
   },

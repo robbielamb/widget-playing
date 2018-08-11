@@ -15,9 +15,9 @@ let make =
     let classes =
       ["jumbotron", fluid ? "jumbotron-fluid" : "", unwrapStr(i, className)]
       |> String.concat(" ");
-    ReasonReact.createDomElement(
+    ReactDOMRe.createElementVariadic(
       tag,
-      ~props={"className": classes},
+      ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
       children,
     );
   },

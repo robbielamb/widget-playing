@@ -42,9 +42,9 @@ let make =
       ~disabled: bool=false,
       ~multiple: option(bool)=?,
       ~className: option(string)=?,
-      ~onInput: option(ReactEventRe.Keyboard.t => unit)=?,
-      ~onChange: option(ReactEventRe.Form.t => unit)=?,
-      ~onBlur: option(ReactEventRe.Focus.t => unit)=?,
+      ~onInput: option(ReactEvent.Keyboard.t => unit)=?,
+      ~onChange: option(ReactEvent.Form.t => unit)=?,
+      ~onBlur: option(ReactEvent.Focus.t => unit)=?,
       ~checked: option(bool)=?,
       ~valid: option(bool)=?,
       ~value: option(string)=?,
@@ -103,7 +103,7 @@ let make =
         validClassName,
       ]
       |> String.concat(" ");
-    let myProps: Js.t({..}) = {
+    let props = {
       "className": className,
       "id": Js.Nullable.fromOption(id),
       "name": name,
@@ -117,8 +117,8 @@ let make =
       "checked": Js.Nullable.fromOption(checked),
       "value": Js.Nullable.fromOption(value),
       "required": required,
-    };
-    ReasonReact.createDomElement(tag, ~props=myProps, children);
+    } |. ReactDOMRe.objToDOMProps;
+    ReactDOMRe.createElementVariadic(tag, ~props, children);
   },
 };
 
@@ -174,12 +174,12 @@ module Label = {
         ]
         ->(Belt.List.concat(colClasses))
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
         ~props={
           "className": classes,
           "htmlFor": Js.Nullable.fromOption(for_),
-        },
+        } |. ReactDOMRe.objToDOMProps,
         children,
       );
     },

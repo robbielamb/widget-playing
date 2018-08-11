@@ -138,29 +138,29 @@ let make =
       ReasonReact.null :
       {
         let content =
-          ReasonReact.createDomElement(
+          ReactDOMRe.createElementVariadic(
             "div",
-            ~props={"className": "modal-content"},
+            ~props={"className": "modal-content"} -> ReactDOMRe.objToDOMProps,
             children,
           );
         let dialog =
-          ReasonReact.createDomElement(
+          ReactDOMRe.createElement(
             "div",
-            ~props={"className": "modal-dialog", "role": "document"},
+            ~props={"className": "modal-dialog", "role": "document"} -> ReactDOMRe.objToDOMProps,
             [|content|],
           );
         let classNames =
           ["modal fade", isOpen ? "show" : ""] |> String.concat(" ");
         let style =
           ReactDOMRe.Style.make(~display=isOpen ? "block" : "none", ());
-        ReasonReact.createDomElement(
+        ReactDOMRe.createElement(
           "div",
           ~props={
             "className": classNames,
             "role": "dialog",
             "style": style,
             "tabIndex": "-1",
-          },
+          } -> ReactDOMRe.objToDOMProps,
           [|dialog|],
         );
       },
@@ -173,7 +173,7 @@ module Header = {
       (
         ~tag: string="h4",
         ~wrapTag: string="div",
-        ~toggle: option(ReactEventRe.Mouse.t => unit)=?,
+        ~toggle: option(ReactEvent.Mouse.t => unit)=?,
         ~className: option(string)=?,
         /* cssModule::(cssModule: option (Js.t {..}))=? */
         ~closeAriaLabel: string="Close",
@@ -186,33 +186,33 @@ module Header = {
       let closeButton =
         switch (toggle) {
         | None => ReasonReact.null
-        | Some(cb) =>
-          ReasonReact.createDomElement(
+        | Some(onClick) =>
+          ReactDOMRe.createElement(
             "button",
             ~props={
               "type": "button",
-              "onClick": cb,
+              "onClick": onClick,
               "className": "close",
               "aria-label": closeAriaLabel,
-            },
+            } |. ReactDOMRe.objToDOMProps,
             [|
-              ReasonReact.createDomElement(
+              ReactDOMRe.createElement(
                 "span",
-                ~props={"aria-hidden": "true"},
+                ~props={"aria-hidden": "true"} |. ReactDOMRe.objToDOMProps,
                 [|ReasonReact.string(Js.String.fromCharCode(215))|],
               ),
             |],
           )
         };
       let inner =
-        ReasonReact.createDomElement(
+        ReactDOMRe.createElementVariadic(
           tag,
-          ~props={"className": "modal-title"},
+          ~props={"className": "modal-title"} |. ReactDOMRe.objToDOMProps,
           children,
         );
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         wrapTag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         [|inner, closeButton|],
       );
     },
@@ -230,12 +230,12 @@ module Body = {
       ) => {
     ...component,
     render: _self =>
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
         ~props={
           "className":
             String.concat(" ", ["modal-body", unwrapStr(i, className)]),
-        },
+        } |. ReactDOMRe.objToDOMProps,
         children,
       ),
   };
@@ -251,12 +251,12 @@ module Footer = {
       ) => {
     ...component,
     render: _self =>
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
         ~props={
           "className":
             String.concat(" ", ["modal-footer", unwrapStr(i, className)]),
-        },
+        } |. ReactDOMRe.objToDOMProps,
         children,
       ),
   };

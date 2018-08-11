@@ -22,38 +22,20 @@ let make =
   ...component,
   render: _self => {
     let classNames =
-      [
-        group ? "btn-group" : "dropdown",
-        isOpen ? "show" : "",
-        unwrapStr(i, classname),
-      ]
-      |> String.concat(" ");
-    ReasonReact.createDomElement(
-      tag,
-      ~props={"className": classNames},
-      children,
-    );
+      [group ? "btn-group" : "dropdown", isOpen ? "show" : "", unwrapStr(i, classname)] |> String.concat(" ");
+    ReactDOMRe.createElementVariadic(tag, ~props={"className": classNames} |. ReactDOMRe.objToDOMProps, children);
   },
 };
 
 module Toggle = {
   type retainedProps = {
     nav: bool,
-    onClick: option(ReactEventRe.Mouse.t => unit),
+    onClick: option(ReactEvent.Mouse.t => unit),
     toggle: unit => unit,
     disabled: bool,
     tag: option(string),
   };
-  let handleOnClick =
-      (
-        event,
-        self:
-          ReasonReact.self(
-            ReasonReact.stateless,
-            retainedProps,
-            ReasonReact.actionless,
-          ),
-      ) => {
+  let handleOnClick = (event, self: ReasonReact.self(ReasonReact.stateless, retainedProps, ReasonReact.actionless)) => {
     let props = self.retainedProps;
     Js.log("onClicking");
     props.disabled ?
@@ -70,8 +52,7 @@ module Toggle = {
         ();
       };
   };
-  let component =
-    ReasonReact.statelessComponentWithRetainedProps("Dropdown.Toggle");
+  let component = ReasonReact.statelessComponentWithRetainedProps("Dropdown.Toggle");
   let make =
       (
         ~tag: option(string)=?,
@@ -95,15 +76,7 @@ module Toggle = {
       nav,
       toggle,
     },
-    render:
-      (
-        self:
-          ReasonReact.self(
-            ReasonReact.stateless,
-            retainedProps,
-            ReasonReact.actionless,
-          ),
-      ) => {
+    render: (self: ReasonReact.self(ReasonReact.stateless, retainedProps, ReasonReact.actionless)) => {
       let classNames =
         [
           caret || split ? "dropdown-toggle" : "",
@@ -132,13 +105,10 @@ module Toggle = {
           ),
         )
       | _ =>
-        ReasonReact.createDomElement(
+        ReactDOMRe.createElementVariadic(
           tag,
-          ~props={
-            "className": classNames,
-            "href": "#",
-            "onClick": self.handle(handleOnClick),
-          },
+          ~props=
+            {"className": classNames, "href": "#", "onClick": self.handle(handleOnClick)} |. ReactDOMRe.objToDOMProps,
           children,
         )
       };
@@ -149,32 +119,17 @@ module Toggle = {
 module Menu = {
   /* TODO: Support Context someday */
   let component = ReasonReact.statelessComponent("Dropdown.Menu");
-  let make =
-      (
-        ~tag: string="div",
-        ~alignRight: bool=false,
-        ~isOpen: bool,
-        ~classname: option(string)=?,
-        children,
-      ) => {
+  let make = (~tag: string="div", ~alignRight: bool=false, ~isOpen: bool, ~classname: option(string)=?, children) => {
     ...component,
     render: _self => {
       let classNames =
-        [
-          "dropdown-menu",
-          alignRight ? "dropdown-menu-right" : "",
-          isOpen ? "show" : "",
-          unwrapStr(i, classname),
-        ]
+        ["dropdown-menu", alignRight ? "dropdown-menu-right" : "", isOpen ? "show" : "", unwrapStr(i, classname)]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={
-          "className": classNames,
-          "tabIndex": "-1",
-          "aria-hidden": !isOpen,
-          "role": "menu",
-        },
+        ~props=
+          {"className": classNames, "tabIndex": "-1", "aria-hidden": ! isOpen, "role": "menu"}
+          |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -186,9 +141,9 @@ module Divider = {
   let make = children => {
     ...component,
     render: _self =>
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         "div",
-        ~props={"className": "dropdown-divider"},
+        ~props={"className": "dropdown-divider"} |. ReactDOMRe.objToDOMProps,
         children,
       ),
   };
@@ -199,9 +154,9 @@ module Header = {
   let make = children => {
     ...component,
     render: _self =>
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         "h6",
-        ~props={"className": "dropdown-header"},
+        ~props={"className": "dropdown-header"} |. ReactDOMRe.objToDOMProps,
         children,
       ),
   };
@@ -242,22 +197,19 @@ module Item = {
         | (_, _) => None
         };
       let classes =
-        [
-          "dropdown-item",
-          active ? "active" : "",
-          disabled ? "disabled" : "",
-          unwrapStr(i, classname),
-        ]
+        ["dropdown-item", active ? "active" : "", disabled ? "disabled" : "", unwrapStr(i, classname)]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={
-          "className": classes,
-          "tabIndex": tabIndex,
-          "onClick": self.handle(click),
-          "type": Js.Nullable.fromOption(type_),
-          "href": Js.Nullable.fromOption(href),
-        },
+        ~props=
+          {
+            "className": classes,
+            "tabIndex": tabIndex,
+            "onClick": self.handle(click),
+            "type": Js.Nullable.fromOption(type_),
+            "href": Js.Nullable.fromOption(href),
+          }
+          |. ReactDOMRe.objToDOMProps,
         children,
       );
     },

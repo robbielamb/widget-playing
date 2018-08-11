@@ -22,9 +22,9 @@ let make =
         ColorsRe.Border.unWrap(borderColor),
       ]
       |> String.concat(" ");
-    ReasonReact.createDomElement(
+    ReactDOMRe.createElementVariadic(
       tag,
-      ~props={"className": classes},
+      ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
       children,
     );
   },
@@ -37,9 +37,9 @@ module Body = {
     render: _self => {
       let classes =
         ["card-body", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -53,9 +53,9 @@ module Columns = {
     render: _self => {
       let classes =
         [unwrapStr(i, className), "card-columns"] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -69,9 +69,9 @@ module Deck = {
     render: _self => {
       let classes =
         ["card-deck", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -85,9 +85,9 @@ module Footer = {
     render: _self => {
       let classes =
         ["card-footer", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -101,9 +101,9 @@ module CardGroup = {
     render: _self => {
       let classes =
         ["card-group", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -117,9 +117,9 @@ module Header = {
     render: _self => {
       let classes =
         ["card-header", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -157,9 +157,9 @@ module Img = {
       let classes =
         [Fixed.toString(fixed), unwrapStr(i, className)]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes, "src": src, "alt": alt},
+        ~props={"className": classes, "src": src, "alt": alt} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -173,9 +173,9 @@ module ImgOverlay = {
     render: _self => {
       let classes =
         ["card-img-overlay", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -190,9 +190,9 @@ module Link = {
     render: _self => {
       let classes =
         ["card-link", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -206,9 +206,9 @@ module Title = {
     render: _self => {
       let classes =
         ["card-title", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -222,9 +222,9 @@ module Subtitle = {
     render: _self => {
       let classes =
         ["card-subtitle", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -238,9 +238,9 @@ module Text = {
     render: _self => {
       let classes =
         ["card-text", unwrapStr(i, className)] |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },

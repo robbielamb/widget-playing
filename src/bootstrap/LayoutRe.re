@@ -15,9 +15,9 @@ module Container = {
       let classes =
         [fluid ? "container-fluid" : "container", unwrapStr(i, className)]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -39,9 +39,9 @@ module Row = {
       let classes =
         ["row", noGutters ? "no-gutters" : "", unwrapStr(i, className)]
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
         children,
       );
     },
@@ -108,10 +108,10 @@ module ColSizes = {
           switch (maybeShape) {
           | None => []
           | Some(shape) => genClasses(col, shape)
-          }
+          } 
         )
       )
-    |> Belt.List.flatten;
+    -> Belt.List.flatten;
 };
 
 module Col = {
@@ -134,9 +134,9 @@ module Col = {
       let classes =
         Belt.List.concat([unwrapStr(i, className)], classShapeList)
         |> String.concat(" ");
-      ReasonReact.createDomElement(
+      ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes},
+        ~props={"className": classes} -> ReactDOMRe.objToDOMProps,
         children,
       );
     },
