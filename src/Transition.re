@@ -1,4 +1,4 @@
-let optionMap = (fn, option) =>
+/* let optionMap = (fn, option) =>
   switch (option) {
   | Some(value) => Some(fn(value))
   | None => None
@@ -212,3 +212,4 @@ module MyTransition = {
       </div> /* self.reduce (fun () => Mounted), */ /* didMount: fun _self => ReasonReact.Update Entering, */
   };
 };
+ */

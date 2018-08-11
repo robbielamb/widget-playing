@@ -27,7 +27,7 @@ let make = _children => {
     },
   render: self =>
     <Examples.Example title="Dropdowns">
-      <Dropdown isOpen=self.state.isOpen toggle=(toggle(self))>
+      <Dropdown isOpen=self.state.isOpen >
         <Dropdown.Toggle
           isOpen=self.state.isOpen caret=true toggle=(toggle(self))>
           (se("align right! "))

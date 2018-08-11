@@ -12,10 +12,10 @@ let component = ReasonReact.statelessComponent("Dropdown");
 let make =
     (
       ~tag: string="div",
-      ~disabled: bool=false,
+     /*  ~disabled: bool=false, */
       ~group: bool=false,
       ~isOpen: bool=false,
-      ~toggle: option(unit => unit)=?,
+      /* ~toggle: option(unit => unit)=?, */
       ~classname: option(string)=?,
       children,
     ) => {
@@ -37,7 +37,6 @@ module Toggle = {
   };
   let handleOnClick = (event, self: ReasonReact.self(ReasonReact.stateless, retainedProps, ReasonReact.actionless)) => {
     let props = self.retainedProps;
-    Js.log("onClicking");
     props.disabled ?
       ReactEvent.Mouse.preventDefault(event) :
       {
@@ -48,8 +47,7 @@ module Toggle = {
         | None => ()
         | Some(cb) => cb(event)
         };
-        let _ = props.toggle();
-        ();
+        props.toggle();
       };
   };
   let component = ReasonReact.statelessComponentWithRetainedProps("Dropdown.Toggle");
@@ -58,12 +56,12 @@ module Toggle = {
         ~tag: option(string)=?,
         ~caret: bool=false,
         ~disabled: bool=false,
-        ~right: bool=false,
+        /* ~right: bool=false, */
         ~isOpen: bool,
         ~split: bool=false,
         ~color: Color.t=Color.Secondary,
         ~nav: bool=false,
-        ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
+        ~onClick: option(ReactEvent.Mouse.t => unit)=?,
         ~toggle: unit => unit,
         ~classname: option(string)=?,
         children,
@@ -167,9 +165,9 @@ module Item = {
   let make =
       (
         ~disabled: bool=false,
-        ~toggle: bool=true,
+        /* ~toggle: bool=true, */
         ~active: bool=false,
-        ~onClick: option(ReactEventRe.Mouse.t => unit)=?,
+        ~onClick: option(ReactEvent.Mouse.t => unit)=?,
         ~href: option(string)=?,
         ~classname: option(string)=?,
         children,

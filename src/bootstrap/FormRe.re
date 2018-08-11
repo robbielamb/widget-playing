@@ -39,7 +39,7 @@ module Group = {
         ~tag: string="div",
         ~row: bool=false,
         ~disabled: bool=false,
-        ~inline: bool=false,
+        /* ~inline: bool=false, */
         ~className: option(string)=?,
         children,
       ) => {
