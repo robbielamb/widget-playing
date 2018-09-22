@@ -5,7 +5,7 @@ include Bootstrap;
 let se = ReasonReact.string;
 
 let exampleHighlight = code =>
-  <Highlight languages=[|"html"|]> (se(code)) </Highlight>;
+  <Highlight languages=[|"reason"|] highlightjs=Highlight.highlightJs> (se(code)) </Highlight>;
 
 let highlight = exampleHighlight;
 
