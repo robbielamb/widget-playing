@@ -1,18 +1,16 @@
 include Utils;
 
-let component = ReasonReact.statelessComponent("Card");
 
+[@react.component]
 let make =
     (
-      ~tag: string="div",
       ~className: option(string)=?,
       ~color: option(ColorsRe.Text.t)=?,
       ~backgroundColor: option(ColorsRe.Background.t)=?,
       ~borderColor: option(ColorsRe.Border.t)=?,
-      children,
+      ~children,
     ) => {
-  ...component,
-  render: _self => {
+  
     let classes =
       [
         "card",
@@ -22,27 +20,19 @@ let make =
         ColorsRe.Border.unWrap(borderColor),
       ]
       |> String.concat(" ");
-    ReactDOMRe.createElementVariadic(
-      tag,
-      ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
-      children,
-    );
-  },
+      <div className=classes> children </div>
+
+  
 };
 
-module Body = {
-  let component = ReasonReact.statelessComponent("Card.Body");
-  let make = (~tag: string="div", ~className: option(string)=?, children) => {
-    ...component,
-    render: _self => {
-      let classes =
+module Body = {  
+  [@react.component]
+  let make = (~className: option(string)=?, ~children) => {
+
+      let className =
         ["card-body", unwrapStr(i, className)] |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+      <div className> children </div>
+    
   };
 };
 
@@ -55,11 +45,42 @@ module Columns = {
         [unwrapStr(i, className), "card-columns"] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module Deck = {
@@ -71,11 +92,42 @@ module Deck = {
         ["card-deck", unwrapStr(i, className)] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module Footer = {
@@ -87,11 +139,42 @@ module Footer = {
         ["card-footer", unwrapStr(i, className)] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module CardGroup = {
@@ -103,26 +186,52 @@ module CardGroup = {
         ["card-group", unwrapStr(i, className)] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
-module Header = {
-  let component = ReasonReact.statelessComponent("Card.Header");
-  let make = (~tag: string="div", ~className: option(string)=?, children) => {
-    ...component,
-    render: _self => {
-      let classes =
+module Header = {  
+  [@react.component]
+  let make = (~className: option(string)=?, ~children) => {
+
+      let className =
         ["card-header", unwrapStr(i, className)] |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+      <div className> children </div>
+    
   };
 };
 
@@ -159,11 +268,61 @@ module Img = {
         |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes, "src": src, "alt": alt} |. ReactDOMRe.objToDOMProps,
+        ~props=
+          {"className": classes, "src": src, "alt": alt}
+          ->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "fixed": option('fixed),
+          "alt": option('alt),
+          "src": option('src),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~fixed=?reactProps##fixed,
+        ~alt=?reactProps##alt,
+        ~src=?reactProps##src,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (
+      ~children: 'children,
+      ~tag: 'tag=?,
+      ~src: 'src=?,
+      ~alt: 'alt=?,
+      ~fixed: 'fixed=?,
+      ~className: 'className=?,
+      unit
+    ) =>
+    {
+      .
+      "className": option('className),
+      "fixed": option('fixed),
+      "alt": option('alt),
+      "src": option('src),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module ImgOverlay = {
@@ -175,15 +334,45 @@ module ImgOverlay = {
         ["card-img-overlay", unwrapStr(i, className)] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module Link = {
-  /* TODO: Handle href and proper callbacks */
   let component = ReasonReact.statelessComponent("Card.Link");
   let make = (~tag: string="a", ~className: option(string)=?, children) => {
     ...component,
@@ -192,11 +381,42 @@ module Link = {
         ["card-link", unwrapStr(i, className)] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module Title = {
@@ -208,11 +428,42 @@ module Title = {
         ["card-title", unwrapStr(i, className)] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module Subtitle = {
@@ -224,11 +475,42 @@ module Subtitle = {
         ["card-subtitle", unwrapStr(i, className)] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module Text = {
@@ -240,9 +522,42 @@ module Text = {
         ["card-text", unwrapStr(i, className)] |> String.concat(" ");
       ReactDOMRe.createElementVariadic(
         tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
+        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
         children,
       );
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
+
+/* TODO: Handle href and proper callbacks */

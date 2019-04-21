@@ -16,7 +16,7 @@ let navNav = (handle, currentRoute, routeTo, name) => {
   let navTo = navTo(routeTo);
   let el =
     <Bootstrap.Nav.Link href disabled onClick=(handle(navTo))>
-      (ReasonReact.string(name))
+      (React.string(name))
     </Bootstrap.Nav.Link>;
   el;
 };
@@ -26,7 +26,8 @@ let component = ReasonReact.reducerComponent("Shell");
 let make = _children => {
   ...component,
   initialState: () => {
-    currentRoute: ReasonReact.Router.dangerouslyGetInitialUrl() |> Router.urlHandler,
+    currentRoute:
+      ReasonReact.Router.dangerouslyGetInitialUrl() |> Router.urlHandler,
   },
   didMount: self => {
     let watcherId =
@@ -48,7 +49,7 @@ let make = _children => {
     <div>
       <Bootstrap.Navbar light=false color=Bootstrap.Colors.Background.Dark>
         <Bootstrap.Navbar.Brand>
-          (ReasonReact.string("Widget Play"))
+          (React.string("Widget Play"))
         </Bootstrap.Navbar.Brand>
       </Bootstrap.Navbar>
       <Bootstrap.Layout.Container>
@@ -61,7 +62,7 @@ let make = _children => {
                 (),
               )
             )>
-            <p> (ReasonReact.string("Select Example")) </p>
+            <p> (React.string("Select Example")) </p>
             <Bootstrap.Nav vertical=true>
               <Bootstrap.Nav.Item>
                 (navTo(Routes.AlertExampleRoute, "Alerts"))
@@ -84,3 +85,15 @@ let make = _children => {
     </div>;
   },
 };
+/**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+let make =
+  ReasonReactCompat.wrapReasonReactForReact(
+    ~component, (reactProps: {. "children": 'children}) =>
+    make(reactProps##children)
+  );
+[@bs.obj]
+external makeProps: (~children: 'children, unit) => {. "children": 'children} =
+  "";

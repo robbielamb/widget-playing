@@ -3,12 +3,11 @@ include WidgetPlaying.Bootstrap;
 let code: string =
   [%bs.raw {|require('Examples/TableExample.re')|}] |> Examples.prepCode;
 
-let se = ReasonReact.string;
+let se = React.string;
 
-let component = ReasonReact.statelessComponent("TableExample");
-let make = _children => {
-  ...component,
-  render: _self =>
+
+[@react.component]
+let make = () => {
     <Examples.Example title="Table example">
       <Table bordered=true striped=true hover=true>
         <thead>
@@ -47,5 +46,5 @@ let make = _children => {
         </tbody>
       </Table>
       (Examples.highlight(code))
-    </Examples.Example>,
+    </Examples.Example>
 };

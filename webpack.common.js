@@ -1,7 +1,6 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-/* const ExtractTextPlugin = require('extract-text-webpack-plugin'); */
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 
@@ -24,7 +23,14 @@ module.exports = {
       },
       {
         test: /\.(css|scss)$/,
-        loader: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        loader: ExtractTextPlugin.extract({
+          use: [{
+            loader: "css-loader"
+          }, {
+            loader: "sass-loader"
+          }],
+          fallback: 'style-loader'
+        })
       }
     ]
   },
@@ -36,8 +42,7 @@ module.exports = {
   },
   plugins: [
     // extract CSS into a separate file
-    /* new ExtractTextPlugin({ filename: 'css/app.css', allChunks: true }), */
-    new MiniCssExtractPlugin({filename: 'css/app.css', chunkFilename: '[id].css'}),
+    new ExtractTextPlugin({ filename: 'css/app.css', allChunks: true }),
 
     // Can this be mangled?
     new HtmlWebpackPlugin({

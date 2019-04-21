@@ -3,7 +3,7 @@ include WidgetPlaying.Bootstrap;
 let code: string =
   [%bs.raw {|require('Examples/DropdownExample.re')|}] |> Examples.prepCode;
 
-let se = ReasonReact.string;
+let se = React.string;
 
 type state = {isOpen: bool};
 
@@ -27,7 +27,7 @@ let make = _children => {
     },
   render: self =>
     <Examples.Example title="Dropdowns">
-      <Dropdown isOpen=self.state.isOpen >
+      <Dropdown isOpen=self.state.isOpen>
         <Dropdown.Toggle
           isOpen=self.state.isOpen caret=true toggle=(toggle(self))>
           (se("align right! "))
@@ -46,3 +46,15 @@ let make = _children => {
       (Examples.exampleHighlight(code))
     </Examples.Example>,
 };
+/**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+let make =
+  ReasonReactCompat.wrapReasonReactForReact(
+    ~component, (reactProps: {. "children": 'children}) =>
+    make(reactProps##children)
+  );
+[@bs.obj]
+external makeProps: (~children: 'children, unit) => {. "children": 'children} =
+  "";

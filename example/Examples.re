@@ -2,28 +2,24 @@ include Bootstrap;
 
 [@bs.module] external logo: string = "./logo.svg";
 
-let se = ReasonReact.string;
+let se = React.string;
 
-let exampleHighlight = code =>
-  <Highlight languages=[|"reason"|] highlightjs=Highlight.highlightJs> (se(code)) </Highlight>;
+let exampleHighlight = code => <Highlight languages={Some([|"html"|])}> {se(code)} </Highlight>;
 
 let highlight = exampleHighlight;
 
 let prepCode = (code: string): string =>
-  code
-  |> Js.String.split("\n")
-  |> Js.Array.sliceFrom(7)
-  |> Js.Array.joinWith("\n");
+  code |> Js.String.split("\n") |> Js.Array.sliceFrom(7) |> Js.Array.joinWith("\n");
 
 module Example = {
-  let component = ReasonReact.statelessComponent("Example");
-  let make = (~title, children: array(ReasonReact.reactElement)) => {
-    ...component,
-    render: _self => {
-      let title = <h3> (se(title)) </h3>;
-      let _ = Js.Array.unshift(title, children);
-      let col = ReasonReact.element(Layout.Col.make(children));
-      <Layout.Row className="mb-4 border p-2"> col </Layout.Row>;
-    },
+  /*  let component = ReasonReact.statelessComponent("Example"); */
+  [@react.component]
+  let make = (~title, ~children) => {
+    <Layout.Row className="mb-4 border p-2">
+      <Layout.Col> 
+        <h3> {se(title)} </h3> 
+        {children}
+       </Layout.Col>
+    </Layout.Row>;
   };
 };

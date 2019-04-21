@@ -12,39 +12,55 @@ module Container = {
       ) => {
     ...component,
     render: _self => {
-      let classes =
-        [fluid ? "container-fluid" : "container", unwrapStr(i, className)]
-        |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
-        children,
-      );
+      let classes = [fluid ? "container-fluid" : "container", unwrapStr(i, className)] |> String.concat(" ");
+      ReactDOMRe.createElementVariadic(tag, ~props={"className": classes}->ReactDOMRe.objToDOMProps, children);
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "className": option('className),
+          "tag": option('tag),
+          "fluid": option('fluid),
+          "children": 'children,
+        },
+      ) =>
+      make(~className=?reactProps##className, ~tag=?reactProps##tag, ~fluid=?reactProps##fluid, reactProps##children)
+    );
+  [@bs.obj]
+  external makeProps:
+    (~children: 'children, ~fluid: 'fluid=?, ~tag: 'tag=?, ~className: 'className=?, unit) =>
+    {
+      .
+      "className": option('className),
+      "tag": option('tag),
+      "fluid": option('fluid),
+      "children": 'children,
+    } =
+    "";
 };
 
 module Row = {
   /* Todo: Add more options here */
-  let component = ReasonReact.statelessComponent("Row");
+  //let component = ReasonReact.statelessComponent("Row");
+  [@react.component]
   let make =
       (
         ~noGutters: bool=false,
         ~tag: string="div",
         ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */ children,
+        /* cssModule::(cssModule: option (Js.t {..}))=? */ ~children,
       ) => {
-    ...component,
-    render: _self => {
-      let classes =
-        ["row", noGutters ? "no-gutters" : "", unwrapStr(i, className)]
-        |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+    let classes = ["row", noGutters ? "no-gutters" : "", unwrapStr(i, className)] |> String.concat(" ");
+    //ReactDOMRe.createElementVariadic(tag, ~props={"className": classes}->ReactDOMRe.objToDOMProps, children);
+    <div className=classes> children </div>
   };
 };
 
@@ -58,14 +74,7 @@ module ColSizes = {
     pull: option(int),
     offset: option(int),
   };
-  let shape =
-      (
-        ~size: option(size)=?,
-        ~push: option(int)=?,
-        ~pull: option(int)=?,
-        ~offset: option(int)=?,
-        (),
-      ) => {
+  let shape = (~size: option(size)=?, ~push: option(int)=?, ~pull: option(int)=?, ~offset: option(int)=?, ()) => {
     size,
     push,
     pull,
@@ -108,37 +117,30 @@ module ColSizes = {
           switch (maybeShape) {
           | None => []
           | Some(shape) => genClasses(col, shape)
-          } 
+          }
         )
       )
-    -> Belt.List.flatten;
+    ->Belt.List.flatten;
 };
 
 module Col = {
   include ColSizes;
-  let component = ReasonReact.statelessComponent("Col");
+  [@react.component]
   let make =
       (
         ~tag: string="div",
-        ~xs: option(shape)=Some(shape()),
+        ~xs: option(shape)=?,
         ~sm: option(shape)=?,
         ~md: option(shape)=?,
         ~lg: option(shape)=?,
         ~xl: option(shape)=?,
         ~className: option(string)=?,
-        children,
+        ~children,
       ) => {
-    ...component,
-    render: _self => {
-      let classShapeList = processShapeList(xs, sm, md, lg, xl);
-      let classes =
-        Belt.List.concat([unwrapStr(i, className)], classShapeList)
-        |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes} -> ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+    let classShapeList = processShapeList(xs, sm, md, lg, xl);
+    let classes = Belt.List.concat([unwrapStr(i, className)], classShapeList) |> String.concat(" ");
+    //ReactDOMRe.createElementVariadic(tag, ~props={"className": classes}->ReactDOMRe.objToDOMProps, children)
+    <div className=classes> children </div>
+
   };
 };

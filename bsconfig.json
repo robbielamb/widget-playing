@@ -4,7 +4,7 @@
    an issue! */
 {
   "name": "widget-playing",
-  "bsc-flags": ["-bs-no-version-header", "-bs-super-errors"],
+  "bsc-flags": ["-bs-super-errors"],
   "sources": [ 
     {
       "dir": "src",    
@@ -21,10 +21,10 @@
     "bs-webapi"
   ],
   "bs-dev-dependencies": [
-    "bs-jest"
+    "@glennsl/bs-jest"
   ],
   "reason": {
-    "react-jsx": 2
+    "react-jsx": 3
   },
   
   "package-specs": {

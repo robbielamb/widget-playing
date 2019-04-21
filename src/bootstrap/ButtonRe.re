@@ -51,6 +51,7 @@ let mapBool = b =>
   | Some(t) => Js.Nullable.return(t)
   };
 
+[@react.component]
 let make =
     (
       ~tag: string="button",
@@ -65,10 +66,9 @@ let make =
       ~ariaHaspopup: option(bool)=?,
       ~ariaExpanded: option(bool)=?,
       ~className: option(string)=?,
-      children,
+      ~children,
     ) => {
-  ...component,
-  render: _self => {
+  
     let btnColor =
       "btn" ++ (outline ? "-outline" : "") ++ "-" ++ Color.toString(color);
     let btnSize =
@@ -88,22 +88,19 @@ let make =
       ]
       |> String.concat(" ");
     let buttonType = Type.toString(type_);
-    let props={
+    let props =
+      {
         "className": classes,
         "onClick": Js.Nullable.fromOption(onClick),
         "type": buttonType,
         "aria-haspopup": mapBool(ariaHaspopup),
         "aria-expanded": mapBool(ariaExpanded),
-      } |. ReactDOMRe.objToDOMProps;
-    ReactDOMRe.createElementVariadic(
-      tag,
-      ~props,
-      children,
-    );
-  },
+      }
+      ->ReactDOMRe.objToDOMProps;
+    ReactDOMRe.createElementVariadic(tag, ~props, children);
+  
 };
 
-/* TODO: Make this guy work */
 module DropDown = {};
 
 module Group = {
@@ -140,14 +137,59 @@ module Group = {
           unwrapStr(i, className),
         ]
         |> String.concat(" ");
-      let props={"className": classes, "role": role} |. ReactDOMRe.objToDOMProps;
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props,
-        children,
-      );
+      let props =
+        {"className": classes, "role": role}->ReactDOMRe.objToDOMProps;
+      ReactDOMRe.createElementVariadic(tag, ~props, children);
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "vertical": option('vertical),
+          "size": option('size),
+          "role": option('role),
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~vertical=?reactProps##vertical,
+        ~size=?reactProps##size,
+        ~role=?reactProps##role,
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (
+      ~children: 'children,
+      ~tag: 'tag=?,
+      ~className: 'className=?,
+      ~role: 'role=?,
+      ~size: 'size=?,
+      ~vertical: 'vertical=?,
+      unit
+    ) =>
+    {
+      .
+      "vertical": option('vertical),
+      "size": option('size),
+      "role": option('role),
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
 
 module Toolbar = {
@@ -163,12 +205,127 @@ module Toolbar = {
     render: _self => {
       let classes =
         ["btn-toolbar", unwrapStr(i, className)] |> String.concat(" ");
-        let props={"className": classes, "role": role} |. ReactDOMRe.objToDOMProps;
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props,
-        children,
-      );
+      let props =
+        {"className": classes, "role": role}->ReactDOMRe.objToDOMProps;
+      ReactDOMRe.createElementVariadic(tag, ~props, children);
     },
   };
+  /**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+  let make =
+    ReasonReactCompat.wrapReasonReactForReact(
+      ~component,
+      (
+        reactProps: {
+          .
+          "role": option('role),
+          "className": option('className),
+          "tag": option('tag),
+          "children": 'children,
+        },
+      ) =>
+      make(
+        ~role=?reactProps##role,
+        ~className=?reactProps##className,
+        ~tag=?reactProps##tag,
+        reactProps##children,
+      )
+    );
+  [@bs.obj]
+  external makeProps:
+    (
+      ~children: 'children,
+      ~tag: 'tag=?,
+      ~className: 'className=?,
+      ~role: 'role=?,
+      unit
+    ) =>
+    {
+      .
+      "role": option('role),
+      "className": option('className),
+      "tag": option('tag),
+      "children": 'children,
+    } =
+    "";
 };
+/**
+ * This is a wrapper created to let this component be used from the new React api.
+ * Please convert this component to a [@react.component] function and then remove this wrapping code.
+ */
+/* let make =
+  ReasonReactCompat.wrapReasonReactForReact(
+    ~component,
+    (
+      reactProps: {
+        .
+        "className": option('className),
+        "ariaExpanded": option('ariaExpanded),
+        "ariaHaspopup": option('ariaHaspopup),
+        "type_": option('type_),
+        "onClick": option('onClick),
+        "size": option('size),
+        "outline": option('outline),
+        "disabled": option('disabled),
+        "color": option('color),
+        "block": option('block),
+        "active": option('active),
+        "tag": option('tag),
+        "children": 'children,
+      },
+    ) =>
+    make(
+      ~className=?reactProps##className,
+      ~ariaExpanded=?reactProps##ariaExpanded,
+      ~ariaHaspopup=?reactProps##ariaHaspopup,
+      ~type_=?reactProps##type_,
+      ~onClick=?reactProps##onClick,
+      ~size=?reactProps##size,
+      ~outline=?reactProps##outline,
+      ~disabled=?reactProps##disabled,
+      ~color=?reactProps##color,
+      ~block=?reactProps##block,
+      ~active=?reactProps##active,
+      ~tag=?reactProps##tag,
+      reactProps##children,
+    )
+  );
+[@bs.obj]
+external makeProps:
+  (
+    ~children: 'children,
+    ~tag: 'tag=?,
+    ~active: 'active=?,
+    ~block: 'block=?,
+    ~color: 'color=?,
+    ~disabled: 'disabled=?,
+    ~outline: 'outline=?,
+    ~size: 'size=?,
+    ~onClick: 'onClick=?,
+    ~type_: 'type_=?,
+    ~ariaHaspopup: 'ariaHaspopup=?,
+    ~ariaExpanded: 'ariaExpanded=?,
+    ~className: 'className=?,
+    unit
+  ) =>
+  {
+    .
+    "className": option('className),
+    "ariaExpanded": option('ariaExpanded),
+    "ariaHaspopup": option('ariaHaspopup),
+    "type_": option('type_),
+    "onClick": option('onClick),
+    "size": option('size),
+    "outline": option('outline),
+    "disabled": option('disabled),
+    "color": option('color),
+    "block": option('block),
+    "active": option('active),
+    "tag": option('tag),
+    "children": 'children,
+  } =
+  ""; */
+
+/* TODO: Make this guy work */

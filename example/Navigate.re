@@ -15,4 +15,4 @@ let pathFor = route =>
   | Routes.NotFound => "/notFound"
   };
 
-let to_ = route => pathFor(route) |. ReasonReact.Router.push;
+let to_ = route => pathFor(route)->ReasonReact.Router.push;

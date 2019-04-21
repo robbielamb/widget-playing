@@ -1,9 +1,8 @@
 include WidgetPlaying.Bootstrap;
 
-let code: string =
-  [%bs.raw {|require('Examples/CollapseExample.re')|}] |> Examples.prepCode;
+let code: string = [%bs.raw {|require('Examples/CollapseExample.re')|}] |> Examples.prepCode;
 
-let se = ReasonReact.string;
+let se = React.string;
 
 module Collapser = {
   type action =
@@ -14,48 +13,38 @@ module Collapser = {
     isOpen: bool,
     status: string,
   };
-  let component = ReasonReact.reducerComponent("Collapser");
-  let make = _children => {
-    ...component,
-    initialState: () => {isOpen: true, status: "Open"},
-    reducer: (action, state) =>
-      switch (action) {
-      | Toggle =>
-        ReasonReact.Update({
-          isOpen: !state.isOpen,
-          status: !state.isOpen ? "Opening..." : "Collapsing...",
-        })
-      | Opened => ReasonReact.Update({...state, status: "Open"})
-      | Closed => ReasonReact.Update({...state, status: "Closed"})
-      },
-    render: ({state, send}) =>
+
+  let reducer = (state, action) : state => {
+ switch (action) {
+      | Toggle => {isOpen: !state.isOpen, status: !state.isOpen ? "Opening..." : "Collapsing..."}
+      | Opened => {...state, status: "Open"}
+      | Closed => {...state, status: "Closed"}
+      }
+  };
+
+  [@react.component]
+  let make = () => {
+    
+  
+    let (state, dispatch) = React.useReducer(reducer, {isOpen: true, status: "Open"});
+    
       <div>
-        <Button onClick=(_event => send(Toggle)) color=Button.Color.Primary>
-          (se("Collapse"))
-        </Button>
-        <p> (se(state.status)) </p>
-        <Collapse
-          isOpen=state.isOpen
-          onOpened=(_event => send(Opened))
-          onClosed=(_event => send(Closed))>
+        <Button onClick={_event => dispatch(Toggle)} color=Button.Color.Primary> [|{se("Collapse")}|] </Button>
+        <p> {se(state.status)} </p>
+        <Collapse isOpen={state.isOpen} onOpened={_event => dispatch(Opened)} onClosed={_event => dispatch(Closed)}>
           <Card>
-            <Card.Header> (se("This is the card header")) </Card.Header>
-            <Card.Body>
-              (se("THis is card and some more and some more and some more!"))
-            </Card.Body>
+            <Card.Header> {se("This is the card header")} </Card.Header>
+            <Card.Body> {se("THis is card and some more and some more and some more!")} </Card.Body>
           </Card>
         </Collapse>
-      </div>,
+      </div>
+    };
   };
-};
 
-let component = ReasonReact.statelessComponent("CollapseExample");
 
-let make = _children => {
-  ...component,
-  render: _self =>
-    <Examples.Example title="Collapse">
-      <Collapser />
-      (Examples.exampleHighlight(code))
-    </Examples.Example>,
+
+[@react.component]
+let make = () => {
+ 
+    <Examples.Example title="Collapse"> <Collapser /> {Examples.exampleHighlight(code)} </Examples.Example>
 };

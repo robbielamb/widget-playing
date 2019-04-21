@@ -1,46 +1,16 @@
 include Utils;
 
-let component = ReasonReact.statelessComponent("BreadCrumb");
-
-let make =
-    (
-      ~tag: string="ol",
-      ~className: option(string)=?,
-      /* cssModule::(cssModule: option (Js.t {..}))=? */
-      children,
-    ) => {
-  ...component,
-  render: _self => {
-    let classes =
-      ["breadcrumb", unwrapStr(i, className)] |> String.concat(" ");
-    ReactDOMRe.createElementVariadic(
-      tag,
-      ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
-      children,
-    );
-  },
+[@react.component]
+let make = (~className: option(string)=?, children) => {
+  let className = ["breadcrumb", unwrapStr(i, className)] |> String.concat(" ");
+  <ol className> children </ol>;
 };
 
 module Item = {
-  let component = ReasonReact.statelessComponent("BreadCrumb.Item");
-  let make =
-      (
-        ~active: bool=false,
-        ~tag: string="li",
-        ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */
-        children,
-      ) => {
-    ...component,
-    render: _self => {
-      let classes =
-        ["breadcrumb-item", active ? "active" : "", unwrapStr(i, className)]
-        |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes} |. ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+  [@react.component]
+  let make = (~active: bool=false, ~className: option(string)=?, children) => {
+    let className = ["breadcrumb-item", active ? "active" : "", unwrapStr(i, className)] |> String.concat(" ");
+    <li className> children </li>;
   };
 };
+

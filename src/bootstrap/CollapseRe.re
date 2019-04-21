@@ -9,13 +9,12 @@ type action =
   | Closed;
 
 type state = {
+  isOpen: bool,
   currentState: action,
   timer: ref(option(Js.Global.timeoutId)),
-  element: ref(option(ReasonReact.reactRef)),
-  height: ref(option(string)),
+  element: ReactDOMRe.domRef,
+  height: option(string),
 };
-
-type retainedProps = {isOpen: bool};
 
 let maybeCall = mb =>
   switch (mb) {
@@ -29,18 +28,36 @@ let unsetTimer = timer =>
   | Some(id) => Js.Global.clearTimeout(id)
   };
 
-let getHeight = maybeElement =>
-  switch (maybeElement) {
+let getHeight = (maybeElement: ReactDOMRe.domRef) => {
+  switch (Utils.optionDomRef(maybeElement)) {
   | None => ""
-  | Some(el) => ReasonReact.refToJsObj(el)##scrollHeight ++ "px"
+  | Some(el) => ReactDOMRe.domElementToObj(el)##scrollHeight ++ "px"
   };
+};
+let initialState = isOpen => {
+  isOpen,
+  currentState: isOpen ? Opened : Closed,
+  timer: ref(None),
+  element: Utils.createRef(),
+  height: None,
+};
 
-let setRef = (theRef, state) =>
-  state.element := Js.Nullable.toOption(theRef);
+let setTimer = (send, action, timeout) => Some(Js.Global.setTimeout(_ => send(action), timeout));
 
-/* state.height := getHeight !state.element */
-let component = ReasonReact.reducerComponentWithRetainedProps("Collapse");
+let reducer = (state, action): state => {
+  switch (action) {
+  | Opened => {...state, currentState: Opened, height: None}
+  | Closed => {...state, currentState: Closed, height: None}
 
+  | StartClosing => {...state, height: Some(getHeight(state.element)), currentState: StartClosing}
+  | Closing => {...state, height: Some("0"), currentState: Closing}
+
+  | StartOpening => {...state, height: Some(getHeight(state.element)), currentState: StartOpening}
+  | Opening => {...state, currentState: Opening}
+  };
+};
+
+[@react.component]
 let make =
     (
       ~isOpen: bool=true,
@@ -48,124 +65,65 @@ let make =
       ~onOpened: option(unit => unit)=?,
       ~onClosing: option(unit => unit)=?,
       ~onClosed: option(unit => unit)=?,
-      ~tag: string="div",
       ~className: option(string)=?,
-      children,
+      ~children,
     ) => {
-  ...component,
-  initialState: () => {
-    currentState: isOpen ? Opened : Closed,
-    timer: ref(None),
-    element: ref(None),
-    height: ref(None),
-  },
-  retainedProps: {
-    isOpen: isOpen,
-  },
-  willReceiveProps: self => {
-    let setTimer = action =>
-      Some(Js.Global.setTimeout(_ => self.send(action), 0));
-    if (self.retainedProps.isOpen !== isOpen) {
-      let _ = unsetTimer(self.state.timer^);
-      switch (self.state.currentState) {
-      | Opened
-      | StartOpening
-      | Opening => {
-          ...self.state,
-          currentState: StartClosing,
-          timer: ref(setTimer(StartClosing)),
-          height: ref(Some(getHeight(self.state.element^))),
-        }
-      | Closed
-      | StartClosing
-      | Closing => {
-          ...self.state,
-          currentState: StartOpening,
-          timer: ref(setTimer(StartOpening)),
-          height: ref(None),
-        }
+  let (state, dispatch) = React.useReducerWithMapState(reducer, isOpen, initialState);
+
+  React.useEffect1(
+    () => {
+      /*let setTimer = action =>
+        Some(Js.Global.setTimeout(_ => dispatch(action), 0));*/
+      if (state.isOpen !== isOpen) {
+        let _ = unsetTimer(state.timer^);
+        switch (state.currentState) {
+        | Opened
+        | StartOpening
+        | Opening => dispatch(StartClosing)
+        | Closed
+        | StartClosing
+        | Closing => dispatch(StartOpening)
+        };
       };
-    } else {
-      self.state;
-    };
-  },
-  willUnmount: self => {
-    unsetTimer(self.state.timer^);
-    self.state.timer := None;
-    ();
-  },
-  reducer: (action, state) => {
-    let setTimer = (send, action, timeout) =>
-      Some(Js.Global.setTimeout(_ => send(action), timeout));
-    switch (action) {
-    | Opened =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, currentState: Opened, height: ref(None)},
-        (_self => maybeCall(onOpened)),
-      )
-    | Closed =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, currentState: Closed, height: ref(None)},
-        (_self => maybeCall(onClosed)),
-      )
-    | StartClosing =>
-      ReasonReact.UpdateWithSideEffects(
-        {
-          ...state,
-          height: ref(Some(getHeight(state.element^))),
-          currentState: Closing,
+      Some(
+        () => {
+          unsetTimer(state.timer^);
+          state.timer := None;
         },
-        (({send}) => send(Closing)),
-      )
-    | Closing =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, height: ref(Some("0"))},
-        (
-          ({state, send}) => {
-            maybeCall(onClosing);
-            state.timer := setTimer(send, Closed, 350);
-          }
-        ),
-      )
-    | StartOpening =>
-      ReasonReact.UpdateWithSideEffects(
-        {
-          ...state,
-          height: ref(Some(getHeight(state.element^))),
-          currentState: Opening,
-        },
-        (({send}) => send(Opening)),
-      )
-    | Opening =>
-      ReasonReact.SideEffects(
-        (
-          ({send}) => {
-            maybeCall(onOpening);
-            state.timer := setTimer(send, Opened, 350);
-          }
-        ),
-      )
-    };
-  },
-  render: (self: ReasonReact.self(state, retainedProps, action)) => {
-    let collapsingClasses =
-      switch (self.state.currentState) {
-      | Opened => "collapse show"
-      | Closed => "collapse"
-      | _ => "collapsing"
+      );
+    },
+    [|isOpen|],
+  );
+
+  React.useEffect1(
+    () => {
+      switch (state.currentState) {
+      | Opened => maybeCall(onOpened)
+      | Closed => maybeCall(onClosed)
+      | StartClosing => dispatch(Closing)
+      | Closing =>
+        maybeCall(onClosing);
+        state.timer := setTimer(dispatch, Closed, 350);
+      | StartOpening => dispatch(Opening)
+      | Opening =>
+        maybeCall(onOpening);
+        state.timer := setTimer(dispatch, Opened, 350);
       };
-    let classes =
-      [collapsingClasses, unwrapStr(i, className)] |> String.concat(" ");
-    let maybeHeight = self.state.height^;
-    let style = ReactDOMRe.Style.make(~height=?maybeHeight, ());
-    ReactDOMRe.createElementVariadic(
-      tag,
-      ~props={
-        "className": classes,
-        "ref": reactRef => setRef(reactRef, self.state),
-        "style": style,
-      } |. ReactDOMRe.objToDOMProps,
-      children,
-    );
-  },
+      None;
+    },
+    [|state.currentState|],
+  );
+
+  let collapsingClasses =
+    switch (state.currentState) {
+    | Opened => "collapse show"
+    | Closed => "collapse"
+    | _ => "collapsing"
+    };
+  let className = [collapsingClasses, unwrapStr(i, className)] |> String.concat(" ");
+  
+  let style = ReactDOMRe.Style.make(~height=?state.height, ());
+  <div className ref={state.element} style> children </div>;
 };
+
+/* state.height := getHeight !state.element */

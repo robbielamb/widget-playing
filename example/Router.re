@@ -1,6 +1,6 @@
-[@bs.get] external location : Dom.window => Dom.location = "";
+[@bs.get] external location: Dom.window => Dom.location = "";
 
-[@bs.get] external pathname : Dom.location => string = "";
+[@bs.get] external pathname: Dom.location => string = "";
 
 let pathHandler = (url: list(string)) =>
   Routes.(
@@ -37,5 +37,5 @@ let elementForRoute = route =>
   | Routes.ProgressExampleRoute => <ProgressExample />
   | Routes.TableExampleRoute => <TableExample />
   | Routes.TabExampleRoute => <TabsExample />
-  | Routes.NotFound => <div> (ReasonReact.string("Not Found")) </div>
+  | Routes.NotFound => <div> (React.string("Not Found")) </div>
   };
