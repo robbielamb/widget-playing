@@ -33,7 +33,6 @@ module Item = {
 };
 
 module Link = {
-  let component = ReasonReact.statelessComponent("Nav.Link");
   [@react.component]
   let make =
       (

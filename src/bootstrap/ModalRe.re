@@ -16,374 +16,170 @@ let unwrapUnsafely =
   | None => raise(Invalid_argument("Passed `None` to unwrapUnsafely"));
 
 type actions =
-  | DidMount
-  | BackgroundClick;
+  | Open
+  | Close;
 
 type state = {
   el: ref(option(Dom.element)),
   isBodyOverflowing: bool,
+  isOpen: bool,
 };
 
-type retainedProps = {isOpen: bool};
+let initState = isOpen => {
+  {el: ref(None), isBodyOverflowing: false, isOpen};
+};
 
-let component = ReasonReact.reducerComponentWithRetainedProps("Modal");
+let addBackground = zIndex => {
+  let document = Webapi.Dom.document;
+  let el = document |> Webapi.Dom.Document.createElement("div");
+  Webapi.Dom.Element.setAttribute("tabIndex", "-1", el);
+  let style =
+    el
+    |> Webapi.Dom.Element.unsafeAsHtmlElement
+    /*|> unwrapUnsafely*/
+    |> Webapi.Dom.HtmlElement.style;
+  Webapi.Dom.CssStyleDeclaration.setProperty(
+    "position",
+    "relative",
+    "",
+    style,
+  );
+  Webapi.Dom.CssStyleDeclaration.setProperty(
+    "zIndex",
+    string_of_int(zIndex),
+    "",
+    style,
+  );
 
+  let _ =
+    document
+    |> Webapi.Dom.Document.asHtmlDocument
+    |> andThen(Webapi.Dom.HtmlDocument.body)
+    |> map(Webapi.Dom.Element.appendChild(el));
+  el;
+};
+
+let removeBackground = el => {
+  let document = Webapi.Dom.document;
+  let _ =
+    document
+    |> Webapi.Dom.Document.asHtmlDocument
+    |> andThen(Webapi.Dom.HtmlDocument.body)
+    |> map(Webapi.Dom.Element.removeChild(el));
+  ();
+};
+
+[@react.component]
 let make =
     (
       ~isOpen: bool=false,
       ~onEnter: option(unit => unit)=?,
       ~zIndex: int=1050,
-      children,
+      ~children,
     ) => {
-  ...component,
-  retainedProps: {
-    isOpen: isOpen,
-  },
-  initialState: () => {el: ref(None), isBodyOverflowing: false},
-  didMount: self => self.send(DidMount),
-  didUpdate: ({oldSelf, newSelf}) =>
-    if (oldSelf.retainedProps.isOpen === newSelf.retainedProps.isOpen) {
-      Js.log("NoChange");
+  let (state, dispatch) =
+    React.useReducerWithMapState(
+      (state, action) =>
+        switch (action) {
+        | Open => {...state, isOpen: true}
+        | Close => {...state, isOpen: false}
+        },
+      isOpen,
+      initState,
+    );
+
+  React.useEffect1(
+    () => {
+      switch (state.isOpen, isOpen) {
+      | (true, false) =>
+        switch(onEnter) {
+          |None => ()
+          | Some(cb) => cb()
+        };
+        dispatch(Close);
+        switch (state.el^) {
+        | Some(el) => removeBackground(el)
+        | None => ()
+        };
+      | (false, true) =>
+        dispatch(Open);
+        let el = addBackground(zIndex);
+        state.el := Some(el);
+      | (_, _) => ()
+      };
+      None;
     },
-  willUnmount: self => {
-    let document = Webapi.Dom.document;
-    switch (self.state.el^) {
-    | Some(node) =>
-      let _ =
-        document
-        |> Webapi.Dom.Document.asHtmlDocument
-        |> andThen(Webapi.Dom.HtmlDocument.body)
-        |> map(Webapi.Dom.Element.removeChild(node));
-      ();
-    | None => ()
+    [|isOpen|],
+  );
+
+  !isOpen
+    ? React.null
+    : {
+      let className =
+        ["modal fade", isOpen ? "show" : ""] |> String.concat(" ");
+      let style =
+        ReactDOMRe.Style.make(~display=isOpen ? "block" : "none", ());
+
+      let tabIndex = (-1);
+
+      <div className role="dialog" tabIndex style>
+        <div className="modal-dialog" role="document">
+          <div className="modal-content"> children </div>
+        </div>
+      </div>;
     };
-  },
-  reducer: (action, state) =>
-    switch (action) {
-    | BackgroundClick =>
-      ReasonReact.Update({
-        ...state,
-        isBodyOverflowing: !state.isBodyOverflowing,
-      })
-    | DidMount =>
-      ReasonReact.SideEffects(
-        (
-          self => {
-            isOpen ? () : /*** toggle portal */ ();
-            switch (onEnter) {
-            | Some(cb) => cb()
-            | None => ()
-            };
-            let document = Webapi.Dom.document;
-            let el = document |> Webapi.Dom.Document.createElement("div");
-            Webapi.Dom.Element.setAttribute("tabIndex", "-1", el);
-            let style =
-              el
-              |> Webapi.Dom.Element.unsafeAsHtmlElement
-              |> Webapi.Dom.HtmlElement.style;
-            Webapi.Dom.CssStyleDeclaration.setProperty(
-              "position",
-              "relative",
-              "",
-              style,
-            );
-            Webapi.Dom.CssStyleDeclaration.setProperty(
-              "zIndex",
-              string_of_int(zIndex),
-              "",
-              style,
-            );
-            self.state.el := Some(el);
-            let _ =
-              document
-              |> Webapi.Dom.Document.asHtmlDocument
-              |> andThen(Webapi.Dom.HtmlDocument.body)
-              |> map(Webapi.Dom.Element.appendChild(el));
-            ();
-          }
-        ),
-      )
-    },
-  render: (_self: ReasonReact.self(state, retainedProps, actions)) =>
-    !isOpen ?
-      React.null :
-      {
-        let content =
-          ReactDOMRe.createElementVariadic(
-            "div",
-            ~props={"className": "modal-content"}->ReactDOMRe.objToDOMProps,
-            children,
-          );
-        let dialog =
-          ReactDOMRe.createElement(
-            "div",
-            ~props=
-              {"className": "modal-dialog", "role": "document"}
-              ->ReactDOMRe.objToDOMProps,
-            [|content|],
-          );
-        let classNames =
-          ["modal fade", isOpen ? "show" : ""] |> String.concat(" ");
-        let style =
-          ReactDOMRe.Style.make(~display=isOpen ? "block" : "none", ());
-        ReactDOMRe.createElement(
-          "div",
-          ~props=
-            {
-              "className": classNames,
-              "role": "dialog",
-              "style": style,
-              "tabIndex": "-1",
-            }
-            ->ReactDOMRe.objToDOMProps,
-          [|dialog|],
-        );
-      },
 };
 
 module Header = {
-  let component = ReasonReact.statelessComponent("Modal.Header");
+  [@react.component]
   let make =
       (
-        ~tag: string="h4",
-        ~wrapTag: string="div",
         ~toggle: option(ReactEvent.Mouse.t => unit)=?,
         ~className: option(string)=?,
         ~closeAriaLabel: string="Close",
-        children,
+        ~children,
       ) => {
-    ...component,
-    render: _self => {
-      let classes =
-        ["modal-header", unwrapStr(i, className)] |> String.concat(" ");
-      let closeButton =
-        switch (toggle) {
-        | None => React.null
-        | Some(onClick) =>
-          ReactDOMRe.createElement(
-            "button",
-            ~props=
-              {
-                "type": "button",
-                "onClick": onClick,
-                "className": "close",
-                "aria-label": closeAriaLabel,
-              }
-              ->ReactDOMRe.objToDOMProps,
-            [|
-              ReactDOMRe.createElement(
-                "span",
-                ~props={"aria-hidden": "true"}->ReactDOMRe.objToDOMProps,
-                [|React.string(Js.String.fromCharCode(215))|],
-              ),
-            |],
-          )
-        };
-      let inner =
-        ReactDOMRe.createElementVariadic(
-          tag,
-          ~props={"className": "modal-title"}->ReactDOMRe.objToDOMProps,
-          children,
-        );
-      ReactDOMRe.createElementVariadic(
-        wrapTag,
-        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
-        [|inner, closeButton|],
-      );
-    },
+    let className =
+      ["modal-header", unwrapStr(i, className)] |> String.concat(" ");
+    let closeButton =
+      switch (toggle) {
+      | None => React.null
+      | Some(onClick) =>
+        <button
+          type_="button" onClick className="close" ariaLabel=closeAriaLabel>
+          <span ariaHidden=true>
+            {React.string(Js.String.fromCharCode(215))}
+          </span>
+        </button>
+      };
+    <div className>
+      <h4 className="modal-title"> children </h4>
+      closeButton
+    </div>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "closeAriaLabel": option('closeAriaLabel),
-          "className": option('className),
-          "toggle": option('toggle),
-          "wrapTag": option('wrapTag),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~closeAriaLabel=?reactProps##closeAriaLabel,
-        ~className=?reactProps##className,
-        ~toggle=?reactProps##toggle,
-        ~wrapTag=?reactProps##wrapTag,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (
-      ~children: 'children,
-      ~tag: 'tag=?,
-      ~wrapTag: 'wrapTag=?,
-      ~toggle: 'toggle=?,
-      ~className: 'className=?,
-      ~closeAriaLabel: 'closeAriaLabel=?,
-      unit
-    ) =>
-    {
-      .
-      "closeAriaLabel": option('closeAriaLabel),
-      "className": option('className),
-      "toggle": option('toggle),
-      "wrapTag": option('wrapTag),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 
 module Body = {
-  let component = ReasonReact.statelessComponent("Modal.Body");
-  let make = (~tag: string="div", ~className: option(string)=?, children) => {
-    ...component,
-    render: _self =>
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props=
-          {
-            "className":
-              String.concat(" ", ["modal-body", unwrapStr(i, className)]),
-          }
-          ->ReactDOMRe.objToDOMProps,
-        children,
-      ),
+  [@react.component]
+  let make = (~className: option(string)=?, ~children) => {
+    let className =
+      String.concat(" ", ["modal-body", unwrapStr(i, className)]);
+    <div className> children </div>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "className": option('className),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~className=?reactProps##className,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
-    {
-      .
-      "className": option('className),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 
 module Footer = {
-  let component = ReasonReact.statelessComponent("Modal.Footer");
-  let make =
-      (
-        ~tag: string="div",
-        ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */ children,
-      ) => {
-    ...component,
-    render: _self =>
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props=
-          {
-            "className":
-              String.concat(" ", ["modal-footer", unwrapStr(i, className)]),
-          }
-          ->ReactDOMRe.objToDOMProps,
-        children,
-      ),
+  [@react.component]
+  let make = (~className: option(string)=?, ~children) => {
+    let className =
+      String.concat(" ", ["modal-footer", unwrapStr(i, className)]);
+    <div className> children </div>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "className": option('className),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~className=?reactProps##className,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
-    {
-      .
-      "className": option('className),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 /**
  * This is a wrapper created to let this component be used from the new React api.
  * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-let make =
-  ReasonReactCompat.wrapReasonReactForReact(
-    ~component,
-    (
-      reactProps: {
-        .
-        "zIndex": option('zIndex),
-        "onEnter": option('onEnter),
-        "isOpen": option('isOpen),
-        "children": 'children,
-      },
-    ) =>
-    make(
-      ~zIndex=?reactProps##zIndex,
-      ~onEnter=?reactProps##onEnter,
-      ~isOpen=?reactProps##isOpen,
-      reactProps##children,
-    )
-  );
-[@bs.obj]
-external makeProps:
-  (
-    ~children: 'children,
-    ~isOpen: 'isOpen=?,
-    ~onEnter: 'onEnter=?,
-    ~zIndex: 'zIndex=?,
-    unit
-  ) =>
-  {
-    .
-    "zIndex": option('zIndex),
-    "onEnter": option('onEnter),
-    "isOpen": option('isOpen),
-    "children": 'children,
-  } =
-  "";
+ */;
 
 /*       ~autoFocus: bool=true,
          ~size: option(string)=?,

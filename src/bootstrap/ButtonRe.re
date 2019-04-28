@@ -54,7 +54,6 @@ let mapBool = b =>
 [@react.component]
 let make =
     (
-      ~tag: string="button",
       ~active: bool=false,
       ~block: bool=false,
       ~color: Color.t=Color.Secondary,

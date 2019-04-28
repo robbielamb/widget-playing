@@ -1,6 +1,5 @@
 include Utils;
 
-
 [@react.component]
 let make =
     (
@@ -10,171 +9,53 @@ let make =
       ~borderColor: option(ColorsRe.Border.t)=?,
       ~children,
     ) => {
-  
-    let classes =
-      [
-        "card",
-        unwrapStr(i, className),
-        ColorsRe.Text.unWrap(color),
-        ColorsRe.Background.unWrap(backgroundColor),
-        ColorsRe.Border.unWrap(borderColor),
-      ]
-      |> String.concat(" ");
-      <div className=classes> children </div>
-
-  
+  let classes =
+    [
+      "card",
+      unwrapStr(i, className),
+      ColorsRe.Text.unWrap(color),
+      ColorsRe.Background.unWrap(backgroundColor),
+      ColorsRe.Border.unWrap(borderColor),
+    ]
+    |> String.concat(" ");
+  <div className=classes> children </div>;
 };
 
-module Body = {  
+module Body = {
   [@react.component]
   let make = (~className: option(string)=?, ~children) => {
-
-      let className =
-        ["card-body", unwrapStr(i, className)] |> String.concat(" ");
-      <div className> children </div>
-    
+    let className =
+      ["card-body", unwrapStr(i, className)] |> String.concat(" ");
+    <div className> children </div>;
   };
 };
 
 module Columns = {
   let component = ReasonReact.statelessComponent("Card.Columns");
-  let make = (~tag: string="div", ~className: option(string)=?, children) => {
-    ...component,
-    render: _self => {
-      let classes =
-        [unwrapStr(i, className), "card-columns"] |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+  [@react.component]
+  let make = (~className: option(string)=?, children) => {
+    let className =
+      [unwrapStr(i, className), "card-columns"] |> String.concat(" ");
+    <div className> children </div>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "className": option('className),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~className=?reactProps##className,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
-    {
-      .
-      "className": option('className),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 
 module Deck = {
-  let component = ReasonReact.statelessComponent("Card.Deck");
-  let make = (~tag: string="div", ~className: option(string)=?, children) => {
-    ...component,
-    render: _self => {
-      let classes =
-        ["card-deck", unwrapStr(i, className)] |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+  [@react.component]
+  let make = (~className: option(string)=?, children) => {
+    let className =
+      ["card-deck", unwrapStr(i, className)] |> String.concat(" ");
+    <div className> children </div>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "className": option('className),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~className=?reactProps##className,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
-    {
-      .
-      "className": option('className),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 
 module Footer = {
-  let component = ReasonReact.statelessComponent("Card.Footer");
-  let make = (~tag: string="div", ~className: option(string)=?, children) => {
-    ...component,
-    render: _self => {
-      let classes =
-        ["card-footer", unwrapStr(i, className)] |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+  [@react.component]
+  let make = (~className: option(string)=?, children) => {
+    let className =
+      ["card-footer", unwrapStr(i, className)] |> String.concat(" ");
+    <div className> children </div>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "className": option('className),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~className=?reactProps##className,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
-    {
-      .
-      "className": option('className),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 
 module CardGroup = {
@@ -224,14 +105,12 @@ module CardGroup = {
     "";
 };
 
-module Header = {  
+module Header = {
   [@react.component]
   let make = (~className: option(string)=?, ~children) => {
-
-      let className =
-        ["card-header", unwrapStr(i, className)] |> String.concat(" ");
-      <div className> children </div>
-    
+    let className =
+      ["card-header", unwrapStr(i, className)] |> String.concat(" ");
+    <div className> children </div>;
   };
 };
 

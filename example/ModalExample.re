@@ -1,11 +1,11 @@
 include WidgetPlaying.Bootstrap;
 
 let code: string =
-  [%bs.raw {|require('Examples/ModalExample.re')|}] |> Examples.prepCode;
+  [%bs.raw {|require('Examples/ModalExample.re').default|}] |> Examples.prepCode;
 
 let se = React.string;
 
-type action =
+/* type action =
   | Toggle;
 
 type state = bool;
@@ -14,50 +14,39 @@ let toggle = event => {
   Js.log2("Toggling modal", event);
   Toggle;
 };
+*/
 
-let component = ReasonReact.reducerComponent("ButtonExample");
+[@react.component]
+let make = () => {
+  
+    let (isOpen, setOpen) = React.useState(() => false);
 
-let make = _children => {
-  ...component,
-  initialState: () => false,
-  reducer: (action, state) =>
-    switch (action) {
-    | Toggle => ReasonReact.Update(!state)
-    },
-  render: ({state, send}) =>
+    let toggleModal = (_event) => {
+      setOpen((isOpen) => !isOpen)
+    };
+
     <Examples.Example title="Modal">
-      <Button color=Button.Color.Danger onClick=(_event => send(Toggle))>
+      <Button color=Button.Color.Danger onClick=(toggleModal)>
         (se("Launch Modal"))
       </Button>
-      <Modal isOpen=state>
-        <Modal.Header toggle=(_event => send(Toggle))>
+      <Modal isOpen>
+        <Modal.Header toggle=(toggleModal)>
           (se("Modal Header"))
         </Modal.Header>
         <Modal.Body>
           (se("This is the modal body where I can put stuff"))
         </Modal.Body>
         <Modal.Footer>
-          <Button color=Button.Color.Primary onClick=(_event => send(Toggle))>
+          <Button color=Button.Color.Primary onClick=(toggleModal)>
             (se("Do Something"))
           </Button>
           <Button
-            color=Button.Color.Secondary onClick=(_event => send(Toggle))>
+            color=Button.Color.Secondary onClick=(toggleModal)>
             (se("Cancel"))
           </Button>
         </Modal.Footer>
       </Modal>
       (Examples.exampleHighlight(code))
-    </Examples.Example>,
+    </Examples.Example>
 };
-/**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-let make =
-  ReasonReactCompat.wrapReasonReactForReact(
-    ~component, (reactProps: {. "children": 'children}) =>
-    make(reactProps##children)
-  );
-[@bs.obj]
-external makeProps: (~children: 'children, unit) => {. "children": 'children} =
-  "";
+

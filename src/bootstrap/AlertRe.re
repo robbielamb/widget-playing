@@ -7,15 +7,29 @@ type action =
   | Closing
   | Closed;
 
-type state = {
-  currentAction: action,
-  timer: ref(option(Js.Global.timeoutId)),
-};
+type state = {currentAction: action};
 
 type retainedProps = {isOpen: bool};
 
-let component = ReasonReact.reducerComponentWithRetainedProps("Alert");
+let unsetTimer = timer =>
+  switch (timer) {
+  | None => ()
+  | Some(id) => Js.Global.clearTimeout(id)
+  };
 
+let initialState = isOpen => {
+  {currentAction: isOpen ? Open : Closed};
+};
+
+let reducer = (_state, action): state => {
+  switch (action) {
+  | Open => {currentAction: Open}
+  | Closing => {currentAction: Closing}
+  | Closed => {currentAction: Closed}
+  };
+};
+
+[@react.component]
 let make =
     (
       ~className: option(string)=?,
@@ -25,301 +39,125 @@ let make =
       ~toggle: option(ReactEvent.Mouse.t => unit)=?,
       ~closeAriaLabel: string="Close",
       ~onClosed: option(unit => unit)=?,
-      children,
+      ~children,
     ) => {
-  ...component,
-  initialState: () => {
-    currentAction: isOpen ? Open : Closed,
-    timer: ref(None),
-  },
-  retainedProps: ({isOpen: isOpen}: retainedProps),
-  didMount: _self => (),
-  willReceiveProps: self =>
-    if (self.state.currentAction === Open && isOpen === false) {
-      let timer = Js.Global.setTimeout(_ => self.send(Closed), 250);
-      {currentAction: Closing, timer: ref(Some(timer))};
-    } else {
-      self.state;
+  let (state, dispatch) =
+    React.useReducerWithMapState(reducer, isOpen, initialState);
+
+  React.useEffect1(
+    () => {
+      let timer =
+        if (state.currentAction == Open && isOpen === false) {
+          dispatch(Closing);
+          let timer = Js.Global.setTimeout(_ => dispatch(Closed), 150);
+          Some(timer);
+        } else {
+          None;
+        };
+      Some(() => unsetTimer(timer));
     },
-  willUnmount: self => {
-    self.state.timer := None;
-    ();
-  },
-  reducer: (action, state) =>
-    switch (action) {
-    | Open => ReasonReact.Update({...state, currentAction: Open})
-    | Closing => ReasonReact.Update({...state, currentAction: Closing})
-    | Closed =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, currentAction: Closed},
-        (
-          _self =>
-            switch (onClosed) {
-            | None => ()
-            | Some(cb) => cb()
-            }
-        ),
-      )
+    [|isOpen|],
+  );
+
+  React.useEffect1(
+    () => {
+      switch (state.currentAction) {
+      | Closed =>
+        switch (onClosed) {
+        | None => ()
+        | Some(cb) => cb()
+        }
+      | _ => ()
+      };
+      None;
     },
-  render: (self: ReasonReact.self(state, retainedProps, action)) => {
-    let closeClasses =
-      ["close", unwrapStr(i, closeClassName)] |> String.concat(" ");
-    let toggleElement =
-      switch (toggle) {
-      | None => React.null
-      | Some(cb) =>
-        ReactDOMRe.createElement(
-          "button",
-          ~props=
-            {
-              "type": "button",
-              "className": closeClasses,
-              "onClick": cb,
-              "aria-label": closeAriaLabel,
-            }
-            ->ReactDOMRe.objToDOMProps,
-          [|
-            ReactDOMRe.createElement(
-              "span",
-              ~props={"aria-hidden": "true"}->ReactDOMRe.objToDOMProps,
-              [|React.string(Js.String.fromCharCode(215))|],
-            ),
-          |],
-        )
-      };
-    let children = ArrayLabels.append([|toggleElement|], children);
-    let transitionClasses =
-      switch (self.state.currentAction) {
-      | Open => "fade show"
-      | Closing => "fade"
-      | Closed => ""
-      };
-    let classes =
-      [
-        "alert",
-        "alert-" ++ Color.toString(color),
-        transitionClasses,
-        unwrapStr(i, className),
-      ]
-      |> String.concat(" ");
-     
-    let alertElement = <div className=classes> (React.string("Im alert")) </div>;
-      
-    self.state.currentAction === Closed ? React.null : alertElement;
-  },
+    [|state.currentAction|],
+  );
+
+  let closeClasses =
+    ["close", unwrapStr(i, closeClassName)] |> String.concat(" ");
+  let toggleElement =
+    switch (toggle) {
+    | None => React.null
+    | Some(cb) =>
+      <button
+        type_="button"
+        className=closeClasses
+        onClick=cb
+        ariaLabel=closeAriaLabel>
+        <span ariaHidden=true>
+          {React.string(Js.String.fromCharCode(215))}
+        </span>
+      </button>
+    };
+
+  let transitionClasses =
+    switch (state.currentAction) {
+    | Open => "fade show"
+    | Closing => "fade"
+    | Closed => ""
+    };
+  let className =
+    [
+      "alert",
+      "alert-" ++ Color.toString(color),
+      transitionClasses,
+      unwrapStr(i, className),
+    ]
+    |> String.concat(" ");
+
+  let alertElement = <div className> toggleElement children </div>;
+
+  state.currentAction === Closed ? React.null : alertElement;
 };
 
 module Auto = {
-  type state = bool;
-  type action =
-    | DoClose;
-  let component = ReasonReact.reducerComponent("Alert.Auto");
-  let make =
+  [@react.component]
+  let makeAuto =
       (
         ~className: option(string)=?,
         ~color: Color.t=Color.Success,
         ~closeAriaLabel: string="Close",
         ~onClosed: option(unit => unit)=?,
-        children,
+        ~children,
       ) => {
-    ...component,
-    initialState: () => true,
-    reducer: (action, _state) =>
-      switch (action) {
-      | DoClose => ReasonReact.Update(false)
-      },
-    render: self =>
-      ReasonReact.element(
-        make(
-          ~className?,
-          ~color,
-      
-          ~closeAriaLabel,
-          ~isOpen=self.state,
-          ~toggle=_ => self.send(DoClose),
-          ~onClosed?,
-          children,
-        ),
-      ),
+    let (isOpen, setOpen) = React.useState(() => true);
+
+    let theProps =
+      makeProps(
+        ~className?,
+        ~color,
+        ~closeAriaLabel,
+        ~onClosed?,
+        ~isOpen,
+        ~toggle=_evt => setOpen(_ => !isOpen),
+        ~children,
+        (),
+      );
+
+    make(theProps);
+    //<Alert ?className color closeAriaLabel ?onClosed toggle=(_) => setOpen(false)> children </Alert>
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "onClosed": option('onClosed),
-          "closeAriaLabel": option('closeAriaLabel),
-         
-          "color": option('color),
-          "className": option('className),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~onClosed=?reactProps##onClosed,
-        ~closeAriaLabel=?reactProps##closeAriaLabel,
-       
-        ~color=?reactProps##color,
-        ~className=?reactProps##className,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (
-      ~children: 'children,
-      ~className: 'className=?,
-      ~color: 'color=?,
-      ~tag: 'tag=?,
-      ~closeAriaLabel: 'closeAriaLabel=?,
-      ~onClosed: 'onClosed=?,
-      unit
-    ) =>
-    {
-      .
-      "onClosed": option('onClosed),
-      "closeAriaLabel": option('closeAriaLabel),
-      "tag": option('tag),
-      "color": option('color),
-      "className": option('className),
-      "children": 'children,
-    } =
-    "";
+
+  let makeProps = makeAutoProps;
+  let make = makeAuto;
 };
 
 module Link = {
-  let component = ReasonReact.statelessComponent("Alert.Link");
-  let make = children => {
-    ...component,
-    render: _self =>
-      ReactDOMRe.createElementVariadic(
-        "a",
-        ~props={"className": "alert-link"}->ReactDOMRe.objToDOMProps,
-        children,
-      ),
+  [@react.component]
+  let make = (~children) => {
+    <a className="alert-link"> children </a>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component, (reactProps: {. "children": 'children}) =>
-      make(reactProps##children)
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, unit) => {. "children": 'children} =
-    "";
 };
 
 module Heading = {
-  let component = ReasonReact.statelessComponent("Alert.Header");
-  let make = (~tag: string="h4", ~className: option(string)=?, children) => {
-    ...component,
-    render: _self => {
-      let classes =
-        ["alert-heading", unwrapStr(i, className)] |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+  [@react.component]
+  let make = (~className: option(string)=?, ~children) => {
+    let className =
+      ["alert-heading", unwrapStr(i, className)] |> String.concat(" ");
+    <h4 className> children </h4>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "className": option('className),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~className=?reactProps##className,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
-    {
-      .
-      "className": option('className),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
-/**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-let make =
-  ReasonReactCompat.wrapReasonReactForReact(
-    ~component,
-    (
-      reactProps: {
-        .
-        "onClosed": option('onClosed),
-        "closeAriaLabel": option('closeAriaLabel),
-        "toggle": option('toggle),
-        "isOpen": option('isOpen),
-        "color": option('color),
-        "closeClassName": option('closeClassName),
-        "className": option('className),
-        "children": 'children,
-      },
-    ) =>
-    make(
-      ~onClosed=?reactProps##onClosed,
-      ~closeAriaLabel=?reactProps##closeAriaLabel,
-      ~toggle=?reactProps##toggle,
-      ~isOpen=?reactProps##isOpen,
-      ~color=?reactProps##color,
-      ~closeClassName=?reactProps##closeClassName,
-      ~className=?reactProps##className,
-      reactProps##children,
-    )
-  );
-[@bs.obj]
-external makeProps:
-  (
-    ~children: 'children,
-    ~className: 'className=?,
-    ~closeClassName: 'closeClassName=?,
-    ~color: 'color=?,
-    ~isOpen: 'isOpen=?,
-    ~toggle: 'toggle=?,
-    ~closeAriaLabel: 'closeAriaLabel=?,
-    ~onClosed: 'onClosed=?,
-    unit
-  ) =>
-  {
-    .
-    "onClosed": option('onClosed),
-    "closeAriaLabel": option('closeAriaLabel),
-    "toggle": option('toggle),
-    "isOpen": option('isOpen),
-    "color": option('color),
-    "closeClassName": option('closeClassName),
-    "className": option('className),
-    "children": 'children,
-  } =
-  "";
 
 /* cssModule::(cssModule: option (Js.t {..}))=? */
 

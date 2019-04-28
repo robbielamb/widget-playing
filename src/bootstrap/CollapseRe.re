@@ -53,18 +53,33 @@ let initialState = isOpen => {
   height: None,
 };
 
-let setTimer = (send, action, timeout) => Some(Js.Global.setTimeout(_ => send(action), timeout));
+let setTimer = (send, action, timeout) =>
+  Some(Js.Global.setTimeout(_ => send(action), timeout));
 
 let reducer = (state, action): state => {
   switch (action) {
   | Opened => {...state, currentState: Opened, height: None}
   | Closed => {...state, currentState: Closed, height: None}
 
-  | StartClosing => {...state, height: Some(getHeight(state.element)), currentState: StartClosing}
-  | Closing => {...state, height: Some("0px"), currentState: Closing, isOpen: false}
+  | StartClosing => {
+      ...state,
+      height: Some(getHeight(state.element)),
+      currentState: StartClosing,
+    }
+  | Closing => {
+      ...state,
+      height: Some("0px"),
+      currentState: Closing,
+      isOpen: false,
+    }
 
   | StartOpening => {...state, currentState: StartOpening}
-  | Opening => {...state, height: Some(getHeight(state.element)), currentState: Opening, isOpen: true}
+  | Opening => {
+      ...state,
+      height: Some(getHeight(state.element)),
+      currentState: Opening,
+      isOpen: true,
+    }
   };
 };
 
@@ -79,7 +94,8 @@ let make =
       ~className: option(string)=?,
       ~children,
     ) => {
-  let (state, dispatch) = React.useReducerWithMapState(reducer, isOpen, initialState);
+  let (state, dispatch) =
+    React.useReducerWithMapState(reducer, isOpen, initialState);
 
   React.useEffect1(
     () => {
@@ -113,7 +129,7 @@ let make =
       | Closing =>
         maybeCall(onClosing);
         state.timer := setTimer(dispatch, Closed, 350);
-      | StartOpening => dispatch(Opening) 
+      | StartOpening => dispatch(Opening)
       | Opening =>
         maybeCall(onOpening);
         state.timer := setTimer(dispatch, Opened, 350);
@@ -125,12 +141,12 @@ let make =
 
   let collapsingClasses =
     switch (state.currentState) {
-
     | Opened => "collapse show"
     | Closed => "collapse"
     | _ => "collapsing"
     };
-  let className = [collapsingClasses, unwrapStr(i, className)] |> String.concat(" ");
+  let className =
+    [collapsingClasses, unwrapStr(i, className)] |> String.concat(" ");
 
   let style = ReactDOMRe.Style.make(~height=?state.height, ());
   <div className ref={state.element} style> children </div>;

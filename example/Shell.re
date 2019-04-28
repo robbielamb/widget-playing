@@ -65,7 +65,7 @@ let make = () => {
     </Bootstrap.Navbar>
     <Bootstrap.Layout.Container>
       <Bootstrap.Layout.Row>
-        <Bootstrap.Layout.Col> element </Bootstrap.Layout.Col>
+        <Bootstrap.Layout.Col xs={Bootstrap.Layout.Col.shape(())}> element </Bootstrap.Layout.Col>
         <Bootstrap.Layout.Col
           md={Bootstrap.Layout.Col.shape(
             ~size=Bootstrap.Layout.ColSizes.Size(2),
@@ -74,20 +74,19 @@ let make = () => {
           <p> {React.string("Select Example")} </p>
           <Bootstrap.Nav vertical=true>
             <Bootstrap.Nav.Item>
-
-                {navTo(Routes.BadgesExampleRoute, "Badges")}
-                {navTo(Routes.BreadcrumbExampleRoute, "Breadcrumbs")}
-                {navTo(Routes.ButtonExampleRoute, "Buttons")}
-                {navTo(Routes.CollapseExampleRoute, "Collapse")}
-                {navTo(Routes.DropdownExampleRoute, "Dropdown")}
-                {navTo(Routes.FormExampleRoute, "Forms")}
-                /*(navTo(Routes.ModalExampleRoute, "Modals")) */
-                {navTo(Routes.PaginationExampleRoute, "Pagination")}
-                   (navTo(Routes.ProgressExampleRoute, "Progress Bars")) 
-                {navTo(Routes.TableExampleRoute, "Tables")}
-                {navTo(Routes.TabExampleRoute, "Tabs")}
-              </Bootstrap.Nav.Item>
-              /* (navTo(Routes.AlertExampleRoute, "Alerts")) */
+              {navTo(Routes.AlertExampleRoute, "Alerts")}
+              {navTo(Routes.BadgesExampleRoute, "Badges")}
+              {navTo(Routes.BreadcrumbExampleRoute, "Breadcrumbs")}
+              {navTo(Routes.ButtonExampleRoute, "Buttons")}
+              {navTo(Routes.CollapseExampleRoute, "Collapse")}
+              {navTo(Routes.DropdownExampleRoute, "Dropdown")}
+              {navTo(Routes.FormExampleRoute, "Forms")}
+              {navTo(Routes.ModalExampleRoute, "Modals")}
+              {navTo(Routes.PaginationExampleRoute, "Pagination")}
+              {navTo(Routes.ProgressExampleRoute, "Progress Bars")}
+              {navTo(Routes.TableExampleRoute, "Tables")}
+              {navTo(Routes.TabExampleRoute, "Tabs")}
+            </Bootstrap.Nav.Item>
           </Bootstrap.Nav>
         </Bootstrap.Layout.Col>
       </Bootstrap.Layout.Row>

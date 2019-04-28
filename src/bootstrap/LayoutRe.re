@@ -2,36 +2,35 @@ include Utils;
 
 /* Layout items */
 module Container = {
-  
   [@react.component]
   let make =
       (
-        ~fluid: bool=false,      
+        ~fluid: bool=false,
         ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */ 
+        /* cssModule::(cssModule: option (Js.t {..}))=? */
         ~children,
       ) => {
-  
-      let className = [fluid ? "container-fluid" : "container", unwrapStr(i, className)] |> String.concat(" ");
-      <div className> children </div>      
+    let className =
+      [fluid ? "container-fluid" : "container", unwrapStr(i, className)]
+      |> String.concat(" ");
+    <div className> children </div>;
   };
- 
 };
 
 module Row = {
   /* Todo: Add more options here */
-  //let component = ReasonReact.statelessComponent("Row");
   [@react.component]
   let make =
       (
         ~noGutters: bool=false,
-        ~tag: string="div",
-        ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */ ~children,
+        ~className: option(string)=? /* cssModule::(cssModule: option (Js.t {..}))=? */,
+        ~children,
       ) => {
-    let classes = ["row", noGutters ? "no-gutters" : "", unwrapStr(i, className)] |> String.concat(" ");
+    let classes =
+      ["row", noGutters ? "no-gutters" : "", unwrapStr(i, className)]
+      |> String.concat(" ");
     //ReactDOMRe.createElementVariadic(tag, ~props={"className": classes}->ReactDOMRe.objToDOMProps, children);
-    <div className=classes> children </div>
+    <div className=classes> children </div>;
   };
 };
 
@@ -45,7 +44,14 @@ module ColSizes = {
     pull: option(int),
     offset: option(int),
   };
-  let shape = (~size: option(size)=?, ~push: option(int)=?, ~pull: option(int)=?, ~offset: option(int)=?, ()) => {
+  let shape =
+      (
+        ~size: option(size)=?,
+        ~push: option(int)=?,
+        ~pull: option(int)=?,
+        ~offset: option(int)=?,
+        (),
+      ) => {
     size,
     push,
     pull,
@@ -96,10 +102,12 @@ module ColSizes = {
 
 module Col = {
   include ColSizes;
+
+  let mySHape = shape(());
+
   [@react.component]
   let make =
       (
-        ~tag: string="div",
         ~xs: option(shape)=?,
         ~sm: option(shape)=?,
         ~md: option(shape)=?,
@@ -109,9 +117,10 @@ module Col = {
         ~children,
       ) => {
     let classShapeList = processShapeList(xs, sm, md, lg, xl);
-    let classes = Belt.List.concat([unwrapStr(i, className)], classShapeList) |> String.concat(" ");
+    let classes =
+      Belt.List.concat([unwrapStr(i, className)], classShapeList)
+      |> String.concat(" ");
     //ReactDOMRe.createElementVariadic(tag, ~props={"className": classes}->ReactDOMRe.objToDOMProps, children)
-    <div className=classes> children </div>
-
+    <div className=classes> children </div>;
   };
 };
