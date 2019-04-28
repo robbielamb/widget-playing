@@ -1,6 +1,6 @@
 include WidgetPlaying.Bootstrap;
 
-let code: string = [%bs.raw {|require('Examples/CollapseExample.re')|}] |> Examples.prepCode;
+let code: string = [%bs.raw {|require('Examples/CollapseExample.re').default|}] |> Examples.prepCode;
 
 let se = React.string;
 
@@ -29,7 +29,7 @@ module Collapser = {
     let (state, dispatch) = React.useReducer(reducer, {isOpen: true, status: "Open"});
     
       <div>
-        <Button onClick={_event => dispatch(Toggle)} color=Button.Color.Primary> [|{se("Collapse")}|] </Button>
+        <Button onClick={_event => dispatch(Toggle)} color=Button.Color.Primary> {se("Collapse")} </Button>
         <p> {se(state.status)} </p>
         <Collapse isOpen={state.isOpen} onOpened={_event => dispatch(Opened)} onClosed={_event => dispatch(Closed)}>
           <Card>

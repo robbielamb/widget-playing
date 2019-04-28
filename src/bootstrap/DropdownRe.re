@@ -9,68 +9,49 @@ type retainedProps = {isOpen: bool};
 
 let component = ReasonReact.statelessComponent("Dropdown");
 
-let make =
-    (
-      ~tag: string="div",
-      ~group: bool=false,
-      ~isOpen: bool=false,
-      ~classname: option(string)=?,
-      children,
-    ) => {
-  ...component,
-  render: _self => {
-    let classNames =
-      [
-        group ? "btn-group" : "dropdown",
-        isOpen ? "show" : "",
-        unwrapStr(i, classname),
-      ]
-      |> String.concat(" ");
-    ReactDOMRe.createElementVariadic(
-      tag,
-      ~props={"className": classNames}->ReactDOMRe.objToDOMProps,
-      children,
-    );
-  },
+[@react.component]
+let make = (~group: bool=false, ~isOpen: bool=false, ~classname: option(string)=?, ~children) => {
+  let className =
+    [group ? "btn-group" : "dropdown", isOpen ? "show" : "", unwrapStr(i, classname)] |> String.concat(" ");
+  <div className> children </div>;
 };
 
 module Toggle = {
-  type retainedProps = {
-    nav: bool,
-    onClick: option(ReactEvent.Mouse.t => unit),
-    toggle: unit => unit,
-    disabled: bool,
-    tag: option(string),
-  };
-  let handleOnClick =
-      (
-        event,
-        self:
-          ReasonReact.self(
-            ReasonReact.stateless,
-            retainedProps,
-            ReasonReact.actionless,
-          ),
-      ) => {
-    let props = self.retainedProps;
-    props.disabled ?
-      ReactEvent.Mouse.preventDefault(event) :
-      {
-        if (props.nav && props.tag === None) {
-          ReactEvent.Mouse.preventDefault(event);
-        };
-        switch (props.onClick) {
-        | None => ()
-        | Some(cb) => cb(event)
-        };
-        props.toggle();
-      };
-  };
-  let component =
-    ReasonReact.statelessComponentWithRetainedProps("Dropdown.Toggle");
+  /*   type retainedProps = {
+         nav: bool,
+         onClick: option(ReactEvent.Mouse.t => unit),
+         toggle: unit => unit,
+         disabled: bool,
+         tag: option(string),
+       }; */
+  /*   let handleOnClick =
+           (
+             event,
+             self:
+               ReasonReact.self(
+                 ReasonReact.stateless,
+                 retainedProps,
+                 ReasonReact.actionless,
+               ),
+           ) => {
+         let props = self.retainedProps;
+         props.disabled ?
+           ReactEvent.Mouse.preventDefault(event) :
+           {
+             if (props.nav && props.tag === None) {
+               ReactEvent.Mouse.preventDefault(event);
+             };
+             switch (props.onClick) {
+             | None => ()
+             | Some(cb) => cb(event)
+             };
+             props.toggle();
+           };
+       }; */
+
+  [@react.component]
   let make =
       (
-        ~tag: option(string)=?,
         ~caret: bool=false,
         ~disabled: bool=false,
         ~isOpen: bool,
@@ -80,42 +61,37 @@ module Toggle = {
         ~onClick: option(ReactEvent.Mouse.t => unit)=?,
         ~toggle: unit => unit,
         ~classname: option(string)=?,
-        children,
+        ~children,
       ) => {
-    ...component,
-    retainedProps: {
-      onClick,
-      disabled,
-      tag,
-      nav,
-      toggle,
-    },
-    render:
-      (
-        self:
-          ReasonReact.self(
-            ReasonReact.stateless,
-            retainedProps,
-            ReasonReact.actionless,
-          ),
-      ) => {
-      let classNames =
-        [
-          caret || split ? "dropdown-toggle" : "",
-          split ? "dropdown-toggle-split" : "",
-          isOpen ? "active" : "",
-          unwrapStr(i, classname),
-        ]
-        |> String.concat(" ");
-      let tag =
-        switch (tag, nav) {
-        | (None, true) => "a"
-        | (None, false) => "button"
-        | (Some(t), _) => t
+    let handleOnClick = event => {
+      disabled
+        ? ReactEvent.Mouse.preventDefault(event)
+        : {
+          if (nav) {
+            ReactEvent.Mouse.preventDefault(event);
+          };
+          switch (onClick) {
+          | None => ()
+          | Some(cb) => cb(event)
+          };
+          toggle();
         };
-      switch (tag) {
-      | "button" => React.null//<ButtonRe color className=classNames onClick=self.handle(handleOnClick) disabled ariaHaspopup=true ariaExpanded=isOpen> (React.string("hey")) </ButtonRe>
-       /*  React.createElementVariadic(
+    };
+    let className =
+      [
+        caret || split ? "dropdown-toggle" : "",
+        split ? "dropdown-toggle-split" : "",
+        isOpen ? "active" : "",
+        unwrapStr(i, classname),
+      ]
+      |> String.concat(" ");
+    let tag = nav ? "a" : "button";
+    switch (tag) {
+    | "button" =>
+      <ButtonRe color className onClick=handleOnClick disabled ariaHaspopup=true ariaExpanded=isOpen>
+        children
+      </ButtonRe>
+    /*  React.createElementVariadic(
           ButtonRe.make,
            ButtonRe.makeProps(
             ~color,
@@ -128,379 +104,86 @@ module Toggle = {
           ),
           children
         ) */
-      | _ =>
-        ReactDOMRe.createElementVariadic(
-          tag,
-          ~props=
-            {
-              "className": classNames,
-              "href": "#",
-              "onClick": self.handle(handleOnClick),
-            }
-            ->ReactDOMRe.objToDOMProps,
-          children,
-        )
-      };
-    },
+    | _ => <a className href="#" onClick=handleOnClick> children </a>
+    /*    ReactDOMRe.createElementVariadic(
+            tag,
+            ~props=
+              {
+                "className": classNames,
+                "href": "#",
+                "onClick": self.handle(handleOnClick),
+              }
+              ->ReactDOMRe.objToDOMProps,
+            children,
+          ) */
+    };
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "classname": option('classname),
-          "toggle": 'toggle,
-          "onClick": option('onClick),
-          "nav": option('nav),
-          "color": option('color),
-          "split": option('split),
-          "isOpen": 'isOpen,
-          "disabled": option('disabled),
-          "caret": option('caret),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~classname=?reactProps##classname,
-        ~toggle=reactProps##toggle,
-        ~onClick=?reactProps##onClick,
-        ~nav=?reactProps##nav,
-        ~color=?reactProps##color,
-        ~split=?reactProps##split,
-        ~isOpen=reactProps##isOpen,
-        ~disabled=?reactProps##disabled,
-        ~caret=?reactProps##caret,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (
-      ~children: 'children,
-      ~tag: 'tag=?,
-      ~caret: 'caret=?,
-      ~disabled: 'disabled=?,
-      ~isOpen: 'isOpen,
-      ~split: 'split=?,
-      ~color: 'color=?,
-      ~nav: 'nav=?,
-      ~onClick: 'onClick=?,
-      ~toggle: 'toggle,
-      ~classname: 'classname=?,
-      unit
-    ) =>
-    {
-      .
-      "classname": option('classname),
-      "toggle": 'toggle,
-      "onClick": option('onClick),
-      "nav": option('nav),
-      "color": option('color),
-      "split": option('split),
-      "isOpen": 'isOpen,
-      "disabled": option('disabled),
-      "caret": option('caret),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 
 module Menu = {
-  let component = ReasonReact.statelessComponent("Dropdown.Menu");
-  let make =
-      (
-        ~tag: string="div",
-        ~alignRight: bool=false,
-        ~isOpen: bool,
-        ~classname: option(string)=?,
-        children,
-      ) => {
-    ...component,
-    render: _self => {
-      let classNames =
-        [
-          "dropdown-menu",
-          alignRight ? "dropdown-menu-right" : "",
-          isOpen ? "show" : "",
-          unwrapStr(i, classname),
-        ]
-        |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props=
-          {
-            "className": classNames,
-            "tabIndex": "-1",
-            "aria-hidden": !isOpen,
-            "role": "menu",
-          }
-          ->ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+  [@react.component]
+  let make = (~alignRight: bool=false, ~isOpen: bool, ~classname: option(string)=?, ~children) => {
+    let className =
+      ["dropdown-menu", alignRight ? "dropdown-menu-right" : "", isOpen ? "show" : "", unwrapStr(i, classname)]
+      |> String.concat(" ");
+    <div className tabIndex=(-1) ariaHidden={!isOpen} role="menu"> children </div>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "classname": option('classname),
-          "isOpen": 'isOpen,
-          "alignRight": option('alignRight),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~classname=?reactProps##classname,
-        ~isOpen=reactProps##isOpen,
-        ~alignRight=?reactProps##alignRight,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (
-      ~children: 'children,
-      ~tag: 'tag=?,
-      ~alignRight: 'alignRight=?,
-      ~isOpen: 'isOpen,
-      ~classname: 'classname=?,
-      unit
-    ) =>
-    {
-      .
-      "classname": option('classname),
-      "isOpen": 'isOpen,
-      "alignRight": option('alignRight),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 
 module Divider = {
-  let component = ReasonReact.statelessComponent("Dropdown.Divider");
-  let make = children => {
-    ...component,
-    render: _self =>
-      ReactDOMRe.createElementVariadic(
-        "div",
-        ~props={"className": "dropdown-divider"}->ReactDOMRe.objToDOMProps,
-        children,
-      ),
+  [@react.component]
+  let make = () => {
+    <div className="dropdown-divider" />;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component, (reactProps: {. "children": 'children}) =>
-      make(reactProps##children)
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, unit) => {. "children": 'children} =
-    "";
 };
 
 module Header = {
-  let component = ReasonReact.statelessComponent("Dropdown.Header");
-  let make = children => {
-    ...component,
-    render: _self =>
-      ReactDOMRe.createElementVariadic(
-        "h6",
-        ~props={"className": "dropdown-header"}->ReactDOMRe.objToDOMProps,
-        children,
-      ),
+  [@react.component]
+  let make = (~children) => {
+    <h6 className="dropdown-header"> children </h6>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component, (reactProps: {. "children": 'children}) =>
-      make(reactProps##children)
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, unit) => {. "children": 'children} =
-    "";
 };
 
 module Item = {
-  let component = ReasonReact.statelessComponent("Dropdown.Item");
+  [@react.component]
   let make =
       (
         ~disabled: bool=false,
         ~active: bool=false,
         ~onClick: option(ReactEvent.Mouse.t => unit)=?,
         ~href: option(string)=?,
-        ~classname: option(string)=?,
-        children,
+        ~className: option(string)=?,
+        ~children,
       ) => {
-    ...component,
-    render: self => {
-      let click = (event, _self) =>
-        disabled ?
-          ReactEvent.Mouse.preventDefault(event) :
-          (
-            switch (onClick) {
-            | None => ()
-            | Some(cb) => cb(event)
-            }
-          );
-      let tabIndex = disabled ? "-1" : "0";
-      let tag =
-        switch (href) {
-        | None => "button"
-        | Some(_) => "a"
-        };
-      let type_ =
-        switch (onClick, tag) {
-        | (Some(_), "button") => Some("button")
-        | (_, _) => None
-        };
-      let classes =
-        [
-          "dropdown-item",
-          active ? "active" : "",
-          disabled ? "disabled" : "",
-          unwrapStr(i, classname),
-        ]
-        |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props=
-          {
-            "className": classes,
-            "tabIndex": tabIndex,
-            "onClick": self.handle(click),
-            "type": Js.Nullable.fromOption(type_),
-            "href": Js.Nullable.fromOption(href),
+    let handleClick = event => {
+      disabled
+        ? ReactEvent.Mouse.preventDefault(event)
+        : (
+          switch (onClick) {
+          | None => ()
+          | Some(cb) => cb(event)
           }
-          ->ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+        );
+    };
+
+    let tabIndex = disabled ? (-1) : 0;
+
+    let type_ =
+      switch (onClick) {
+      | Some(_) => "button"
+      | None => ""
+      };
+    let className =
+      ["dropdown-item", active ? "active" : "", disabled ? "disabled" : "", unwrapStr(i, className)]
+      |> String.concat(" ");
+
+    switch (href) {
+    | None => <button className tabIndex onClick=handleClick type_> children </button>
+    | Some(href) => <a className tabIndex onClick=handleClick type_ href> children </a>
+    };
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "classname": option('classname),
-          "href": option('href),
-          "onClick": option('onClick),
-          "active": option('active),
-          "disabled": option('disabled),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~classname=?reactProps##classname,
-        ~href=?reactProps##href,
-        ~onClick=?reactProps##onClick,
-        ~active=?reactProps##active,
-        ~disabled=?reactProps##disabled,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (
-      ~children: 'children,
-      ~disabled: 'disabled=?,
-      ~active: 'active=?,
-      ~onClick: 'onClick=?,
-      ~href: 'href=?,
-      ~classname: 'classname=?,
-      unit
-    ) =>
-    {
-      .
-      "classname": option('classname),
-      "href": option('href),
-      "onClick": option('onClick),
-      "active": option('active),
-      "disabled": option('disabled),
-      "children": 'children,
-    } =
-    "";
 };
-/**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-let make =
-  ReasonReactCompat.wrapReasonReactForReact(
-    ~component,
-    (
-      reactProps: {
-        .
-        "classname": option('classname),
-        "isOpen": option('isOpen),
-        "group": option('group),
-        "tag": option('tag),
-        "children": 'children,
-      },
-    ) =>
-    make(
-      ~classname=?reactProps##classname,
-      ~isOpen=?reactProps##isOpen,
-      ~group=?reactProps##group,
-      ~tag=?reactProps##tag,
-      reactProps##children,
-    )
-  );
-[@bs.obj]
-external makeProps:
-  (
-    ~children: 'children,
-    ~tag: 'tag=?,
-    ~group: 'group=?,
-    ~isOpen: 'isOpen=?,
-    ~classname: 'classname=?,
-    unit
-  ) =>
-  {
-    .
-    "classname": option('classname),
-    "isOpen": option('isOpen),
-    "group": option('group),
-    "tag": option('tag),
-    "children": 'children,
-  } =
-  "";
 
-/*  ~disabled: bool=false, */
-
-/* ~toggle: option(unit => unit)=?, */
-
-/* ~right: bool=false, */
 
 /* TODO: Support Context someday */
 
-/* ~toggle: bool=true, */

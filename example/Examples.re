@@ -1,6 +1,6 @@
 include Bootstrap;
 
-[@bs.module] external logo: string = "./logo.svg";
+//[@bs.module] external logo: string = "./logo.svg";
 
 let se = React.string;
 
@@ -8,8 +8,11 @@ let exampleHighlight = code => <Highlight languages={Some([|"html"|])}> {se(code
 
 let highlight = exampleHighlight;
 
-let prepCode = (code: string): string =>
+let prepCode = (code: string): string => {
+  //Js.log(code);
   code |> Js.String.split("\n") |> Js.Array.sliceFrom(7) |> Js.Array.joinWith("\n");
+  
+}
 
 module Example = {
   /*  let component = ReasonReact.statelessComponent("Example"); */

@@ -2,49 +2,20 @@ include Utils;
 
 /* Layout items */
 module Container = {
-  let component = ReasonReact.statelessComponent("Container");
+  
+  [@react.component]
   let make =
       (
-        ~fluid: bool=false,
-        ~tag: string="div",
+        ~fluid: bool=false,      
         ~className: option(string)=?,
-        /* cssModule::(cssModule: option (Js.t {..}))=? */ children,
+        /* cssModule::(cssModule: option (Js.t {..}))=? */ 
+        ~children,
       ) => {
-    ...component,
-    render: _self => {
-      let classes = [fluid ? "container-fluid" : "container", unwrapStr(i, className)] |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(tag, ~props={"className": classes}->ReactDOMRe.objToDOMProps, children);
-    },
+  
+      let className = [fluid ? "container-fluid" : "container", unwrapStr(i, className)] |> String.concat(" ");
+      <div className> children </div>      
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "className": option('className),
-          "tag": option('tag),
-          "fluid": option('fluid),
-          "children": 'children,
-        },
-      ) =>
-      make(~className=?reactProps##className, ~tag=?reactProps##tag, ~fluid=?reactProps##fluid, reactProps##children)
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, ~fluid: 'fluid=?, ~tag: 'tag=?, ~className: 'className=?, unit) =>
-    {
-      .
-      "className": option('className),
-      "tag": option('tag),
-      "fluid": option('fluid),
-      "children": 'children,
-    } =
-    "";
+ 
 };
 
 module Row = {

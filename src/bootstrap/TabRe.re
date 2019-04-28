@@ -24,8 +24,8 @@ module PaneComponent = {
 };
 
 module Pane = {
-  let create = (~tabId: 'a, ~className: option(string)=?, children) => {
+  let create = (~tabId: 'a, ~key, ~className: option(string)=?, children) => {
     tabId,
-    x: (active: bool) => <PaneComponent active ?className> children </PaneComponent>,
+    x: (active: bool) => <PaneComponent active key ?className> children </PaneComponent>,
   };
 };

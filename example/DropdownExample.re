@@ -1,7 +1,7 @@
 include WidgetPlaying.Bootstrap;
 
 let code: string =
-  [%bs.raw {|require('Examples/DropdownExample.re')|}] |> Examples.prepCode;
+  [%bs.raw {|require('Examples/DropdownExample.re').default|}] |> Examples.prepCode;
 
 let se = React.string;
 
@@ -10,29 +10,32 @@ type state = {isOpen: bool};
 type actions =
   | Toggle;
 
-let component = ReasonReact.reducerComponent("DropdownExample");
 
 let toggle =
-    (self: ReasonReact.self(state, ReasonReact.noRetainedProps, actions), ()) => {
-  Js.log("toggling");
-  self.send(Toggle);
+    (dispatch, ()) => {
+  dispatch(Toggle);
 };
 
-let make = _children => {
-  ...component,
-  initialState: () => {isOpen: false},
-  reducer: (action, state) =>
-    switch (action) {
-    | Toggle => ReasonReact.Update({isOpen: !state.isOpen})
-    },
-  render: self =>
+let initialState = {isOpen: false};
+
+let reducer = (state, action) : state => {
+switch (action) {
+    | Toggle => {isOpen: !state.isOpen}
+    }
+};
+
+[@react.component]
+let make = () => {
+  
+    let (state, dispatch) = React.useReducer(reducer, initialState);
+
     <Examples.Example title="Dropdowns">
-      <Dropdown isOpen=self.state.isOpen>
+      <Dropdown isOpen=state.isOpen>
         <Dropdown.Toggle
-          isOpen=self.state.isOpen caret=true toggle=(toggle(self))>
+          isOpen=state.isOpen caret=true toggle=(toggle(dispatch))>
           (se("align right! "))
         </Dropdown.Toggle>
-        <Dropdown.Menu isOpen=self.state.isOpen alignRight=true>
+        <Dropdown.Menu isOpen=state.isOpen alignRight=true>
           <Dropdown.Header> (se("Header")) </Dropdown.Header>
           <Dropdown.Item> (se("Another Action")) </Dropdown.Item>
           <Dropdown.Item disabled=true>
@@ -44,17 +47,5 @@ let make = _children => {
         </Dropdown.Menu>
       </Dropdown>
       (Examples.exampleHighlight(code))
-    </Examples.Example>,
+    </Examples.Example>
 };
-/**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-let make =
-  ReasonReactCompat.wrapReasonReactForReact(
-    ~component, (reactProps: {. "children": 'children}) =>
-    make(reactProps##children)
-  );
-[@bs.obj]
-external makeProps: (~children: 'children, unit) => {. "children": 'children} =
-  "";

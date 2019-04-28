@@ -1,7 +1,7 @@
 include WidgetPlaying.Bootstrap;
 
 let code: string =
-  [%bs.raw {|require('Examples/TableExample.re')|}] |> Examples.prepCode;
+  [%bs.raw {|require('Examples/TableExample.re').default|}] |> Examples.prepCode;
 
 let se = React.string;
 
@@ -45,6 +45,6 @@ let make = () => {
           </tr>
         </tbody>
       </Table>
-      (Examples.highlight(code))
+       (Examples.highlight(code)) 
     </Examples.Example>
 };

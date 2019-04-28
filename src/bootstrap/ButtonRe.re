@@ -76,7 +76,7 @@ let make =
       | None => ""
       | Some(size) => "btn-" ++ Size.toString(size)
       };
-    let classes =
+    let className =
       [
         "btn",
         btnColor,
@@ -88,18 +88,17 @@ let make =
       ]
       |> String.concat(" ");
     let buttonType = Type.toString(type_);
-    let props =
-      {
-        "className": classes,
-        "onClick": Js.Nullable.fromOption(onClick),
-        "type": buttonType,
-        "aria-haspopup": mapBool(ariaHaspopup),
-        "aria-expanded": mapBool(ariaExpanded),
-      }
-      ->ReactDOMRe.objToDOMProps;
-    ReactDOMRe.createElementVariadic(tag, ~props, children);
+    
+      <button className ?onClick type_=buttonType /* ?ariaHaspopup ?ariaExpanded */ > children </button>
+
   
 };
+
+module Submit {
+  /* [@react.component]
+  let make =  */
+};
+
 
 module DropDown = {};
 
@@ -251,81 +250,6 @@ module Toolbar = {
     } =
     "";
 };
-/**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-/* let make =
-  ReasonReactCompat.wrapReasonReactForReact(
-    ~component,
-    (
-      reactProps: {
-        .
-        "className": option('className),
-        "ariaExpanded": option('ariaExpanded),
-        "ariaHaspopup": option('ariaHaspopup),
-        "type_": option('type_),
-        "onClick": option('onClick),
-        "size": option('size),
-        "outline": option('outline),
-        "disabled": option('disabled),
-        "color": option('color),
-        "block": option('block),
-        "active": option('active),
-        "tag": option('tag),
-        "children": 'children,
-      },
-    ) =>
-    make(
-      ~className=?reactProps##className,
-      ~ariaExpanded=?reactProps##ariaExpanded,
-      ~ariaHaspopup=?reactProps##ariaHaspopup,
-      ~type_=?reactProps##type_,
-      ~onClick=?reactProps##onClick,
-      ~size=?reactProps##size,
-      ~outline=?reactProps##outline,
-      ~disabled=?reactProps##disabled,
-      ~color=?reactProps##color,
-      ~block=?reactProps##block,
-      ~active=?reactProps##active,
-      ~tag=?reactProps##tag,
-      reactProps##children,
-    )
-  );
-[@bs.obj]
-external makeProps:
-  (
-    ~children: 'children,
-    ~tag: 'tag=?,
-    ~active: 'active=?,
-    ~block: 'block=?,
-    ~color: 'color=?,
-    ~disabled: 'disabled=?,
-    ~outline: 'outline=?,
-    ~size: 'size=?,
-    ~onClick: 'onClick=?,
-    ~type_: 'type_=?,
-    ~ariaHaspopup: 'ariaHaspopup=?,
-    ~ariaExpanded: 'ariaExpanded=?,
-    ~className: 'className=?,
-    unit
-  ) =>
-  {
-    .
-    "className": option('className),
-    "ariaExpanded": option('ariaExpanded),
-    "ariaHaspopup": option('ariaHaspopup),
-    "type_": option('type_),
-    "onClick": option('onClick),
-    "size": option('size),
-    "outline": option('outline),
-    "disabled": option('disabled),
-    "color": option('color),
-    "block": option('block),
-    "active": option('active),
-    "tag": option('tag),
-    "children": 'children,
-  } =
-  ""; */
+
 
 /* TODO: Make this guy work */

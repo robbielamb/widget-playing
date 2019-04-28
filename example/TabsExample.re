@@ -1,7 +1,7 @@
 include WidgetPlaying.Bootstrap;
 
 let code: string =
-  [%bs.raw {|require('Examples/TabsExample.re')|}] |> Examples.prepCode;
+  [%bs.raw {|require('Examples/TabsExample.re').default|}] |> Examples.prepCode;
 
 let se = React.string;
 
@@ -11,18 +11,23 @@ type tabs =
 type state = {activeTab: tabs};
 type action =
   | SwitchTab(tabs);
-let component = ReasonReact.reducerComponent("TabsExample");
-let make = _children => {
-  ...component,
-  initialState: () => {activeTab: Tab1},
-  reducer: (action, _state) =>
-    switch (action) {
-    | SwitchTab(newTab) => ReasonReact.Update({activeTab: newTab})
-    },
-  render: ({state, send}) => {
+
+let  initialState = {activeTab: Tab1};
+
+let reducer = (_state, action) => {
+switch (action) {
+    | SwitchTab(newTab) => {activeTab: newTab}
+    }
+};
+
+
+[@react.component]
+let make = () => {
+    let (state, dispatch) = React.useReducer(reducer, initialState);
+
     let panels = [|
-      Tab.Pane.create(~tabId=Tab1, se("Something here")),
-      Tab.Pane.create(~tabId=Tab2, se("Something else")),
+      Tab.Pane.create(~tabId=Tab1, ~key="1", se("Something here")),
+      Tab.Pane.create(~tabId=Tab2, ~key="2", se("Something else")),
     |];
     <Examples.Example title="Tabs Example">
       <div>
@@ -30,14 +35,14 @@ let make = _children => {
           <Nav.Item>
             <Nav.Link
               active=(state.activeTab == Tab1)
-              onClick=(_event => send(SwitchTab(Tab1)))>
+              onClick=(_event => dispatch(SwitchTab(Tab1)))>
               (se("Item 1"))
             </Nav.Link>
           </Nav.Item>
           <Nav.Item>
             <Nav.Link
               active=(state.activeTab == Tab2)
-              onClick=(_event => send(SwitchTab(Tab2)))>
+              onClick=(_event => dispatch(SwitchTab(Tab2)))>
               (se("Item 2"))
             </Nav.Link>
           </Nav.Item>
@@ -46,17 +51,6 @@ let make = _children => {
       </div>
       (Examples.highlight(code))
     </Examples.Example>;
-  },
-};
-/**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-let make =
-  ReasonReactCompat.wrapReasonReactForReact(
-    ~component, (reactProps: {. "children": 'children}) =>
-    make(reactProps##children)
-  );
-[@bs.obj]
-external makeProps: (~children: 'children, unit) => {. "children": 'children} =
-  "";
+  };
+
+

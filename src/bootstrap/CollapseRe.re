@@ -16,6 +16,17 @@ type state = {
   height: option(string),
 };
 
+let actionToStr = action => {
+  switch (action) {
+  | Opened => "Opened"
+  | StartClosing => "StartClosing"
+  | Closing => "Closing"
+  | StartOpening => "StartOpening"
+  | Opening => "Opening"
+  | Closed => "Closed"
+  };
+};
+
 let maybeCall = mb =>
   switch (mb) {
   | None => ()
@@ -50,10 +61,10 @@ let reducer = (state, action): state => {
   | Closed => {...state, currentState: Closed, height: None}
 
   | StartClosing => {...state, height: Some(getHeight(state.element)), currentState: StartClosing}
-  | Closing => {...state, height: Some("0"), currentState: Closing}
+  | Closing => {...state, height: Some("0px"), currentState: Closing, isOpen: false}
 
-  | StartOpening => {...state, height: Some(getHeight(state.element)), currentState: StartOpening}
-  | Opening => {...state, currentState: Opening}
+  | StartOpening => {...state, currentState: StartOpening}
+  | Opening => {...state, height: Some(getHeight(state.element)), currentState: Opening, isOpen: true}
   };
 };
 
@@ -72,8 +83,6 @@ let make =
 
   React.useEffect1(
     () => {
-      /*let setTimer = action =>
-        Some(Js.Global.setTimeout(_ => dispatch(action), 0));*/
       if (state.isOpen !== isOpen) {
         let _ = unsetTimer(state.timer^);
         switch (state.currentState) {
@@ -100,11 +109,11 @@ let make =
       switch (state.currentState) {
       | Opened => maybeCall(onOpened)
       | Closed => maybeCall(onClosed)
-      | StartClosing => dispatch(Closing)
+      | StartClosing => state.timer := setTimer(dispatch, Closing, 16) // Magic Number?
       | Closing =>
         maybeCall(onClosing);
         state.timer := setTimer(dispatch, Closed, 350);
-      | StartOpening => dispatch(Opening)
+      | StartOpening => dispatch(Opening) 
       | Opening =>
         maybeCall(onOpening);
         state.timer := setTimer(dispatch, Opened, 350);
@@ -116,12 +125,13 @@ let make =
 
   let collapsingClasses =
     switch (state.currentState) {
+
     | Opened => "collapse show"
     | Closed => "collapse"
     | _ => "collapsing"
     };
   let className = [collapsingClasses, unwrapStr(i, className)] |> String.concat(" ");
-  
+
   let style = ReactDOMRe.Style.make(~height=?state.height, ());
   <div className ref={state.element} style> children </div>;
 };
