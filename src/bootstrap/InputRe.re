@@ -31,7 +31,6 @@ type inputType =
 [@react.component]
 let make =
     (
-      ~tag: string="input",
       ~id: option(string)=?,
       ~name: string="",
       ~type_: inputType=Text,

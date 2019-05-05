@@ -60,21 +60,14 @@ module Toggler = {
   [@react.component]
   let make =
       (
-        ~tag: string="button",
         ~type_: string="button",
-        ~onClick: option(ReactEvent.Mouse.t => unit),
+        ~onClick: option(ReactEvent.Mouse.t => unit)=?,
         ~className: string="",
       ) => {
-    let span = <span className="navbar-toggler-icon" />;
     let className = ["navbar-toggler", className] |> String.concat(" ");
-
-    ReactDOMRe.createElementVariadic(
-      tag,
-      ~props=
-        {"type": type_, "className": className, "onClick": onClick}
-        ->ReactDOMRe.objToDOMProps,
-      [|span|],
-    );
+    <button className type_ ?onClick>
+      <span className="navbar-toggler-icon" />
+    </button>;
   };
 };
 

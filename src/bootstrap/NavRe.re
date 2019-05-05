@@ -1,33 +1,39 @@
 include Utils;
 
 [@react.component]
-let make =
-    (
-      ~tabs: bool=false,
-      ~pills: bool=false,
-      ~vertical: bool=false,
-      ~justified: bool=false,
-      ~navbar: bool=false,
-      ~className: option(string)=?,
-      ~children,
-    ) => {
-  let className =
-    [
-      navbar ? "navbar-nav" : "nav",
-      tabs ? "nav-tabs" : "",
-      pills ? "nav-pills" : "",
-      justified ? "nav-justified" : "",
-      vertical ? "flex-column" : "",
-      unwrapStr(i, className),
-    ]
-    |> String.concat(" ");
-  <ul className> children </ul>;
-};
+   let make =
+       (
+         ~tabs: bool=false,
+         ~pills: bool=false,
+         ~vertical: bool=false,
+         ~justified: bool=false,
+         ~navbar: bool=false,
+         ~className: option(string)=?,
+         ~children,
+       ) => {
+     let className =
+       [
+         navbar ? "navbar-nav" : "nav",
+         tabs ? "nav-tabs" : "",
+         pills ? "nav-pills" : "",
+         justified ? "nav-justified" : "",
+         vertical ? "flex-column" : "",
+         unwrapStr(i, className),
+       ]
+       |> String.concat(" ");
+     <ul className> children </ul>;
+   };
+
 
 module Item = {
   [@react.component]
-  let make = (~className: option(string)=? /* cssModule::(cssModule: option (Js.t {..}))=? */, ~children) => {
-    let className = ["nav-item", unwrapStr(i, className)] |> String.concat(" ");
+  let make =
+      (
+        ~className: option(string)=? /* cssModule::(cssModule: option (Js.t {..}))=? */,
+        ~children,
+      ) => {
+    let className =
+      ["nav-item", unwrapStr(i, className)] |> String.concat(" ");
     <li className> children </li>;
   };
 };
@@ -53,7 +59,12 @@ module Link = {
           }
         );
     let className =
-      ["nav-link", disabled ? "disabled" : "", active ? "active" : "", unwrapStr(i, className)]
+      [
+        "nav-link",
+        disabled ? "disabled" : "",
+        active ? "active" : "",
+        unwrapStr(i, className),
+      ]
       |> String.concat(" ");
     <a className onClick ?href> children </a>;
   };

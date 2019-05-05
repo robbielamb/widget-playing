@@ -31,9 +31,8 @@ module Body = {
 };
 
 module Columns = {
-  let component = ReasonReact.statelessComponent("Card.Columns");
   [@react.component]
-  let make = (~className: option(string)=?, children) => {
+  let make = (~className: option(string)=?, ~children) => {
     let className =
       [unwrapStr(i, className), "card-columns"] |> String.concat(" ");
     <div className> children </div>;
@@ -42,7 +41,7 @@ module Columns = {
 
 module Deck = {
   [@react.component]
-  let make = (~className: option(string)=?, children) => {
+  let make = (~className: option(string)=?, ~children) => {
     let className =
       ["card-deck", unwrapStr(i, className)] |> String.concat(" ");
     <div className> children </div>;
@@ -51,7 +50,7 @@ module Deck = {
 
 module Footer = {
   [@react.component]
-  let make = (~className: option(string)=?, children) => {
+  let make = (~className: option(string)=?, ~children) => {
     let className =
       ["card-footer", unwrapStr(i, className)] |> String.concat(" ");
     <div className> children </div>;
@@ -59,50 +58,12 @@ module Footer = {
 };
 
 module CardGroup = {
-  let component = ReasonReact.statelessComponent("Card.Group");
-  let make = (~tag: string="div", ~className: option(string)=?, children) => {
-    ...component,
-    render: _self => {
-      let classes =
-        ["card-group", unwrapStr(i, className)] |> String.concat(" ");
-      ReactDOMRe.createElementVariadic(
-        tag,
-        ~props={"className": classes}->ReactDOMRe.objToDOMProps,
-        children,
-      );
-    },
+  [@react.component]
+  let make = (~className: option(string)=?, ~children) => {
+    let className =
+      ["card-group", unwrapStr(i, className)] |> String.concat(" ");
+    <div className> children </div>;
   };
-  /**
- * This is a wrapper created to let this component be used from the new React api.
- * Please convert this component to a [@react.component] function and then remove this wrapping code.
- */
-  let make =
-    ReasonReactCompat.wrapReasonReactForReact(
-      ~component,
-      (
-        reactProps: {
-          .
-          "className": option('className),
-          "tag": option('tag),
-          "children": 'children,
-        },
-      ) =>
-      make(
-        ~className=?reactProps##className,
-        ~tag=?reactProps##tag,
-        reactProps##children,
-      )
-    );
-  [@bs.obj]
-  external makeProps:
-    (~children: 'children, ~tag: 'tag=?, ~className: 'className=?, unit) =>
-    {
-      .
-      "className": option('className),
-      "tag": option('tag),
-      "children": 'children,
-    } =
-    "";
 };
 
 module Header = {

@@ -15,6 +15,7 @@ let make =
 };
 
 module Feedback = {
+  [@react.component]
   let make = (~valid: bool=true, ~children) => {
     let className = valid ? "is-valid" : "is-invalid";
     <div className> children </div>;
