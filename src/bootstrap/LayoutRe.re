@@ -103,8 +103,6 @@ module ColSizes = {
 module Col = {
   include ColSizes;
 
-  let mySHape = shape(());
-
   [@react.component]
   let make =
       (
@@ -116,6 +114,9 @@ module Col = {
         ~className: option(string)=?,
         ~children,
       ) => {
+    let xs =
+      Belt.List.every([xs, sm, md, lg, xl], x => x == None)
+        ? Some(shape()) : xs;
     let classShapeList = processShapeList(xs, sm, md, lg, xl);
     let classes =
       Belt.List.concat([unwrapStr(i, className)], classShapeList)

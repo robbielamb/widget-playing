@@ -203,7 +203,7 @@ module Label = {
         ~disabled: bool=false,
         ~size: option(Size.t)=?,
         ~color: option(ColorsRe.Text.t)=?,
-        ~xs: option(shape)=?,
+        ~xs: option(shape)=?, //Some(shape()),
         ~sm: option(shape)=?,
         ~md: option(shape)=?,
         ~lg: option(shape)=?,
@@ -211,6 +211,10 @@ module Label = {
         ~className: option(string)=?,
         ~children,
       ) => {
+    let xs =
+      Belt.List.every([xs, sm, md, lg, xl], x => x == None)
+        ? Some(shape()) : xs;
+
     let colClasses = processShapeList(xs, sm, md, lg, xl);
     let containsColClasses = Belt.List.length(colClasses) > 0;
     let className =

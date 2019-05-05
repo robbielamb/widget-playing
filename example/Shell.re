@@ -65,7 +65,7 @@ let make = () => {
     </Bootstrap.Navbar>
     <Bootstrap.Layout.Container>
       <Bootstrap.Layout.Row>
-        <Bootstrap.Layout.Col xs={Bootstrap.Layout.Col.shape(())}> element </Bootstrap.Layout.Col>
+        <Bootstrap.Layout.Col> element </Bootstrap.Layout.Col>
         <Bootstrap.Layout.Col
           md={Bootstrap.Layout.Col.shape(
             ~size=Bootstrap.Layout.ColSizes.Size(2),
